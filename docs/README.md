@@ -17,6 +17,9 @@ engineering decisions, custom contributions, observed use and limitations.
 The [architecture](ARCHITECTURE.md) explains OpenClaw's role, the custom
 workflows and the workstation configuration.
 
+The [technology and version snapshot](ARCHITECTURE.md#technology-and-version-snapshot)
+records host versions, locked dependencies and the local review environment.
+
 ## Read or contribute code
 
 - [Household tools](HOUSEHOLD-TOOLS.md): workflow behavior and implementation references.

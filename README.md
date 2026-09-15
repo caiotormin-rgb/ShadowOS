@@ -136,6 +136,27 @@ can supply ingredients as text or screenshots.
 This repository contains selected custom work, including the email `.ics`
 calendar guardrail. [What's included](docs/HOUSEHOLD-TOOLS.md).
 
+## Tech stack
+
+A September 2026 snapshot of the tools used to build and run the project.
+Versions below distinguish the documented host, locked dependencies and the
+local review environment; they are not a fully pinned deployment recipe.
+
+| Layer | Technology and version | Role |
+|---|---|---|
+| Agent runtime | **OpenClaw 2026.9.4** · documented host | Chat integrations, agent runtime and plugin ecosystem |
+| JavaScript runtime | **Node.js 24.19.0** · documented host; **24.21.0** · local review | Plugins, routing and Node tests |
+| Workflow engines | **Python 3.12.3** · local review | Grocery, Doctor, context services and automations |
+| State and retrieval | **SQLite 3.45.1** · Python library in local review | Shared lists, trip history, access state and searchable records |
+| Plugin toolchain | **TypeScript 5.9.3**, **Vitest 3.2.7** · Grocery lockfile | Typed adapters and plugin tests |
+| Local inference | **llama.cpp b10604** · referenced by the benchmark runner | Bounded local-model experiments |
+| Media | **whisper.cpp + GStreamer** · exact builds not recorded in this export | Local speech transcription and video/audio processing |
+| Host and scheduling | **Ubuntu 24.04.4 LTS**, systemd user services and timers | One self-hosted workstation |
+
+The wider setup includes cloud models, read-only MCP context tools,
+Firecrawl for personal research, and a dedicated AgentMail mailbox for
+approved Doctor outreach. [Version sources and compatibility notes](docs/ARCHITECTURE.md#technology-and-version-snapshot).
+
 ## Where it runs
 
 One `torm` workstation: **EliteMini series, AMD Ryzen 7 8745H (8 cores /
@@ -147,6 +168,27 @@ The documented setup uses an isolated OpenClaw account, a loopback gateway,
 systemd user services and SQLite. Cloud models handle conversations;
 local `llama.cpp` supports bounded text work and `whisper.cpp` transcribes
 media. [Hardware and configuration](docs/ARCHITECTURE.md#workstation-and-configuration).
+
+## What I learned along the way
+
+- **Small replies carry important context.** Preserving “sim” and “não” in
+  voice transcripts, accepting corrections and retrying only unresolved
+  items mattered as much as handling the initial request.
+- **Interpretation and authority need different homes.** Models help
+  understand a request; trusted identity, membership and approval checks
+  belong in code. Sharing a grocery list should not widen someone's tools.
+- **Measure before adding another model.** A local sender-classification
+  experiment gave way to deterministic code. Missing transaction amounts
+  pointed to truncated source snippets and the need for richer input.
+- **Test the path people actually use.** Real conversations exposed mode
+  loops and transcription failures. The deployed OpenClaw host also differed
+  from the plugin's build dependency; passing isolated tests was not enough.
+- **Turn operational mistakes into checks.** A deployment that stayed two
+  releases behind led to an automated path check. Separate reproductions
+  also found calendar-ordering and email-concurrency bugs that remain open.
+
+[Decisions, incidents and their evidence](docs/CASE-STUDY.md#what-real-use-changed)
+show how these lessons changed the implementation.
 
 ## Evidence and current limits
 

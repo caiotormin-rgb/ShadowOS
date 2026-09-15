@@ -182,6 +182,40 @@ solved deterministically at zero cost, so the model was dropped. Only 28% of
 ledger rows carry an amount, and that is snippet truncation rather than
 extraction failure, so fetching bodies comes before any new model lane.
 
+## Technology and version snapshot
+
+Recorded for the September 2026 export; local review versions were read on
+September 15. A version in a package lock or benchmark path does not establish
+what every production process runs. Production configuration was not opened
+for this inventory.
+
+| Technology | Version evidence | Source and scope |
+|---|---|---|
+| OpenClaw | **2026.9.4** documented host | [Runtime compatibility review](../tools/docs/shadow-0914/REVIEW.md#runtime-compatibility-finding); also pinned for Access development in its [manifest](../tools/access/plugin/package.json) |
+| Node.js | **24.19.0** documented host; **24.21.0** local review | Host path in the same review; `node --version` on the review station. The [router](../tools/household-router/package.json) requires Node `>=24` |
+| Python | **3.12.3** local review | `python3 --version`; standard-library workflow engines and context services were reviewed with this interpreter |
+| SQLite | **3.45.1** local review | `python3 -c 'import sqlite3; print(sqlite3.sqlite_version)'`; this is Python's linked SQLite library, not an inventory of every store's runtime |
+| TypeScript | **5.9.3** locked | [Grocery lockfile](../tools/grocery-list/plugin/package-lock.json); manifest range `^5.9.0` |
+| Vitest | **3.2.7** locked | Same lockfile; manifest range `^3.2.0`. The September 15 review did not rerun TypeScript plugin suites |
+| TypeBox | **1.3.23** locked, direct Grocery dependency | Same lockfile; used for tool parameter schemas; manifest range `^1.1.38` |
+| llama.cpp | **b10604** referenced build | [Local benchmark runner](../layers/openclaw/mail-enrichment/local_runner.py) names this binary path; it was not executed for the version inventory |
+| whisper.cpp / GStreamer | Exact builds not recorded | [Audio wrapper](../tools/media-transcription/bin/transcribe-audio-local) and [video wrapper](../tools/media-transcription/bin/transcribe-video-local). Audio defaults reference `small`, `large-v3-turbo-q8_0` for retry, and `base` for long input; environment overrides can change them |
+| Ubuntu | **24.04.4 LTS** | Hardware inventory below; systemd user services/timers schedule the work |
+
+**One compatibility lesson:** the Grocery lockfile resolves OpenClaw to
+**2026.7.1-2**, while the documented deployed host is **2026.9.4**. The
+historical runtime review found different hook-context declarations between
+those versions. Grocery's manifest also uses `latest` for its OpenClaw
+development dependency. Treat the lockfile and host evidence separately;
+this documentation update does not align them or establish fresh-install
+compatibility. Doctor's missing build/test declarations are covered in
+[Tools](../tools/README.md).
+
+Cloud model identifiers are listed in the deployment snapshot above. MCP is
+used for context queries; Firecrawl belongs to the owner's wider OpenClaw
+setup, and AgentMail handles the dedicated Doctor mailbox. Those services
+are not assigned package versions here because this export does not pin them.
+
 ## Workstation and configuration
 
 The hardware below was read directly from `torm` on September 15, 2026,
