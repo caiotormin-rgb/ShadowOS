@@ -23,7 +23,7 @@ and building solutions around everyday needs.
 | Technology versions | [Host, lockfile and review snapshot](ARCHITECTURE.md#technology-and-version-snapshot) |
 | Development milestones | [History](HISTORY.md) |
 | Public and private data boundaries | [Publishing](PUBLISHING.md) |
-| Graphics, typography and voice | [Visual identity](VISUAL-IDENTITY.md) |
+| Presentation choices, assets and rebuild instructions | [Presentation decisions](VISUAL-IDENTITY.md) |
 
 **Reading older material:** plans, runbooks and procedures are dated references
 from the private source repositories. Some describe retired or unconnected

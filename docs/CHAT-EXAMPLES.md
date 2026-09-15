@@ -25,8 +25,7 @@ sequence reconstructs a completed workflow reported by the owner.
 [Groceries PNG](../assets/brand/chat-groceries-multimodal.png) ·
 [Doctor PNG](../assets/brand/chat-doctor-voice.png) ·
 [Photo-to-support PNG](../assets/brand/chat-support-photo.png) ·
-[Receipt lookup PNG](../assets/brand/chat-records.png) ·
-[Longer support illustration](../assets/brand/conversation-life-index.svg)
+[Receipt lookup PNG](../assets/brand/chat-records.png)
 
 The README cards show illustrated photo/video attachments and voice waveforms.
 Captions provide readable transcripts; the media controls are static artwork.

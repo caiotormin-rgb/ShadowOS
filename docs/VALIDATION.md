@@ -48,8 +48,8 @@ The export's [plugin setup limitations](../tools/README.md) are separate.
 ## Portfolio example
 
 The multimodal examples in the README and chat guide use synthetic products,
-media captions and interpreted requests. Separate temporary SQLite runs used two fictional
-members sharing a household, with Costco as the default store and either
+media captions and interpreted requests. Separate temporary SQLite runs used
+two fictional members sharing a household, with Costco as the default store and either
 Portuguese or English as the preferred language. Direct calls to
 `agent_api.handle` verified the following:
 
@@ -76,7 +76,7 @@ shopping, ambiguous purchases, history, recipe capture, and Doctor intake,
 selection and outreach. These are illustrations of the intended conversation,
 not recorded model sessions or evidence of a full Doctor launch.
 
-For this documentation update, two existing grocery tests were rerun for
+Additional September 15 checks reran two existing grocery tests for
 partial-success clarification and member-visible purchase history. Five
 existing Doctor tests were rerun for email verification, draft guards,
 approval before sending, changed-draft rejection and replacement of an old
@@ -92,46 +92,29 @@ instructions and outreach template; testing the underlying guards does not
 establish that a live model always follows those instructions.
 
 
-### Visual presentation
+### Presentation checks
 
-The grocery workflow and three conversation SVGs are authored
-illustrations. Grocery and Doctor cards follow the documented workflows;
-Doctor remains in early testing. Personal-record dates, amounts, businesses
-and source titles are fictional. The support-email segment reconstructs a completed workflow reported by the
-owner, using the broader personal OpenClaw agent. It is not a life-index
-send capability or an independently replayed integration test.
+The README embeds three multimodal PNG cards: Grocery (six turns), Doctor
+(four), and photo-to-support (five). A four-turn receipt example stays linked.
+Photo/video previews and waveforms are static illustrations; dialogue is in
+the [chat guide](CHAT-EXAMPLES.md). Private/shared lists, Doctor replies and
+payment-evidence scenarios were reviewed against exported tool instructions.
 
-The earlier grocery example validates interpreted list operations. The new
-personal-record dialogues and tool-call examples were checked against tool
-schemas and access boundaries, but were not run against a personal catalog.
-No photo recognition, support drafting, email delivery or reply monitoring
-was exercised during this documentation review. The owner confirms those
-user-facing steps occurred in personal use; exact connector, approval and
-attachment details were not supplied.
-
-The header and conversation graphics use Geist lettering converted to SVG
-paths. All six assets were rendered locally at native size and 343px width,
-and the export build was checked for reproducibility. This checks the visual
-assets; a GitHub browser session was unavailable for a full-page visual check.
-
-The expanded conversation guide adds private/shared grocery scope, Doctor
-reply interpretation and incomplete payment evidence. These exchanges and
-the additional follow-up turns were reviewed against the exported tool
-instructions and access boundaries. They were not executed as new model or
-integration tests; their wording and example data remain illustrative.
-
-The README embeds three multimodal PNG chat cards rendered from editable SVG
-sources: a fridge video plus voice update (six turns), Doctor voice intake
-(four turns), and the owner-reported photo-to-support flow (five turns).
-The earlier four-turn receipt lookup remains linked. The new photo/video
-previews and waveforms are static illustrations, with text in the chat guide.
-Cards were inspected at 343px width. This verifies presentation, not media
-recognition, audio playback, delivery or a replay of the conversations.
+The current SVG and PNG assets rebuild reproducibly. The header and cards
+were rendered locally and inspected at 343px width. GitHub Markdown and live README
+image paths were checked; a full-page browser screenshot was unavailable.
+These checks establish presentation quality, not media recognition, playback,
+provider search, email delivery or end-to-end conversational behavior.
 
 ### Owner-reported email and form workflows
 
 The owner confirms that personal Shadow has sent emails and filled out forms
-on their behalf using life-index MCP for context. This is reported personal
-use, not a newly executed integration test. The exported life-index service
-remains read-only; action tools belong to the broader personal agent. No
-specific form interface, approval flow or submission behavior was provided.
+on their behalf using life-index MCP context. The support example reconstructs
+finding purchase/contact details, interpreting a defect photo, extracting a
+serial number, sending an inquiry and following up on a reply.
+
+This is reported personal use, not a newly executed integration test. The
+illustrated product, identifiers and wording are fictional. Life-index remains
+read-only; action tools belong to the broader personal agent. Specific
+connectors, approval policies, attachment handling and form-submission behavior
+were not supplied for this review.

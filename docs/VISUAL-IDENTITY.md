@@ -1,147 +1,91 @@
-# ShadowOS visual identity
+# Presentation decisions
 
-A small identity for a personal project shared as open source and a portfolio.
-Lead with the personal assistant and why it exists: easier input, information
-that stays useful across contexts, and less friction between tools. Show
-current capabilities as examples of an assistant that keeps evolving.
+A personal project, an open-source code export and a portfolio of work.
 
 [Project home](../README.md) · [Documentation guide](README.md)
 
-## Header direction
+## Settled choices · September 15, 2026
 
-The header contains the conversation mark, ShadowOS name and the tagline:
-“Less to juggle. More room to think and get things done.” The dark
-surface, restrained type and open spacing keep the introduction simple.
-Current stage, access boundaries and OpenClaw attribution stay in readable
-Markdown immediately below it.
+| Decision | Reason |
+|:--|:--|
+| **An evolving personal assistant inside OpenClaw** | Groceries, Doctor and records are current examples; the purpose includes organizing information, ideas and projects with less context switching. |
+| **“Less to juggle. More room to think and get things done.”** | The approved tagline connects attention with follow-through. |
+| **A short README; depth in the chat guide and case study** | Readers can see the work quickly, then choose where to explore. Use tables for comparisons and navigation. |
+| **Dark PNG chat cards with Geist typography** | Visible bubbles, media previews and transcripts make the examples readable. Keep Portuguese and English naturally. |
+| **Illustrative media, clearly labeled** | Photo/video thumbnails and waveforms show the interaction; full dialogue remains available as text. |
+| **Current use stated precisely** | Grocery is in use by three invited people; Doctor is in early testing. Personal emails and form filling with life-index context are owner-reported use. |
+| **Stable, descriptive assets; replace superseded versions** | Give materially changed illustrations a new filename to avoid stale image URLs. Keep historical versions in Git. |
 
-References inspected for this layout:
+OpenClaw supplies the gateway, runtime and plugin ecosystem. Life-index supplies
+read-only context; the personal agent's other tools perform actions. Keep that
+contribution and boundary clear without repeating technical detail in every chat.
 
-- [Supabase](https://github.com/supabase/supabase): a clear mark and wordmark
-  paired with a short description.
-- [Hoppscotch](https://github.com/hoppscotch/hoppscotch): identity and purpose
-  first, with the interface shown separately.
-- [Formbricks](https://github.com/formbricks/formbricks): a compact introduction
-  followed by visual evidence of what the project does.
+## Current assets
 
-These references informed the hierarchy. Their artwork is not included here.
+| Asset | Where it belongs |
+|:--|:--|
+| [Header](../assets/brand/readme-header-less-to-juggle.svg) · [Mark](../assets/brand/shadowos-mark.svg) | Project identity |
+| [Groceries PNG](../assets/brand/chat-groceries-multimodal.png) | README: video, voice and a correction |
+| [Doctor PNG](../assets/brand/chat-doctor-voice.png) | README: voice intake and confirmed search |
+| [Support PNG](../assets/brand/chat-support-photo.png) | README: photo, purchase context, email and follow-up |
+| [Receipt PNG](../assets/brand/chat-records.png) | Linked example: payment evidence and a reminder |
+| [Grocery workflow](../assets/brand/workflow.svg) | Reference: media and instructions become shared state |
 
-## Assets
+[Editable SVG sources](../assets/brand/source) are the source of truth. Exported
+SVGs contain font outlines; PNGs are rendered from those exports at 2× resolution.
+The README displays chat cards at 500px wide. Alt text and linked
+[transcripts](CHAT-EXAMPLES.md) keep their meaning accessible outside the images.
 
-| Asset | Use |
-|---|---|
-| [Conversation mark](../assets/brand/shadowos-mark.svg) | A conversation shape with an offset shape behind it; use with the ShadowOS name |
-| [README banner](../assets/brand/readme-header-less-to-juggle.svg) | Wordmark and the personal assistant’s purpose |
-| [Grocery chat PNG](../assets/brand/chat-groceries-multimodal.png) | README conversation: video preview, voice waveform and a correction |
-| [Doctor chat PNG](../assets/brand/chat-doctor-voice.png) | README conversation: a voice note, preferences and confirmation |
-| [Photo-to-support chat PNG](../assets/brand/chat-support-photo.png) | README conversation: a defect photo, email and follow-up |
-| [Personal-records chat PNG](../assets/brand/chat-records.png) | Linked conversation: paid receipt and follow-up evidence |
-| [Grocery workflow](../assets/brand/workflow.svg) | Explain how media, instructions and list state fit together |
-| [Grocery conversation](../assets/brand/conversation-grocery.svg) | A Portuguese voice update and shared-list change |
-| [Doctor conversation](../assets/brand/conversation-doctor.svg) | Search preferences and confirmation, labeled early testing |
-| [Personal-record conversation](../assets/brand/conversation-life-index.svg) | Source-backed retrieval and a reconstructed, owner-reported support workflow |
+## Visual conventions
 
-The exported SVGs contain vector outlines, with no font downloads, external
-images, scripts or tracking. Each retains a title and description. Editable
-text lives in [source](../assets/brand/source). The PNG cards are rendered from outlined SVGs at twice their native size.
-They depict illustrative chats, not screenshots of a live app. Photo/video
-previews and voice waveforms are static vector artwork. Spoken text stays
-visible as a transcript, and each card labels the media as illustrated. The artwork and build scripts
-use the repository's MIT license; bundled Geist fonts use the
-[SIL Open Font License 1.1](../assets/brand/fonts/OFL.txt).
+| Element | Convention |
+|:--|:--|
+| Header | 1200 × 320; background `#171D23`; 72px wordmark, 38px tagline |
+| Chat cards | 720px wide; 30px dialogue; regular 400 and medium 500 Geist |
+| Chat surfaces | Background `#141D24`; incoming `#222D36`; outgoing `#263D39` |
+| Chat text | Primary `#E7ECEF`; secondary `#AAB8C2`; mint accent `#B8D9CC` |
+| Media | Static illustrated previews and waveforms, with readable transcripts |
 
-## Palette and type
+Keep shapes flat and spacing open. GitHub controls the surrounding Markdown's
+font and theme; the graphics keep their own opaque dark background.
 
-| Role | Color |
-|---|---|
-| Header background | `#171D23` |
-| Header wordmark / description | `#EDF0F2` / `#BBC5CC` |
-| Conversation background | `#181F25` |
-| Slate card | `#222A31` |
-| Primary / secondary text | `#E7ECEF` / `#AAB6BF` |
-| Mint accent | `#A6CDBE` |
-| User bubble / mark shadow | `#253331` / `#253831` |
-| Border | `#35414B` |
+Layout references: [Supabase](https://github.com/supabase/supabase),
+[Hoppscotch](https://github.com/hoppscotch/hoppscotch) and
+[Formbricks](https://github.com/formbricks/formbricks). Their clear identity,
+short introductions and separate examples informed the hierarchy; no reference
+artwork is bundled here.
 
-Use **Geist Regular (400)** for dialogue and descriptions and **Geist Medium
-(500)** for headings. The build shapes the actual font and converts letters
-to paths so viewers see the intended typography regardless of installed fonts.
-GitHub controls the font and theme of the surrounding Markdown.
+## Edit and rebuild
 
-The header is 1200 × 320, with a 72px wordmark and 38px description.
-README chat cards use 30px dialogue on a 720px canvas, alternating bubble
-alignment and a dark green user surface. The longer reference illustrations
-use 28px dialogue. Keep shapes flat and
-spacing generous. The opaque background stays dark on either GitHub theme;
-rounded outer corners remain transparent. The symbol represents conversation,
-not a security guarantee or an operating system.
-
-## Updating graphics
-
-1. Edit the corresponding SVG in [source](../assets/brand/source). Text nodes
-   use explicit positions and line breaks; there is no automatic text wrapping.
-2. Build from the repository root with Python 3.9+ and the HarfBuzz shared
-   library available on the system:
+1. Edit the matching SVG in `assets/brand/source/`. Text positions and line
+   breaks are explicit; there is no automatic wrapping.
+2. With Python 3.9+ and the HarfBuzz, librsvg, Cairo and GObject shared libraries
+   available, run from the repository root:
 
    ```bash
    python3 -m venv /tmp/shadowos-brand-venv
    /tmp/shadowos-brand-venv/bin/python -m pip install -r assets/brand/requirements.txt
    /tmp/shadowos-brand-venv/bin/python assets/brand/build.py
+   /tmp/shadowos-brand-venv/bin/python assets/brand/render_png.py
    ```
 
-   The build reads the bundled fonts and writes the ten SVG exports in
-   `assets/brand/`. Its JSON output lists text positions and measured widths.
-   These are optional graphics dependencies, separate from the runtime tools.
+   `build.py` outlines every source SVG and reports text widths as JSON.
+   `render_png.py` writes `chat-*.png`. These are optional graphics dependencies.
+3. Check changed images at native size and 343px wide, including bubble padding,
+   line breaks and accented characters. Update alt text and transcript links.
+4. For a new filename, rename the source and export together, update references
+   and remove the superseded files. Commit sources, exports and matching docs.
 
-   For the PNG chat cards, render the outlined SVGs with the system
-   librsvg, Cairo and GObject shared libraries:
+## Licensing and font provenance
 
-   ```bash
-   python3 assets/brand/render_png.py
-   ```
+Artwork and build scripts use the repository's [MIT license](../LICENSE).
+The bundled Geist fonts use [SIL OFL 1.1](../assets/brand/fonts/OFL.txt).
+Unmodified Regular and Medium TTFs come from
+[Geist commit 10dc765](https://github.com/vercel/geist-font/tree/10dc7658f13c38a474cde201bb09a4617267545b/fonts/Geist/ttf).
+The license is from the same revision, with trailing whitespace removed.
+Copyright 2024 The Geist Project Authors.
 
-   This writes four `chat-*.png` images at 2× resolution. The README embeds
-   three and links to the receipt example. Embedded cards are displayed at
-   500px wide; they also fit narrower screens. Keep message text in the
-   linked chat guide for selection, search and assistive reading.
-3. A new tagline gets a new descriptive filename for both its source and
-   exported SVG. Update the README and asset links to that filename. A new
-   path avoids reusing a cached image URL; a query parameter alone did not
-   resolve the stale image reported during this review.
-
-4. Inspect exports at their native width and 343px wide. Check line lengths,
-   bubble padding and accented characters. Commit sources and rebuilt exports.
-
-Keep important facts in Markdown as well as images, and give each image
-meaningful alt text. Outlined lettering is not selectable text. Text versions
-of the examples remain in the README and [chat examples](CHAT-EXAMPLES.md).
-
-### Font provenance
-
-The unchanged Geist Regular and Medium TTF files come from
-[vercel/geist-font at commit 10dc765](https://github.com/vercel/geist-font/tree/10dc7658f13c38a474cde201bb09a4617267545b/fonts/Geist/ttf).
-The included license comes from the same revision; only trailing whitespace
-was removed. Copyright 2024 The Geist Project Authors.
-
-| File | SHA-256 |
-|---|---|
+| Font | SHA-256 |
+|:--|:--|
 | `Geist-Regular.ttf` | `85a1c6b18a6b0a06dfe9fd4f6d6a5d4979f74ec861eaef4bc7868b5492b8a117` |
 | `Geist-Medium.ttf` | `3a3b36f0d0b981f4857f7f00eeef4a5ee123605575d362ab31ee7c19e3d11f2f` |
-
-## Voice
-
-- Describe the assistant as customizable and evolving; groceries, Doctor and
-  personal records are current examples, not the whole scope.
-- Connect its purpose to attention, easy capture and less tool switching.
-- Use recognizable tasks to show what happens next.
-- Use first person for the motivation and choices behind the project.
-- Name OpenClaw's contribution alongside the custom work.
-- Keep the current stage visible: grocery in use, Doctor in early testing,
-  personal records owner-only, and completed personal workflows distinguished
-  from exported implementation and independent validation.
-- Distinguish illustrated conversations, observed use and measured results.
-- Preserve Portuguese and English naturally in examples. Keep navigation
-  and explanations in English so new readers can follow the story.
-
-Avoid invented testimonials, adoption counts, availability claims, or calls
-to sign up for a service that does not exist.

@@ -25,8 +25,9 @@ is not needed for those suites.
 
 For documentation and graphics, check local links and the rendered result.
 Edit SVG text and layouts in [assets/brand/source](assets/brand/source), then
-rebuild the portable exports. Font licensing, build instructions and design
-conventions are in [visual identity](docs/VISUAL-IDENTITY.md).
+rebuild the SVG and PNG exports. Update their alt text and transcript links.
+Keep only current assets; the [presentation decisions](docs/VISUAL-IDENTITY.md)
+cover design choices, licensing and rebuild commands.
 
 ## Keep examples safe to share
 
