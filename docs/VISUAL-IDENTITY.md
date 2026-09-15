@@ -31,7 +31,10 @@ These references informed the hierarchy. Their artwork is not included here.
 | Asset | Use |
 |---|---|
 | [Conversation mark](../assets/brand/shadowos-mark.svg) | A conversation shape with an offset shape behind it; use with the ShadowOS name |
-| [README banner](../assets/brand/readme-banner.svg) | Wordmark and the personal assistant’s purpose |
+| [README banner](../assets/brand/readme-header-less-to-juggle.svg) | Wordmark and the personal assistant’s purpose |
+| [Grocery chat PNG](../assets/brand/chat-groceries.png) | README conversation: video input, a purchase and a correction |
+| [Doctor chat PNG](../assets/brand/chat-doctor.png) | README conversation: preferences and confirmation |
+| [Personal-records chat PNG](../assets/brand/chat-records.png) | README conversation: paid receipt and follow-up evidence |
 | [Grocery workflow](../assets/brand/workflow.svg) | Explain how media, instructions and list state fit together |
 | [Grocery conversation](../assets/brand/conversation-grocery.svg) | A Portuguese voice update and shared-list change |
 | [Doctor conversation](../assets/brand/conversation-doctor.svg) | Search preferences and confirmation, labeled early testing |
@@ -39,7 +42,8 @@ These references informed the hierarchy. Their artwork is not included here.
 
 The exported SVGs contain vector outlines, with no font downloads, external
 images, scripts or tracking. Each retains a title and description. Editable
-text lives in [source](../assets/brand/source). The artwork and build script
+text lives in [source](../assets/brand/source). The PNG cards are rendered from outlined SVGs at twice their native size.
+They depict illustrative chats, not screenshots of a live app. The artwork and build scripts
 use the repository's MIT license; bundled Geist fonts use the
 [SIL Open Font License 1.1](../assets/brand/fonts/OFL.txt).
 
@@ -62,7 +66,9 @@ to paths so viewers see the intended typography regardless of installed fonts.
 GitHub controls the font and theme of the surrounding Markdown.
 
 The header is 1200 × 320, with a 72px wordmark and 38px description.
-Conversation cards use 28px dialogue on a 720px canvas. Keep shapes flat and
+README chat cards use 30px dialogue on a 720px canvas, alternating bubble
+alignment and a dark green user surface. The longer reference illustrations
+use 28px dialogue. Keep shapes flat and
 spacing generous. The opaque background stays dark on either GitHub theme;
 rounded outer corners remain transparent. The symbol represents conversation,
 not a security guarantee or an operating system.
@@ -80,16 +86,24 @@ not a security guarantee or an operating system.
    /tmp/shadowos-brand-venv/bin/python assets/brand/build.py
    ```
 
-   The build reads the bundled fonts and writes the six SVG exports in
+   The build reads the bundled fonts and writes the nine SVG exports in
    `assets/brand/`. Its JSON output lists text positions and measured widths.
    These are optional graphics dependencies, separate from the runtime tools.
-3. When the banner changes, update the `v` query in the README image URL to
-   the first 12 characters of the exported SVG’s SHA-256 hash. This gives the
-   revised banner a distinct URL for image caches:
+
+   For the three README PNG cards, render the outlined SVGs with the system
+   librsvg, Cairo and GObject shared libraries:
 
    ```bash
-   sha256sum assets/brand/readme-banner.svg
+   python3 assets/brand/render_png.py
    ```
+
+   This writes `chat-*.png` at 2× resolution. The README displays them at
+   500px wide; they also fit narrower screens. Keep message text in the
+   linked chat guide for selection, search and assistive reading.
+3. A new tagline gets a new descriptive filename for both its source and
+   exported SVG. Update the README and asset links to that filename. A new
+   path avoids reusing a cached image URL; a query parameter alone did not
+   resolve the stale image reported during this review.
 
 4. Inspect exports at their native width and 343px wide. Check line lengths,
    bubble padding and accented characters. Commit sources and rebuilt exports.

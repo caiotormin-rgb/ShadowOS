@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="873" viewBox="0 0 720 873" role="img" aria-labelledby="title desc">
+<title id="title">Personal records — illustrated chat</title>
+<desc id="desc">You: How much did I pay for the last HVAC repair? Shadow: Latest matching receipt: $480. June 12, 2026 · marked paid. Source: “Example HVAC — repair receipt.” You: Does that include the follow-up reminder? Shadow: The reminder is for the same repair, not another payment. The receipt shows $480.</desc>
+<rect width="720" height="873" rx="24" fill="#141D24"/>
+<rect x="0.5" y="0.5" width="719" height="872" rx="23.5" fill="none" stroke="#31404A"/>
+<g font-family="Geist" font-weight="400">
+<circle cx="66" cy="61" r="26" fill="#263D39"/>
+<text x="56" y="71" font-size="29" font-weight="500" fill="#B8D9CC">S</text>
+<text x="108" y="57" font-size="34" font-weight="500" fill="#E7ECEF">Shadow</text>
+<text x="108" y="90" font-size="22" font-weight="400" fill="#AAB8C2">Personal records · Owner only</text>
+<path d="M32 118H688" stroke="#2B3842"/>
+<rect x="317.18" y="142" width="362.82" height="123" rx="20" fill="#263D39"/>
+<path d="M663 245 L688 265 L662 261Z" fill="#263D39"/>
+<text x="341.18" y="170" font-size="20" font-weight="400" fill="#B0C5BE">You</text>
+<text x="341.18" y="207" font-size="30" font-weight="400" fill="#E7ECEF">How much did I pay for</text>
+<text x="341.18" y="246" font-size="30" font-weight="400" fill="#E7ECEF">the last HVAC repair?</text>
+<rect x="40.00" y="283" width="471.03" height="201" rx="20" fill="#222D36"/>
+<path d="M57 464 L32 484 L58 480Z" fill="#222D36"/>
+<text x="64" y="311" font-size="20" font-weight="400" fill="#B8D9CC">Shadow</text>
+<text x="64" y="348" font-size="30" font-weight="400" fill="#E7ECEF">Latest matching receipt: $480.</text>
+<text x="64" y="387" font-size="30" font-weight="400" fill="#E7ECEF">June 12, 2026 · marked paid.</text>
+<text x="64" y="426" font-size="30" font-weight="400" fill="#E7ECEF">Source: “Example HVAC —</text>
+<text x="64" y="465" font-size="30" font-weight="400" fill="#E7ECEF">repair receipt.”</text>
+<rect x="300.71" y="502" width="379.29" height="123" rx="20" fill="#263D39"/>
+<path d="M663 605 L688 625 L662 621Z" fill="#263D39"/>
+<text x="324.71" y="530" font-size="20" font-weight="400" fill="#B0C5BE">You</text>
+<text x="324.71" y="567" font-size="30" font-weight="400" fill="#E7ECEF">Does that include</text>
+<text x="324.71" y="606" font-size="30" font-weight="400" fill="#E7ECEF">the follow-up reminder?</text>
+<rect x="40.00" y="643" width="439.41" height="162" rx="20" fill="#222D36"/>
+<path d="M57 785 L32 805 L58 801Z" fill="#222D36"/>
+<text x="64" y="671" font-size="20" font-weight="400" fill="#B8D9CC">Shadow</text>
+<text x="64" y="708" font-size="30" font-weight="400" fill="#E7ECEF">The reminder is for the same</text>
+<text x="64" y="747" font-size="30" font-weight="400" fill="#E7ECEF">repair, not another payment.</text>
+<text x="64" y="786" font-size="30" font-weight="400" fill="#E7ECEF">The receipt shows $480.</text>
+<text x="40" y="848" font-size="21" font-weight="400" fill="#9EADB8">Illustrative conversation · fictional details</text>
+</g>
+</svg>

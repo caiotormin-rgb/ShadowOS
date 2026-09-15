@@ -22,9 +22,10 @@ sequence reconstructs a completed workflow reported by the owner.
 
 ## Three illustrated conversations
 
-[Groceries](../assets/brand/conversation-grocery.svg) ·
-[Doctor](../assets/brand/conversation-doctor.svg) ·
-[Personal records & support](../assets/brand/conversation-life-index.svg)
+[Groceries PNG](../assets/brand/chat-groceries.png) ·
+[Doctor PNG](../assets/brand/chat-doctor.png) ·
+[Personal records PNG](../assets/brand/chat-records.png) ·
+[Longer support illustration](../assets/brand/conversation-life-index.svg)
 
 ## Groceries: a video becomes a shared list
 

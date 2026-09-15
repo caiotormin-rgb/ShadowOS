@@ -1,4 +1,4 @@
-![ShadowOS — Less to juggle. More room to think and get things done.](assets/brand/readme-banner.svg?v=b9477dd08188)
+![ShadowOS — Less to juggle. More room to think and get things done.](assets/brand/readme-header-less-to-juggle.svg)
 
 # ShadowOS
 
@@ -30,43 +30,26 @@ maintaining another app or reconstructing the context each time.
 
 ### Groceries
 
-| Speaker | Fridge video + voice |
-|:--|:--|
-| **You** | Coloca esse iogurte, o leite e os ovos no Costco.<br>Se não tiver esse iogurte, pode ser o natural. |
-| **Shadow** | Adicionei os três.<br>Anotei iogurte natural como alternativa. |
-| **You** | Peguei o leite. |
-| **Shadow** | Leite comprado. Faltam o iogurte e os ovos. |
-| **You** | Na verdade, ainda não peguei. |
-| **Shadow** | Coloquei o leite de volta na lista. |
+<img src="assets/brand/chat-groceries.png" width="500" alt="Illustrative Portuguese grocery chat: add three items from a fridge video, mark milk bought, then undo that update." />
 
 **In use:** shared lists with three invited people.<br>
-[Full conversation](docs/CHAT-EXAMPLES.md#groceries-a-video-becomes-a-shared-list) · [Illustration](assets/brand/conversation-grocery.svg)
+[Full conversation](docs/CHAT-EXAMPLES.md#groceries-a-video-becomes-a-shared-list)
 
 ### Doctor
 
-| Speaker | Preferences → confirmation |
-|:--|:--|
-| **You** | Find a dermatologist within 10 miles of 10001.<br>Weekday mornings. My plan is ExamplePlan. |
-| **Shadow** | Dermatology, 10 miles, weekday mornings, ExamplePlan.<br>Shall I search? |
-| **You** | Yes, search. |
-| **Shadow** | I’ll send the options when they’re ready. |
+<img src="assets/brand/chat-doctor.png" width="500" alt="Illustrative Doctor chat: give specialty, location, plan and availability; confirm the summary before the search starts. Early testing." />
 
 **Early testing:** the person confirms the search and approves outreach; no appointment booking.<br>
-[Full conversation](docs/CHAT-EXAMPLES.md#doctor-intake-without-repeating-what-was-already-said) · [Illustration](assets/brand/conversation-doctor.svg)
+[Full conversation](docs/CHAT-EXAMPLES.md#doctor-intake-without-repeating-what-was-already-said)
 
 ### Personal records
 
-| Speaker | Question → source |
-|:--|:--|
-| **You** | How much did I pay for the last HVAC repair? |
-| **Shadow** | The latest matching receipt I found is **$480**, dated June 12, 2026. It's marked paid.<br>Source: “Example HVAC — repair receipt.” |
-| **You** | Does that include the follow-up reminder? |
-| **Shadow** | The reminder is for the same repair, not another payment. The receipt shows $480. |
+<img src="assets/brand/chat-records.png" width="500" alt="Illustrative personal-records chat: find a paid HVAC receipt for $480, then establish that the reminder is not another payment." />
 
 My personal agent also handled a defective-product support request from a
 photo: found the purchase and support contact, extracted the serial number,
 sent the details and followed up when support replied.
-[Full conversation & tool boundaries](docs/CHAT-EXAMPLES.md#personal-records-find-the-source-behind-the-answer) · [Illustration](assets/brand/conversation-life-index.svg)
+[Full conversation & tool boundaries](docs/CHAT-EXAMPLES.md#personal-records-find-the-source-behind-the-answer) · [Support illustration](assets/brand/conversation-life-index.svg)
 
 **More exchanges:** [Screenshots](docs/CHAT-EXAMPLES.md#groceries-bring-in-a-note-or-another-conversation) · [What’s missing?](docs/CHAT-EXAMPLES.md#groceries-whats-missing-with-purchase-history) · [Private lists](docs/CHAT-EXAMPLES.md#groceries-keep-a-personal-list-separate) · [Recipes](docs/CHAT-EXAMPLES.md#recipes-personal-telegram-and-invited-whatsapp) · [Doctor replies](docs/CHAT-EXAMPLES.md#doctor-a-reply-is-not-a-booking)
 

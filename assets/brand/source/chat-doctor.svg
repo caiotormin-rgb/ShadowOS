@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="795" viewBox="0 0 720 795" role="img" aria-labelledby="title desc">
+<title id="title">Doctor — illustrated chat</title>
+<desc id="desc">You: Find a dermatologist within 10 miles of 10001. Weekday mornings. My plan is ExamplePlan. Shadow: Dermatology, 10 miles, weekday mornings, ExamplePlan. Shall I search? You: Yes, search. Shadow: I’ll send the options when they’re ready.</desc>
+<rect width="720" height="795" rx="24" fill="#141D24"/>
+<rect x="0.5" y="0.5" width="719" height="794" rx="23.5" fill="none" stroke="#31404A"/>
+<g font-family="Geist" font-weight="400">
+<circle cx="66" cy="61" r="26" fill="#263D39"/>
+<text x="56" y="71" font-size="29" font-weight="500" fill="#B8D9CC">S</text>
+<text x="108" y="57" font-size="34" font-weight="500" fill="#E7ECEF">Shadow</text>
+<text x="108" y="90" font-size="22" font-weight="400" fill="#AAB8C2">Doctor · Early testing</text>
+<path d="M32 118H688" stroke="#2B3842"/>
+<rect x="158.75" y="142" width="521.25" height="162" rx="20" fill="#263D39"/>
+<path d="M663 284 L688 304 L662 300Z" fill="#263D39"/>
+<text x="182.75" y="170" font-size="20" font-weight="400" fill="#B0C5BE">You</text>
+<text x="182.75" y="207" font-size="30" font-weight="400" fill="#E7ECEF">Find a dermatologist within</text>
+<text x="182.75" y="246" font-size="30" font-weight="400" fill="#E7ECEF">10 miles of 10001. Weekday</text>
+<text x="182.75" y="285" font-size="30" font-weight="400" fill="#E7ECEF">mornings. My plan is ExamplePlan.</text>
+<rect x="40.00" y="322" width="482.85" height="162" rx="20" fill="#222D36"/>
+<path d="M57 464 L32 484 L58 480Z" fill="#222D36"/>
+<text x="64" y="350" font-size="20" font-weight="400" fill="#B8D9CC">Shadow</text>
+<text x="64" y="387" font-size="30" font-weight="400" fill="#E7ECEF">Dermatology, 10 miles, weekday</text>
+<text x="64" y="426" font-size="30" font-weight="400" fill="#E7ECEF">mornings, ExamplePlan.</text>
+<text x="64" y="465" font-size="30" font-weight="400" fill="#E7ECEF">Shall I search?</text>
+<rect x="435.00" y="502" width="245.00" height="84" rx="20" fill="#263D39"/>
+<path d="M663 566 L688 586 L662 582Z" fill="#263D39"/>
+<text x="459" y="530" font-size="20" font-weight="400" fill="#B0C5BE">You</text>
+<text x="459" y="567" font-size="30" font-weight="400" fill="#E7ECEF">Yes, search.</text>
+<rect x="40.00" y="604" width="314.04" height="123" rx="20" fill="#222D36"/>
+<path d="M57 707 L32 727 L58 723Z" fill="#222D36"/>
+<text x="64" y="632" font-size="20" font-weight="400" fill="#B8D9CC">Shadow</text>
+<text x="64" y="669" font-size="30" font-weight="400" fill="#E7ECEF">I’ll send the options</text>
+<text x="64" y="708" font-size="30" font-weight="400" fill="#E7ECEF">when they’re ready.</text>
+<text x="40" y="770" font-size="21" font-weight="400" fill="#9EADB8">Illustrative conversation · fictional details</text>
+</g>
+</svg>
