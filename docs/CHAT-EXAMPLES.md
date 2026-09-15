@@ -18,7 +18,7 @@ sequence reconstructs a completed workflow reported by the owner.
 | [Ambiguous items](#groceries-finish-the-clear-part-clarify-the-rest) · [Purchase history](#groceries-whats-missing-with-purchase-history) | Resolve the missing detail and carry the answer into the next turn |
 | [Private lists](#groceries-keep-a-personal-list-separate) · [Recipe links](#recipes-personal-telegram-and-invited-whatsapp) | Keep scope, access and exceptions clear |
 | [Doctor intake](#doctor-intake-without-repeating-what-was-already-said) · [Options](#doctor-compare-options-and-choose-who-to-contact) · [Approval](#doctor-review-the-full-email-then-approve) · [Replies](#doctor-a-reply-is-not-a-booking) | Move from preferences to outreach with the person in control |
-| [Landscaper](#when-did-i-change-landscapers) · [HVAC](#what-did-the-last-hvac-repair-cost) · [Missing evidence](#when-the-record-doesnt-prove-payment) · [Product support](#an-april-purchase-a-defect-photo-and-a-support-email) | Find the source, explain what it supports and follow up |
+| [Landscaper](#when-did-i-change-landscapers) · [HVAC](#what-did-the-last-hvac-repair-cost) · [Missing evidence](#when-the-record-doesnt-prove-payment) · [Product support](#an-april-purchase-a-defect-photo-and-a-support-email) · [Emails & forms](#from-records-to-emails-and-forms) | Find the source, explain what it supports and follow up |
 
 ## Three illustrated conversations
 
@@ -362,6 +362,17 @@ email connector, attachment handling, approval mechanism or reply-monitoring
 implementation used by the personal agent. It shows the user-facing
 sequence without inventing those implementation details.
 
+### From records to emails and forms
+
+The owner confirms that personal Shadow has **sent emails and filled out
+forms on their behalf using life-index MCP**. Retrieved information becomes
+context for the personal agent’s action tools. This extends the use case
+from answering a question to completing work with the information found.
+
+This capability is reported from personal use. The specific form, fields,
+interface and submission behavior were not supplied; no form transcript or
+submission sequence is reconstructed here.
+
 ### What the read-only commands contribute
 
 These are illustrative calls to the exported tools, not executed lookups of
@@ -384,8 +395,9 @@ metadata and permitted fields may not be enough to answer every question.
 The [ledger server](../layers/openclaw/ledger/mcp.py) and
 [mail-context server](../layers/openclaw/mail-context/mailctx/mcp.py) are also
 read-only. Their tools do not send emails, attach photos, or authorize actions.
-The completed support workflow used the owner's broader personal OpenClaw
-environment, which includes capabilities beyond these retrieval services.
+The completed email and form-filling workflows used the owner's broader
+personal OpenClaw environment, with life-index MCP supplying context and
+other configured tools performing the actions.
 Its full implementation is not exported here. The Doctor `/ok` command
 belongs to Doctor outreach; this account does not imply it governed the
 personal support inquiry.

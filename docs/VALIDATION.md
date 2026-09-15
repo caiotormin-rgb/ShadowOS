@@ -124,3 +124,11 @@ The README now embeds three PNG chat cards rendered from editable SVG sources.
 Their 6/4/4 turns match the shortened grocery, Doctor and personal-record
 exchanges, with full text retained in the chat guide. The cards were inspected
 at 343px width. This is presentation verification, not a replay of the chats.
+
+### Owner-reported email and form workflows
+
+The owner confirms that personal Shadow has sent emails and filled out forms
+on their behalf using life-index MCP for context. This is reported personal
+use, not a newly executed integration test. The exported life-index service
+remains read-only; action tools belong to the broader personal agent. No
+specific form interface, approval flow or submission behavior was provided.

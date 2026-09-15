@@ -9,18 +9,19 @@ assumptions. It is not a fresh audit of the live gateway.
 
 | Surface | Read/write boundary |
 |---|---|
-| Personal Shadow on Telegram | Broader configured owner tools, including Firecrawl, grocery functionality and owner-reported support-email workflows; permissions depend on the selected tool |
+| Personal Shadow on Telegram | Broader configured owner tools, including Firecrawl, grocery functionality and owner-reported email and form-filling workflows; permissions depend on the selected tool |
 | Invited-user Shadow on WhatsApp | Grocery and Doctor tools only; broader OpenClaw capabilities deliberately withheld |
 | Mail, ledger and document MCP services | Read-only queries for the owner |
 | Household grocery tools | Conversational adds and purchase updates; typed confirmation for removal |
 | Doctor outreach (early testing) | Draft preview and requester `/ok CODE` before sending |
 | Calendar ICS guardrail | Scheduled event creation and updates, without per-event confirmation; no attendees copied or update notifications requested |
 
-The owner reports that personal Shadow completed a product-support inquiry
-and followed up when a reply arrived. That establishes a personal-agent
-email workflow, not a sending capability in the context services below.
-The specific connector and its approval/attachment policy were not supplied
-for this review; the Doctor approval contract should not be inferred for it.
+The owner reports that personal Shadow has sent emails and filled out forms
+on their behalf using life-index MCP for context, including a product-support
+inquiry with follow-up on the reply. Life-index remains a read-only context
+service; action permissions belong to the personal agent’s other tools.
+Specific connectors, approval policies and form-submission behavior were not
+supplied for this review. The Doctor approval contract applies to Doctor outreach.
 
 ## 1. Context services have no account-write path
 

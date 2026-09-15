@@ -65,6 +65,13 @@ appointment information. These uses extend beyond the custom code exported
 here. A complete plugin inventory and the implementations of all calendar
 capture paths are not included in this repository.
 
+The owner confirms that personal Shadow has sent emails and filled out forms
+on their behalf using life-index MCP for context. Life-index supplies record
+retrieval; the configured personal agent combines that context with its
+action tools. The form interface, connector and submission behavior were
+not specified, so this account establishes form filling without claiming a
+particular implementation or automatic submission.
+
 The owner also reports a completed purchase-support workflow: retrieve the
 purchase details, find customer support, describe a defect from the supplied
 photo, extract identifiers such as the serial number, send the inquiry and

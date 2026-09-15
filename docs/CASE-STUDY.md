@@ -131,6 +131,11 @@ capture. It can combine retrieved web content with the same grocery
 functionality available to invited users. Calendar tools turn information from email, WhatsApp
 conversations and medical appointments into calendar events.
 
+My personal agent has also sent emails and filled out forms on my behalf,
+using life-index MCP to retrieve the information it needs. This is part of
+my actual use: the records help the agent carry a task forward, so I do not
+have to find and re-enter every detail myself.
+
 One completed personal workflow brought several capabilities together:
 I sent a photo of a defective purchase, and Shadow found the purchase details,
 identified customer support, described the problem from the photo, extracted

@@ -46,9 +46,10 @@ maintaining another app or reconstructing the context each time.
 
 <img src="assets/brand/chat-records.png" width="500" alt="Illustrative personal-records chat: find a paid HVAC receipt for $480, then establish that the reminder is not another payment." />
 
-My personal agent also handled a defective-product support request from a
-photo: found the purchase and support contact, extracted the serial number,
-sent the details and followed up when support replied.
+**From context to action:** my personal agent has sent emails and filled out
+forms on my behalf using information from **life-index MCP**. For a defective
+purchase, it found the order and support contact, extracted the serial number,
+explained my photo, sent the inquiry and followed up on the reply.
 [Full conversation & tool boundaries](docs/CHAT-EXAMPLES.md#personal-records-find-the-source-behind-the-answer) · [Support illustration](assets/brand/conversation-life-index.svg)
 
 **More exchanges:** [Screenshots](docs/CHAT-EXAMPLES.md#groceries-bring-in-a-note-or-another-conversation) · [What’s missing?](docs/CHAT-EXAMPLES.md#groceries-whats-missing-with-purchase-history) · [Private lists](docs/CHAT-EXAMPLES.md#groceries-keep-a-personal-list-separate) · [Recipes](docs/CHAT-EXAMPLES.md#recipes-personal-telegram-and-invited-whatsapp) · [Doctor replies](docs/CHAT-EXAMPLES.md#doctor-a-reply-is-not-a-booking)
@@ -63,10 +64,10 @@ and access checks.
 
 | Agent | Available tools |
 |:--|:--|
-| **Personal · Telegram** | Broader configured OpenClaw tools, including Firecrawl research and calendar capture |
+| **Personal · Telegram** | Broader configured OpenClaw tools, including Firecrawl research, calendar capture, email and form filling |
 | **Invited · WhatsApp** | Grocery and Doctor only; Doctor remains in early testing |
 
-Personal record services remain read-only; the support workflow uses the broader personal agent.
+Life-index supplies read-only context; the personal agent uses its other tools to act on that information.
 
 ### Stack & workstation
 
