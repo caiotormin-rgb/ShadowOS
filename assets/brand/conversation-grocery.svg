@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="849" viewBox="0 0 720 849" role="img" aria-labelledby="title desc">
+  <title id="title">Groceries — an illustrated shared-list conversation</title>
+  <desc id="desc">Fictional Portuguese voice conversation. The user adds milk and eggs to Costco. Shadow adds them. The user says they got the milk. Shadow marks milk bought and says eggs remain. Shared grocery workflow in use.</desc>
+  <rect width="720" height="849" rx="22" fill="#181F25"/>
+  <rect x="0.5" y="0.5" width="719" height="848" rx="21.5" fill="none" stroke="#35414B"/>
+  <g font-family="Inter, 'Segoe UI', Arial, sans-serif" font-weight="400">
+    <text x="40" y="62" font-size="34" font-weight="500" fill="#E7ECEF">Groceries</text>
+    <text x="680" y="60" text-anchor="end" font-size="24" fill="#A6CDBE">In use</text>
+    <text x="40" y="105" font-size="26" font-weight="400" fill="#AAB6BF">Fictional conversation · shared list</text>
+    <path d="M40 134H680" stroke="#35414B"/>
+    <rect x="104" y="166" width="576" height="145" rx="18" fill="#253331" stroke="#35414B"/>
+    <text x="128" y="199" font-size="22" font-weight="400" fill="#AAB6BF">You · voice note</text>
+    <text x="128" y="244" font-size="28" font-weight="400" fill="#E7ECEF">Coloca leite e ovos</text>
+    <text x="128" y="284" font-size="28" font-weight="400" fill="#E7ECEF">no Costco.</text>
+    <rect x="40" y="335" width="576" height="105" rx="18" fill="#222A31" stroke="#35414B"/>
+    <text x="64" y="368" font-size="22" font-weight="400" fill="#A6CDBE">Shadow</text>
+    <text x="64" y="413" font-size="28" font-weight="400" fill="#E7ECEF">Adicionei leite e ovos.</text>
+    <rect x="104" y="464" width="576" height="105" rx="18" fill="#253331" stroke="#35414B"/>
+    <text x="128" y="497" font-size="22" font-weight="400" fill="#AAB6BF">You · voice note</text>
+    <text x="128" y="542" font-size="28" font-weight="400" fill="#E7ECEF">Peguei o leite.</text>
+    <rect x="40" y="593" width="576" height="145" rx="18" fill="#222A31" stroke="#35414B"/>
+    <text x="64" y="626" font-size="22" font-weight="400" fill="#A6CDBE">Shadow</text>
+    <text x="64" y="671" font-size="28" font-weight="400" fill="#E7ECEF">Leite comprado.</text>
+    <text x="64" y="711" font-size="28" font-weight="400" fill="#E7ECEF">Faltam os ovos.</text>
+    <path d="M40 766H680" stroke="#35414B"/>
+    <text x="40" y="812" font-size="26" font-weight="400" fill="#AAB6BF">Illustrated · shared grocery access</text>
+  </g>
+</svg>

@@ -94,8 +94,13 @@ establish that a live model always follows those instructions.
 
 ### Visual presentation
 
-The README banner and grocery workflow SVG are authored illustrations.
-The banner abbreviates the milk item to “Leite”; the conversation keeps
-“Leite sem lactose.” The workflow shows the same yogurt-fallback behavior
-as a note, with media interpretation illustrated. These graphics add no
-new claim of measured recognition accuracy or live end-to-end validation.
+The banner, grocery workflow and three conversation SVGs are authored
+illustrations. Grocery and Doctor cards follow the documented workflows;
+Doctor remains in early testing. Personal-record dates, amounts, businesses
+and source titles are fictional. The support-email segment is a proposed
+composed workflow, not an implemented life-index send capability.
+
+The earlier grocery example validates interpreted list operations. The new
+personal-record dialogues and tool-call examples were checked against tool
+schemas and access boundaries, but were not run against a personal catalog.
+No photo recognition, support drafting or email delivery was exercised.

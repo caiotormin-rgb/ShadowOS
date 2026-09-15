@@ -1,4 +1,4 @@
-![ShadowOS — a little less life admin. An illustrated voice update, “Peguei o leite” (“I got the milk”), marks milk as bought on a shared grocery list.](assets/brand/readme-banner.svg)
+![ShadowOS — a little less life admin. Dark-theme identity for a personal project in conversational household tools.](assets/brand/readme-banner.svg)
 
 # ShadowOS
 
@@ -28,6 +28,15 @@ there is no public signup or general installation package yet.
 | **Find a document or transaction** | Query indexed mail, a document catalog and ledger records grouped by counterparty | Personal use; incomplete extraction coverage |
 
 ## A conversation across formats
+
+**01 · Groceries · in use**
+
+<details>
+<summary>View the illustrated grocery conversation</summary>
+
+<img src="assets/brand/conversation-grocery.svg" width="600" alt="Fictional Portuguese grocery chat: add milk and eggs to Costco, then mark milk as bought. Eggs remain on the shared list." />
+
+</details>
 
 A short fridge video shows strawberry yogurt, lactose-free milk and eggs.
 The member gives the instruction while filming:
@@ -59,6 +68,15 @@ interpretation are illustrated. [Validation details](docs/VALIDATION.md#portfoli
 
 ## A doctor search, with the person in control
 
+**02 · Doctor · early testing**
+
+<details>
+<summary>View the illustrated Doctor conversation</summary>
+
+<img src="assets/brand/conversation-doctor.svg" width="600" alt="Fictional Doctor chat: a person asks for a dermatologist, supplies radius, plan and availability, then confirms the search summary before the search begins." />
+
+</details>
+
 > **Member:** Find a dermatologist for me near 10001, within 10 miles.
 > Weekday mornings work. My plan is ExamplePlan.
 >
@@ -74,10 +92,50 @@ The person chooses a practice, verifies their email and reviews the full
 outreach draft. Only their direct `/ok CODE` authorizes sending it.
 Appointment booking stays with the person.
 
+## Personal records, with the source at hand
+
+**03 · Life-index, mail and ledger · personal access only**
+
+<details>
+<summary>View the illustrated personal-records conversation</summary>
+
+<img src="assets/brand/conversation-life-index.svg" width="600" alt="Fictional personal-records chat: find the landscaper's start date and a paid HVAC receipt. A separately labeled proposed support workflow combines an April purchase record and defect photo into an email for review." />
+
+</details>
+
+> **Owner:** When did I change to my current landscaper again?
+>
+> **Shadow:** March 2025. The welcome email says service started on
+> March 10. I found it under “Service welcome — Example Lawn.”
+>
+> **Owner:** How much did I pay for HVAC repair last time?
+>
+> **Shadow:** The latest matching receipt I found is **$480**, dated
+> **June 12, 2026**, and marked paid. Source: “Example HVAC — repair receipt.”
+
+*Dates, amounts, businesses and source titles above are fictional.* The point
+is to retrieve an answer with supporting evidence. An invoice alone does not
+establish payment, and the latest indexed match may not be the latest event.
+
+A related illustration shows how purchase support could work:
+
+> **Owner · photo of a cracked fan housing:** Email technical support about
+> this defect. It's the fan I bought in April.
+>
+> **Shadow · proposed workflow:** I found the April order and receipt.
+> I'll use those details and this photo to prepare the support email,
+> then show you the recipient, message and attachments for review.
+
+**The support sequence is a proposed composed workflow.** Life-index can
+retrieve documents; it does not send email or inspect defect photos by
+itself. Completing this flow needs the personal agent's media handling and a
+separately authorized email tool. [Example commands and boundaries](docs/CHAT-EXAMPLES.md#personal-records-find-the-source-behind-the-answer).
+
 **[More conversations in Portuguese and English →](docs/CHAT-EXAMPLES.md)**
 
 Shared shopping, ambiguous voice updates, purchase history, recipe links
-and the full Doctor approval flow.
+the full Doctor approval flow, personal-record lookups and a proposed
+photo-to-support-email workflow.
 
 ## Why I built it
 

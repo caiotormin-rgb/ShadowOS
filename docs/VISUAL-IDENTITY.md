@@ -11,28 +11,37 @@ The project is still developing; presentation should reflect its actual stage.
 | Asset | Use |
 |---|---|
 | [Conversation mark](../assets/brand/shadowos-mark.svg) | A simple conversation shape with an offset shape behind it; use with the ShadowOS name |
-| [README banner](../assets/brand/readme-banner.svg) | Name, a modest promise and one illustrated grocery update |
+| [README banner](../assets/brand/readme-banner.svg) | A quiet introduction to groceries, Doctor and personal records |
 | [Grocery workflow](../assets/brand/workflow.svg) | Explain how media, instructions and list state fit together |
+| [Grocery conversation](../assets/brand/conversation-grocery.svg) | A Portuguese voice update and shared-list change |
+| [Doctor conversation](../assets/brand/conversation-doctor.svg) | Search preferences and confirmation, labeled early testing |
+| [Personal-record conversation](../assets/brand/conversation-life-index.svg) | Source-backed retrieval and a separately labeled proposed support flow |
 
 All assets are editable SVGs under the repository's MIT license. They contain
 no external fonts, images, scripts or tracking. Each has a title and text
-alternative. The opaque paper surface works against light and dark page
-backgrounds; rounded outer corners remain transparent.
+alternative. The opaque graphite surface keeps the assets dark on either GitHub page
+theme; rounded outer corners remain transparent. GitHub controls the font
+and theme of the surrounding Markdown.
 
 ## Palette and type
 
 | Role | Color |
 |---|---|
-| Paper | `#F7F6F2` |
-| Primary ink | `#172D3A` |
-| Secondary ink | `#51636A` |
-| Completed action | `#246D5D` |
-| Pale teal | `#C9E5DD` |
-| Card | `#FFFFFF` |
-| Border | `#D7DFDA` |
+| Graphite background | `#181F25` |
+| Slate card | `#222A31` |
+| Primary text | `#E7ECEF` |
+| Secondary text | `#AAB6BF` |
+| Mint accent | `#A6CDBE` |
+| Muted mint surface | `#253831` |
+| Border | `#35414B` |
 
-Use Arial or Helvetica with a sans-serif fallback, regular and bold weights.
-Keep shapes flat, borders quiet, and whitespace generous. The symbol supports
+Use Inter, Segoe UI, Arial, then sans-serif as fallbacks. Assets do not fetch
+fonts: the renderer uses the first available family. Use regular 400 for
+body text and medium 500 for headings. Keep typography quiet, spacing open,
+and shapes flat; avoid oversized bold headlines and high-glow effects.
+
+Conversation cards are portrait layouts with 28px dialogue on a 720px canvas.
+Their smaller state labels are secondary to the exchange. The symbol supports
 the name; it does not stand for a security guarantee or an operating system.
 
 ## Voice
@@ -40,7 +49,8 @@ the name; it does not stand for a security guarantee or an operating system.
 - Lead with a recognizable task and show what happens next.
 - Use first person for the motivation and choices behind the project.
 - Name OpenClaw's contribution alongside the custom work.
-- Keep the current stage visible: grocery in use, Doctor in early testing.
+- Keep the current stage visible: grocery in use, Doctor in early testing,
+  personal records owner-only, and proposed support composition labeled separately.
 - Distinguish illustrated conversations, observed use and measured results.
 - Preserve Portuguese and English naturally in examples. Keep navigation
   and explanations in English so new readers can follow the story.
@@ -53,6 +63,6 @@ to sign up for a service that does not exist.
 
 Keep important facts in Markdown as well as in images. Give each image
 meaningful alt text. Check the rendered SVG at its intended desktop size
-and at 343 pixels wide; the narrower grocery illustration is designed to
+and at 343 pixels wide; the portrait conversation cards and grocery illustration are designed to
 remain readable on a small screen. For diagrams with different access
 boundaries, show those boundaries explicitly or explain them in nearby text.

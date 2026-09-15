@@ -13,6 +13,16 @@ walkthrough's list operations were checked locally; media understanding and
 conversational wording are illustrated. **Doctor is in early testing and has
 not fully launched.** See [validation and limits](VALIDATION.md#portfolio-example).
 
+## Three illustrated conversations
+
+Each card opens as an editable SVG. The first two show household workflows;
+personal-record queries belong to the owner's agent. The support-email
+portion of the third card is explicitly proposed.
+
+- [Groceries: a short voice update](../assets/brand/conversation-grocery.svg)
+- [Doctor: preferences and confirmation](../assets/brand/conversation-doctor.svg)
+- [Personal records: dates, receipts and proposed support preparation](../assets/brand/conversation-life-index.svg)
+
 ## Groceries: a video becomes a shared list
 
 A member films three products in the fridge: strawberry yogurt, lactose-free
@@ -242,6 +252,102 @@ member’s requested 10-mile radius.
 
 The radius changes at the member’s request. A stated availability preference
 still needs confirmation with the practice.
+
+## Personal records: find the source behind the answer
+
+These fictional exchanges use the owner's personal agent. Life-index,
+mail-context and the ledger offer complementary read-only queries; invited
+household users do not receive access to these records.
+
+### When did I change landscapers?
+
+> **Owner:** When did I change to my current landscaper again?
+>
+> **Shadow:** March 2025. The welcome email says service started on
+> March 10. Source: “Service welcome — Example Lawn.”
+>
+> **Owner:** Was that the first invoice date, or when they actually started?
+>
+> **Shadow:** March 10 is the service-start date stated in the welcome
+> email. The first invoice is dated March 31.
+
+The answer distinguishes an event date from a document date. If only an
+invoice were available, the response should say what that evidence supports.
+
+### What did the last HVAC repair cost?
+
+> **Owner:** How much did I pay for HVAC repair last time?
+>
+> **Shadow:** The latest matching receipt I found is $480 on June 12, 2026,
+> marked paid. Source: “Example HVAC — repair receipt.”
+>
+> **Owner:** Does that include the follow-up reminder?
+>
+> **Shadow:** I found the reminder for the same repair. It isn't another
+> payment; the receipt still shows $480.
+
+These dates, amounts and source documents are invented for the example.
+Grouping related records helps avoid counting an invoice and a reminder
+twice. A ledger total still needs the underlying evidence: an invoice,
+quote or extracted amount alone is not proof of payment.
+
+### An April purchase, a defect photo and a support email
+
+**Proposed composed workflow.** The example below expresses the intended
+experience; it does not claim the export implements a general support-email
+sender or an attachment workflow.
+
+> **Owner · photo of cracked fan housing:** Email technical support about
+> the defective fan I bought in April. Here's a picture of the defect.
+>
+> **Shadow:** I found the April 18 order for the Example Air desk fan.
+> I'll assemble the purchase details and this photo into a support email
+> for your review.
+>
+> **Shadow · proposed draft:**> **To:** support@example.com> **Subject:** Defective desk fan — order EXAMPLE-0418
+>
+> Hello,
+>
+> I purchased an Example Air desk fan on April 18, 2026. Its housing has
+> cracked; the attached photo shows the damage. Could you help with repair
+> or replacement options?
+>
+> Order: EXAMPLE-0418> Proposed attachments: purchase receipt and defect photo
+>
+> Thank you,> Sam
+>
+> **Shadow:** Please review the recipient, message and proposed attachments
+> before authorizing a send through the connected email tool.
+
+The product, order, recipient and attachment descriptions are fictional.
+An image can support a description of visible damage; it does not establish
+the cause or warranty coverage. The person reviews what will be disclosed.
+No email was sent and no real photo or receipt was processed for this example.
+
+### What the read-only commands contribute
+
+These are illustrative calls to the exported tools, not executed lookups of
+personal data. The surrounding agent resolves the request and chooses which
+records to inspect.
+
+| Task | Tool call | What it provides |
+|---|---|---|
+| Find the landscaper correspondence | `artifact_search({"query":"Example Lawn welcome"})` | Matching catalog entries, metadata and permitted excerpts |
+| Find the HVAC repair evidence | `artifact_search({"query":"Example HVAC repair"})` | Candidate records to inspect; the query does not itself prove payment |
+| Inspect a matching document | `artifact_get({"sha256":"<digest returned by search>"})` | Its metadata, extracted fields, file path and any text allowed by policy |
+| Retrieve amounts across documents | `artifact_fields({"key":"amount_usd","limit":25})` | Extracted values with document identifiers; each must be matched to the relevant record |
+| Inspect the known repair counterparty | `ledger_entity({"name":"Example HVAC","limit":10})` | Grouped events and evidence from the indexed ledger |
+| Find April purchase candidates | `ledger_search({"kind":"purchase","since":"2026-04-01","until":"2026-04-30"})` | Candidate purchases; confirm the date and product against the returned records |
+| Find the receipt in the catalog | `artifact_search({"query":"Example Air receipt"})` | Matching documents for the proposed support message |
+
+The [life-index server](../layers/openclaw/life-index/lifeindex/mcp.py) opens
+its store read-only. By default, tier 1 and 2 documents withhold their text;
+metadata and permitted fields may not be enough to answer every question.
+The [ledger server](../layers/openclaw/ledger/mcp.py) and
+[mail-context server](../layers/openclaw/mail-context/mailctx/mcp.py) are also
+read-only. Their tools do not send emails, attach photos, or authorize actions.
+The proposed support flow needs separate media and email capabilities on the
+owner's personal agent; the Doctor `/ok` command belongs to Doctor outreach.
 
 ## Design and implementation references
 
