@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="1208" viewBox="0 0 720 1208" role="img" aria-labelledby="title desc">
+<title id="title">Purchase support — illustrated chat</title>
+<desc id="desc">You · photo: Email support about this defect. It’s the fan I bought in April. Shadow: Found the April 18 order and customer support contact. Extracted the serial number, described the defect from your photo and sent the inquiry. You: Which order was that again? Shadow: Example Air desk fan. Order EXAMPLE-0418. Shadow · later: Support replied. They asked for proof of purchase to review repair or replacement options.</desc>
+<rect width="720" height="1208" rx="24" fill="#141D24"/>
+<rect x="0.5" y="0.5" width="719" height="1207" rx="23.5" fill="none" stroke="#31404A"/>
+<g font-family="Geist" font-weight="400">
+<circle cx="66" cy="61" r="26" fill="#263D39"/>
+<text x="56" y="71" font-size="29" font-weight="500" fill="#B8D9CC">S</text>
+<text x="108" y="57" font-size="34" font-weight="500" fill="#E7ECEF">Shadow</text>
+<text x="108" y="90" font-size="22" font-weight="400" fill="#AAB8C2">Purchase support · Personal use</text>
+<path d="M32 118H688" stroke="#2B3842"/>
+<rect x="195.80" y="142" width="484.20" height="317" rx="20" fill="#263D39"/>
+<path d="M663 439 L688 459 L662 455Z" fill="#263D39"/>
+<text x="219.8" y="170" font-size="20" font-weight="400" fill="#B0C5BE">You · photo</text>
+<g transform="translate(213.8 184)"><rect width="448.2" height="172" rx="12" fill="#B7C4C2"/>
+<path d="M0 137H448.2V172H0Z" fill="#8C9D9D"/><ellipse cx="224.1" cy="150" rx="69" ry="11" fill="#738888"/>
+<path d="M214.1 111V145H234.1V111" fill="#485D63"/><rect x="176.1" y="142" width="96" height="12" rx="6" fill="#40565D"/><circle cx="224.1" cy="66" r="54" fill="#50666B" stroke="#D4DDDA" stroke-width="6"/><circle cx="224.1" cy="66" r="43" fill="#819798" stroke="#B4C6C2" stroke-width="2"/>
+<path d="M188.1 38H260.1M196.1 30V102" stroke="#BCCBC6" stroke-width="1.6"/>
+<path d="M188.1 52H260.1M210.1 30V102" stroke="#BCCBC6" stroke-width="1.6"/>
+<path d="M188.1 66H260.1M224.1 30V102" stroke="#BCCBC6" stroke-width="1.6"/>
+<path d="M188.1 80H260.1M238.1 30V102" stroke="#BCCBC6" stroke-width="1.6"/>
+<path d="M188.1 94H260.1M252.1 30V102" stroke="#BCCBC6" stroke-width="1.6"/>
+<circle cx="224.1" cy="66" r="9" fill="#E1E7DC"/><path d="M264.1 26L257.1 46L273.1 54L263.1 75L271.1 86" fill="none" stroke="#382F2C" stroke-width="5" stroke-linejoin="round"/>
+</g>
+<text x="219.8" y="401" font-size="30" font-weight="400" fill="#E7ECEF">Email support about this defect.</text>
+<text x="219.8" y="440" font-size="30" font-weight="400" fill="#E7ECEF">It’s the fan I bought in April.</text>
+<rect x="40.00" y="477" width="470.70" height="240" rx="20" fill="#222D36"/>
+<path d="M57 697 L32 717 L58 713Z" fill="#222D36"/>
+<text x="64" y="505" font-size="20" font-weight="400" fill="#B8D9CC">Shadow</text>
+<text x="64" y="542" font-size="30" font-weight="400" fill="#E7ECEF">Found the April 18 order and</text>
+<text x="64" y="581" font-size="30" font-weight="400" fill="#E7ECEF">customer support contact.</text>
+<text x="64" y="620" font-size="30" font-weight="400" fill="#E7ECEF">Extracted the serial number,</text>
+<text x="64" y="659" font-size="30" font-weight="400" fill="#E7ECEF">described the defect from your</text>
+<text x="64" y="698" font-size="30" font-weight="400" fill="#E7ECEF">photo and sent the inquiry.</text>
+<rect x="241.40" y="735" width="438.60" height="84" rx="20" fill="#263D39"/>
+<path d="M663 799 L688 819 L662 815Z" fill="#263D39"/>
+<text x="265.4" y="763" font-size="20" font-weight="400" fill="#B0C5BE">You</text>
+<text x="265.4" y="800" font-size="30" font-weight="400" fill="#E7ECEF">Which order was that again?</text>
+<rect x="40.00" y="837" width="353.28" height="123" rx="20" fill="#222D36"/>
+<path d="M57 940 L32 960 L58 956Z" fill="#222D36"/>
+<text x="64" y="865" font-size="20" font-weight="400" fill="#B8D9CC">Shadow</text>
+<text x="64" y="902" font-size="30" font-weight="400" fill="#E7ECEF">Example Air desk fan.</text>
+<text x="64" y="941" font-size="30" font-weight="400" fill="#E7ECEF">Order EXAMPLE-0418.</text>
+<rect x="40.00" y="978" width="473.61" height="162" rx="20" fill="#222D36"/>
+<path d="M57 1120 L32 1140 L58 1136Z" fill="#222D36"/>
+<text x="64" y="1006" font-size="20" font-weight="400" fill="#B8D9CC">Shadow · later</text>
+<text x="64" y="1043" font-size="30" font-weight="400" fill="#E7ECEF">Support replied. They asked for</text>
+<text x="64" y="1082" font-size="30" font-weight="400" fill="#E7ECEF">proof of purchase to review</text>
+<text x="64" y="1121" font-size="30" font-weight="400" fill="#E7ECEF">repair or replacement options.</text>
+<text x="40" y="1183" font-size="21" font-weight="400" fill="#9EADB8">Illustrated media · fictional dialogue</text>
+</g>
+</svg>

@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="1255" viewBox="0 0 720 1255" role="img" aria-labelledby="title desc">
+<title id="title">Groceries — illustrated chat</title>
+<desc id="desc">You · video + speech: Coloca esse iogurte, o leite e os ovos no Costco. Se não tiver esse iogurte, pode ser o natural. Shadow: Adicionei os três. Anotei iogurte natural como alternativa. You · voice note: Peguei o leite. Shadow: Leite comprado. Faltam o iogurte e os ovos. You: Na verdade, ainda não peguei. Shadow: Coloquei o leite de volta na lista.</desc>
+<rect width="720" height="1255" rx="24" fill="#141D24"/>
+<rect x="0.5" y="0.5" width="719" height="1254" rx="23.5" fill="none" stroke="#31404A"/>
+<g font-family="Geist" font-weight="400">
+<circle cx="66" cy="61" r="26" fill="#263D39"/>
+<text x="56" y="71" font-size="29" font-weight="500" fill="#B8D9CC">S</text>
+<text x="108" y="57" font-size="34" font-weight="500" fill="#E7ECEF">Shadow</text>
+<text x="108" y="90" font-size="22" font-weight="400" fill="#AAB8C2">Groceries · In use</text>
+<path d="M32 118H688" stroke="#2B3842"/>
+<rect x="220.00" y="142" width="460.00" height="395" rx="20" fill="#263D39"/>
+<path d="M663 517 L688 537 L662 533Z" fill="#263D39"/>
+<text x="244" y="170" font-size="20" font-weight="400" fill="#B0C5BE">You · video + speech</text>
+<g transform="translate(238 184)"><rect width="424" height="172" rx="12" fill="#B7C4C2"/>
+<rect x="10" y="10" width="404" height="145" rx="8" fill="#CBD5CE"/><path d="M14 129H410" stroke="#839A95" stroke-width="6"/>
+<path d="M35 57H112L102 122H46Z" fill="#E5E7D9"/><rect x="31" y="49" width="85" height="14" rx="5" fill="#A5636C"/><rect x="46" y="73" width="55" height="27" rx="4" fill="#B98287"/>
+<path d="M149 42L166 22H202L219 42V122H149Z" fill="#E5E9DC"/><path d="M149 42H219V70H149Z" fill="#93B2A7"/><path d="M166 22V42H202V22" fill="#658B80"/><path d="M165 83H204M165 96H193" stroke="#9EAFA3" stroke-width="5"/>
+<rect x="250" y="88" width="121" height="38" rx="8" fill="#9D977F"/>
+<ellipse cx="269" cy="88" rx="16" ry="22" fill="#EFE5D0"/>
+<ellipse cx="305" cy="88" rx="16" ry="22" fill="#EFE5D0"/>
+<ellipse cx="341" cy="88" rx="16" ry="22" fill="#EFE5D0"/>
+<circle cx="390" cy="31" r="20" fill="#17272C" fill-opacity="0.8"/><path d="M384 21L400 31L384 41Z" fill="#F2F4EF"/>
+</g>
+<text x="244" y="401" font-size="30" font-weight="400" fill="#E7ECEF">Coloca esse iogurte, o leite</text>
+<text x="244" y="440" font-size="30" font-weight="400" fill="#E7ECEF">e os ovos no Costco.</text>
+<text x="244" y="479" font-size="30" font-weight="400" fill="#E7ECEF">Se não tiver esse iogurte,</text>
+<text x="244" y="518" font-size="30" font-weight="400" fill="#E7ECEF">pode ser o natural.</text>
+<rect x="40.00" y="555" width="480.30" height="123" rx="20" fill="#222D36"/>
+<path d="M57 658 L32 678 L58 674Z" fill="#222D36"/>
+<text x="64" y="583" font-size="20" font-weight="400" fill="#B8D9CC">Shadow</text>
+<text x="64" y="620" font-size="30" font-weight="400" fill="#E7ECEF">Adicionei os três. Anotei iogurte</text>
+<text x="64" y="659" font-size="30" font-weight="400" fill="#E7ECEF">natural como alternativa.</text>
+<rect x="280.00" y="696" width="400.00" height="146" rx="20" fill="#263D39"/>
+<path d="M663 822 L688 842 L662 838Z" fill="#263D39"/>
+<text x="304" y="724" font-size="20" font-weight="400" fill="#B0C5BE">You · voice note</text>
+<path d="M310 743L310 774L333 758.5Z" fill="#B8D9CC"/>
+<path d="M355.00 753.0V765.0" stroke="#B8D9CC" stroke-width="3" stroke-linecap="round"/>
+<path d="M365.44 748.0V770.0" stroke="#B8D9CC" stroke-width="3" stroke-linecap="round"/>
+<path d="M375.89 742.5V775.5" stroke="#B8D9CC" stroke-width="3" stroke-linecap="round"/>
+<path d="M386.33 750.5V767.5" stroke="#B8D9CC" stroke-width="3" stroke-linecap="round"/>
+<path d="M396.78 745.5V772.5" stroke="#B8D9CC" stroke-width="3" stroke-linecap="round"/>
+<path d="M407.22 739.5V778.5" stroke="#B8D9CC" stroke-width="3" stroke-linecap="round"/>
+<path d="M417.67 749.0V769.0" stroke="#B8D9CC" stroke-width="3" stroke-linecap="round"/>
+<path d="M428.11 744.0V774.0" stroke="#B8D9CC" stroke-width="3" stroke-linecap="round"/>
+<path d="M438.56 752.0V766.0" stroke="#B8D9CC" stroke-width="3" stroke-linecap="round"/>
+<path d="M449.00 753.0V765.0" stroke="#B8D9CC" stroke-width="3" stroke-linecap="round"/>
+<path d="M459.44 748.0V770.0" stroke="#B8D9CC" stroke-width="3" stroke-linecap="round"/>
+<path d="M469.89 742.5V775.5" stroke="#B8D9CC" stroke-width="3" stroke-linecap="round"/>
+<path d="M480.33 750.5V767.5" stroke="#B8D9CC" stroke-width="3" stroke-linecap="round"/>
+<path d="M490.78 745.5V772.5" stroke="#B8D9CC" stroke-width="3" stroke-linecap="round"/>
+<path d="M501.22 739.5V778.5" stroke="#B8D9CC" stroke-width="3" stroke-linecap="round"/>
+<path d="M511.67 749.0V769.0" stroke="#B8D9CC" stroke-width="3" stroke-linecap="round"/>
+<path d="M522.11 744.0V774.0" stroke="#B8D9CC" stroke-width="3" stroke-linecap="round"/>
+<path d="M532.56 752.0V766.0" stroke="#B8D9CC" stroke-width="3" stroke-linecap="round"/>
+<path d="M543.00 753.0V765.0" stroke="#B8D9CC" stroke-width="3" stroke-linecap="round"/>
+<path d="M553.44 748.0V770.0" stroke="#B8D9CC" stroke-width="3" stroke-linecap="round"/>
+<path d="M563.89 742.5V775.5" stroke="#B8D9CC" stroke-width="3" stroke-linecap="round"/>
+<path d="M574.33 750.5V767.5" stroke="#B8D9CC" stroke-width="3" stroke-linecap="round"/>
+<path d="M584.78 745.5V772.5" stroke="#B8D9CC" stroke-width="3" stroke-linecap="round"/>
+<path d="M595.22 739.5V778.5" stroke="#B8D9CC" stroke-width="3" stroke-linecap="round"/>
+<path d="M605.67 749.0V769.0" stroke="#B8D9CC" stroke-width="3" stroke-linecap="round"/>
+<path d="M616.11 744.0V774.0" stroke="#B8D9CC" stroke-width="3" stroke-linecap="round"/>
+<path d="M626.56 752.0V766.0" stroke="#B8D9CC" stroke-width="3" stroke-linecap="round"/>
+<path d="M637.00 753.0V765.0" stroke="#B8D9CC" stroke-width="3" stroke-linecap="round"/>
+<text x="304" y="823" font-size="30" font-weight="400" fill="#E7ECEF">Peguei o leite.</text>
+<rect x="40.00" y="860" width="413.25" height="123" rx="20" fill="#222D36"/>
+<path d="M57 963 L32 983 L58 979Z" fill="#222D36"/>
+<text x="64" y="888" font-size="20" font-weight="400" fill="#B8D9CC">Shadow</text>
+<text x="64" y="925" font-size="30" font-weight="400" fill="#E7ECEF">Leite comprado.</text>
+<text x="64" y="964" font-size="30" font-weight="400" fill="#E7ECEF">Faltam o iogurte e os ovos.</text>
+<rect x="222.83" y="1001" width="457.17" height="84" rx="20" fill="#263D39"/>
+<path d="M663 1065 L688 1085 L662 1081Z" fill="#263D39"/>
+<text x="246.83" y="1029" font-size="20" font-weight="400" fill="#B0C5BE">You</text>
+<text x="246.83" y="1066" font-size="30" font-weight="400" fill="#E7ECEF">Na verdade, ainda não peguei.</text>
+<rect x="40.00" y="1103" width="489.03" height="84" rx="20" fill="#222D36"/>
+<path d="M57 1167 L32 1187 L58 1183Z" fill="#222D36"/>
+<text x="64" y="1131" font-size="20" font-weight="400" fill="#B8D9CC">Shadow</text>
+<text x="64" y="1168" font-size="30" font-weight="400" fill="#E7ECEF">Coloquei o leite de volta na lista.</text>
+<text x="40" y="1230" font-size="21" font-weight="400" fill="#9EADB8">Illustrated media · fictional dialogue</text>
+</g>
+</svg>

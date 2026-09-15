@@ -120,10 +120,13 @@ the additional follow-up turns were reviewed against the exported tool
 instructions and access boundaries. They were not executed as new model or
 integration tests; their wording and example data remain illustrative.
 
-The README now embeds three PNG chat cards rendered from editable SVG sources.
-Their 6/4/4 turns match the shortened grocery, Doctor and personal-record
-exchanges, with full text retained in the chat guide. The cards were inspected
-at 343px width. This is presentation verification, not a replay of the chats.
+The README embeds three multimodal PNG chat cards rendered from editable SVG
+sources: a fridge video plus voice update (six turns), Doctor voice intake
+(four turns), and the owner-reported photo-to-support flow (five turns).
+The earlier four-turn receipt lookup remains linked. The new photo/video
+previews and waveforms are static illustrations, with text in the chat guide.
+Cards were inspected at 343px width. This verifies presentation, not media
+recognition, audio playback, delivery or a replay of the conversations.
 
 ### Owner-reported email and form workflows
 

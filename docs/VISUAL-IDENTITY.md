@@ -32,9 +32,10 @@ These references informed the hierarchy. Their artwork is not included here.
 |---|---|
 | [Conversation mark](../assets/brand/shadowos-mark.svg) | A conversation shape with an offset shape behind it; use with the ShadowOS name |
 | [README banner](../assets/brand/readme-header-less-to-juggle.svg) | Wordmark and the personal assistant’s purpose |
-| [Grocery chat PNG](../assets/brand/chat-groceries.png) | README conversation: video input, a purchase and a correction |
-| [Doctor chat PNG](../assets/brand/chat-doctor.png) | README conversation: preferences and confirmation |
-| [Personal-records chat PNG](../assets/brand/chat-records.png) | README conversation: paid receipt and follow-up evidence |
+| [Grocery chat PNG](../assets/brand/chat-groceries-multimodal.png) | README conversation: video preview, voice waveform and a correction |
+| [Doctor chat PNG](../assets/brand/chat-doctor-voice.png) | README conversation: a voice note, preferences and confirmation |
+| [Photo-to-support chat PNG](../assets/brand/chat-support-photo.png) | README conversation: a defect photo, email and follow-up |
+| [Personal-records chat PNG](../assets/brand/chat-records.png) | Linked conversation: paid receipt and follow-up evidence |
 | [Grocery workflow](../assets/brand/workflow.svg) | Explain how media, instructions and list state fit together |
 | [Grocery conversation](../assets/brand/conversation-grocery.svg) | A Portuguese voice update and shared-list change |
 | [Doctor conversation](../assets/brand/conversation-doctor.svg) | Search preferences and confirmation, labeled early testing |
@@ -43,7 +44,9 @@ These references informed the hierarchy. Their artwork is not included here.
 The exported SVGs contain vector outlines, with no font downloads, external
 images, scripts or tracking. Each retains a title and description. Editable
 text lives in [source](../assets/brand/source). The PNG cards are rendered from outlined SVGs at twice their native size.
-They depict illustrative chats, not screenshots of a live app. The artwork and build scripts
+They depict illustrative chats, not screenshots of a live app. Photo/video
+previews and voice waveforms are static vector artwork. Spoken text stays
+visible as a transcript, and each card labels the media as illustrated. The artwork and build scripts
 use the repository's MIT license; bundled Geist fonts use the
 [SIL Open Font License 1.1](../assets/brand/fonts/OFL.txt).
 
@@ -86,18 +89,19 @@ not a security guarantee or an operating system.
    /tmp/shadowos-brand-venv/bin/python assets/brand/build.py
    ```
 
-   The build reads the bundled fonts and writes the nine SVG exports in
+   The build reads the bundled fonts and writes the ten SVG exports in
    `assets/brand/`. Its JSON output lists text positions and measured widths.
    These are optional graphics dependencies, separate from the runtime tools.
 
-   For the three README PNG cards, render the outlined SVGs with the system
+   For the PNG chat cards, render the outlined SVGs with the system
    librsvg, Cairo and GObject shared libraries:
 
    ```bash
    python3 assets/brand/render_png.py
    ```
 
-   This writes `chat-*.png` at 2× resolution. The README displays them at
+   This writes four `chat-*.png` images at 2× resolution. The README embeds
+   three and links to the receipt example. Embedded cards are displayed at
    500px wide; they also fit narrower screens. Keep message text in the
    linked chat guide for selection, search and assistive reading.
 3. A new tagline gets a new descriptive filename for both its source and

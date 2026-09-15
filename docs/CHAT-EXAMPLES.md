@@ -20,12 +20,16 @@ sequence reconstructs a completed workflow reported by the owner.
 | [Doctor intake](#doctor-intake-without-repeating-what-was-already-said) · [Options](#doctor-compare-options-and-choose-who-to-contact) · [Approval](#doctor-review-the-full-email-then-approve) · [Replies](#doctor-a-reply-is-not-a-booking) | Move from preferences to outreach with the person in control |
 | [Landscaper](#when-did-i-change-landscapers) · [HVAC](#what-did-the-last-hvac-repair-cost) · [Missing evidence](#when-the-record-doesnt-prove-payment) · [Product support](#an-april-purchase-a-defect-photo-and-a-support-email) · [Emails & forms](#from-records-to-emails-and-forms) | Find the source, explain what it supports and follow up |
 
-## Three illustrated conversations
+## Illustrated conversations
 
-[Groceries PNG](../assets/brand/chat-groceries.png) ·
-[Doctor PNG](../assets/brand/chat-doctor.png) ·
-[Personal records PNG](../assets/brand/chat-records.png) ·
+[Groceries PNG](../assets/brand/chat-groceries-multimodal.png) ·
+[Doctor PNG](../assets/brand/chat-doctor-voice.png) ·
+[Photo-to-support PNG](../assets/brand/chat-support-photo.png) ·
+[Receipt lookup PNG](../assets/brand/chat-records.png) ·
 [Longer support illustration](../assets/brand/conversation-life-index.svg)
+
+The README cards show illustrated photo/video attachments and voice waveforms.
+Captions provide readable transcripts; the media controls are static artwork.
 
 ## Groceries: a video becomes a shared list
 

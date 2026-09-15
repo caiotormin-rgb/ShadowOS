@@ -26,31 +26,31 @@ maintaining another app or reconstructing the context each time.
 
 ## In conversation
 
-*Illustrative conversations with fictional details.*
+**Pictures, short videos and voice notes—with context across turns.**
+
+*Illustrated media and fictional dialogue.*
 
 ### Groceries
 
-<img src="assets/brand/chat-groceries.png" width="500" alt="Illustrative Portuguese grocery chat: add three items from a fridge video, mark milk bought, then undo that update." />
+<img src="assets/brand/chat-groceries-multimodal.png" width="500" alt="Illustrative multimodal grocery chat with a fridge-video preview and a voice-note waveform: add three items, mark milk bought, then undo that update." />
 
 **In use:** shared lists with three invited people.<br>
 [Full conversation](docs/CHAT-EXAMPLES.md#groceries-a-video-becomes-a-shared-list)
 
 ### Doctor
 
-<img src="assets/brand/chat-doctor.png" width="500" alt="Illustrative Doctor chat: give specialty, location, plan and availability; confirm the summary before the search starts. Early testing." />
+<img src="assets/brand/chat-doctor-voice.png" width="500" alt="Illustrative Doctor chat with a voice-note waveform and transcript: give preferences, then confirm the search. Early testing." />
 
 **Early testing:** the person confirms the search and approves outreach; no appointment booking.<br>
 [Full conversation](docs/CHAT-EXAMPLES.md#doctor-intake-without-repeating-what-was-already-said)
 
-### Personal records
+### Personal records & actions
 
-<img src="assets/brand/chat-records.png" width="500" alt="Illustrative personal-records chat: find a paid HVAC receipt for $480, then establish that the reminder is not another payment." />
+<img src="assets/brand/chat-support-photo.png" width="500" alt="Illustrated defect-photo attachment and personal support chat: find the purchase and support contact, extract the serial number, send the inquiry, recall the order and follow up on the response. Reconstructed from owner-reported use." />
 
-**From context to action:** my personal agent has sent emails and filled out
-forms on my behalf using information from **life-index MCP**. For a defective
-purchase, it found the order and support contact, extracted the serial number,
-explained my photo, sent the inquiry and followed up on the reply.
-[Full conversation & tool boundaries](docs/CHAT-EXAMPLES.md#personal-records-find-the-source-behind-the-answer) · [Support illustration](assets/brand/conversation-life-index.svg)
+**Personal use:** my agent has sent emails and filled out forms on my behalf
+using **life-index MCP** context. The support example reflects my reported experience.<br>
+[Full conversation & tool boundaries](docs/CHAT-EXAMPLES.md#an-april-purchase-a-defect-photo-and-a-support-email) · [Receipt lookup](assets/brand/chat-records.png)
 
 **More exchanges:** [Screenshots](docs/CHAT-EXAMPLES.md#groceries-bring-in-a-note-or-another-conversation) · [What’s missing?](docs/CHAT-EXAMPLES.md#groceries-whats-missing-with-purchase-history) · [Private lists](docs/CHAT-EXAMPLES.md#groceries-keep-a-personal-list-separate) · [Recipes](docs/CHAT-EXAMPLES.md#recipes-personal-telegram-and-invited-whatsapp) · [Doctor replies](docs/CHAT-EXAMPLES.md#doctor-a-reply-is-not-a-booking)
 
