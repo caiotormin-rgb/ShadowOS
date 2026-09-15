@@ -1,0 +1,93 @@
+{
+  "id": "grocery-list-tool",
+  "name": "Grocery List Tool",
+  "description": "Safely manage shared-family and per-requester private grocery lists.",
+  "version": "0.1.0",
+  "configSchema": {
+    "type": "object",
+    "required": [
+      "pythonPath",
+      "scriptPath",
+      "familyDbPath",
+      "privateDbDir",
+      "whatsappAccountId",
+      "allowedRequesters"
+    ],
+    "properties": {
+      "pythonPath": {
+        "type": "string",
+        "minLength": 1
+      },
+      "scriptPath": {
+        "type": "string",
+        "minLength": 1
+      },
+      "familyDbPath": {
+        "type": "string",
+        "minLength": 1
+      },
+      "privateDbDir": {
+        "type": "string",
+        "minLength": 1
+      },
+      "whatsappAccountId": {
+        "type": "string",
+        "minLength": 1
+      },
+      "allowedRequesters": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "minLength": 1
+        },
+        "minItems": 1
+      },
+      "accessDbPath": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "additionalProperties": false
+  },
+  "activation": {
+    "onStartup": true
+  },
+  "contracts": {
+    "tools": [
+      "grocery_show",
+      "grocery_add",
+      "grocery_mark",
+      "grocery_remove",
+      "grocery_trip",
+      "grocery_activity",
+      "grocery_preferences",
+      "grocery_list"
+    ]
+  },
+  "toolMetadata": {
+    "grocery_show": {
+      "optional": true
+    },
+    "grocery_add": {
+      "optional": true
+    },
+    "grocery_mark": {
+      "optional": true
+    },
+    "grocery_remove": {
+      "optional": true
+    },
+    "grocery_trip": {
+      "optional": true
+    },
+    "grocery_activity": {
+      "optional": true
+    },
+    "grocery_preferences": {
+      "optional": true
+    },
+    "grocery_list": {
+      "optional": true
+    }
+  }
+}

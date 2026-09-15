@@ -120,8 +120,8 @@ part:
 
 1. Fetch message bodies. Amounts on 28% of ledger rows is a snippet limit,
    and bodies fix it with no template changes.
-2. Bring the household tools' source into this repo after the same
-   de-identification pass.
+2. Reimplement ShadowOS as the production workspace itself, so this repo
+   is the source rather than an export of it.
 3. Design the household view of the ledger on the access and routing layers
    that now exist.
 4. Run the encryption migration and retire the waiver.

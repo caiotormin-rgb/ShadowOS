@@ -1,0 +1,11 @@
+{
+  plugins: {
+    load: { paths: [
+      "/home/openclaw/.openclaw/workspace/tools/grocery-list/plugin",
+      "/home/openclaw/.openclaw/workspace/tools/access/plugin",
+    ] },
+    allow: ["codex", "openai", "anthropic", "telegram", "whatsapp", "memory-core", "llama-cpp",
+            "grocery-list-tool", "google", "firecrawl", "access"],
+    entries: { access: { enabled: true, config: {} } },
+  },
+}

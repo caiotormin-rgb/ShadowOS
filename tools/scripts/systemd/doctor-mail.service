@@ -1,0 +1,9 @@
+[Unit]
+Description=Doctor search: read practice replies from the bot inbox and tell requesters
+
+[Service]
+Type=oneshot
+Environment=OPENCLAW_BIN=/home/openclaw/.openclaw/bin/openclaw
+ExecStart=/usr/bin/python3 /home/openclaw/.openclaw/workspace/tools/doctor-search/core/cli.py poll-notify
+Nice=10
+TimeoutStartSec=240

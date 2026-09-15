@@ -66,3 +66,11 @@ records/**/outputs/*.html
 # Evidence stays on disk under work/ as the conventions require; it simply does
 # not enter git, because it quotes real message snippets and correspondents.
 # The record README states what the evidence showed, which is the durable part.
+
+# ── household tools: runtime state and private configuration ──
+tools/grocery-list/core/config/members.json
+tools/automations/google-digest/commitments.json
+tools/automations/google-digest/state.json
+tools/**/data/*.sqlite3
+tools/**/dist/
+tools/**/node_modules/

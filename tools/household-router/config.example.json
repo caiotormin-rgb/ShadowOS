@@ -1,0 +1,34 @@
+{
+  "enabled": false,
+  "config": {
+    "statePath": "/home/openclaw/.openclaw/state/household-router/modes.sqlite3",
+    "agentIds": [
+      "shared-tools"
+    ],
+    "accountIds": [
+      "REPLACE_WITH_PILOT_ACCOUNT"
+    ],
+    "allowedSenders": [
+      "+15550000001"
+    ],
+    "defaultMode": "groceries",
+    "tools": {
+      "groceries": [
+        "grocery_show",
+        "grocery_add",
+        "grocery_mark",
+        "grocery_remove",
+        "grocery_trip",
+        "grocery_activity",
+        "grocery_preferences"
+      ],
+      "doctor": [
+        "doctor_search"
+      ]
+    },
+    "instructionPaths": {
+      "groceries": "/home/openclaw/.openclaw/workspace-shared-tools/GROCERY.md",
+      "doctor": "/home/openclaw/.openclaw/workspace-shared-tools/DOCTOR.md"
+    }
+  }
+}

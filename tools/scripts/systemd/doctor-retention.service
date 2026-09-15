@@ -1,0 +1,9 @@
+[Unit]
+Description=Doctor search 90-day retention (requests, replies, bot inbox)
+
+[Service]
+Type=oneshot
+WorkingDirectory=/home/openclaw/.openclaw/workspace/tools/doctor-search/core
+ExecStart=/usr/bin/python3 cli.py purge
+ExecStart=/usr/bin/python3 cli.py mail-purge
+Nice=10

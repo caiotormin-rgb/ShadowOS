@@ -1,0 +1,10 @@
+{
+  "name": "openclaw-plugin-household-router",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "scripts": {"test": "node --test test/*.test.mjs", "check": "node --check src/router.mjs && node --check src/index.mjs"},
+  "engines": {"node": ">=24"},
+  "peerDependencies": {"openclaw": ">=2026.9.4"},
+  "openclaw": {"extensions": ["./src/index.mjs"], "compat": {"pluginApi": ">=2026.9.4"}}
+}

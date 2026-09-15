@@ -2,9 +2,9 @@
 
 The tools that people other than me use. They live in the agent's own
 workspace repo (160 commits, 2026-08-24 to 2026-09-14, all committed under
-the agent's persona) and run inside the OpenClaw gateway as plugins. Their
-source is not in this repo yet; this page describes them from that source,
-their tests, and the commit trail.
+the agent's persona) and run inside the OpenClaw gateway as plugins. This
+page describes them from that source,
+their tests, and the commit trail. The source is under [`tools/`](../tools/).
 
 ```
 tools/

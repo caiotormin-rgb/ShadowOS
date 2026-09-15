@@ -1,0 +1,540 @@
+#!/usr/bin/env bash
+# Transcribe one voice note locally with whisper.cpp for OpenClaw tools.media.
+#
+# Usage: transcribe-audio-local <audio-path> [language-hint]
+#
+# Prints the transcript on one line to stdout and exits 0 only when usable
+# speech remains after cleaning. Cleaning lives in transcribe_audio_text.py
+# next to this script: it strips whisper's non-speech placeholders, subtitle
+# credits and non-Latin garbage, and rejects filler-only output. Any failure
+# exits non-zero with a message on stderr, so OpenClaw moves on to the next
+# tools.media entry.
+#
+# Exit codes: 2 usage, missing input or invalid configuration,
+#             3 no usable speech, 4 decode failed,
+#             5 whisper failed, ran out of time budget, or no free slot,
+#             6 cannot create the private work or lock directory.
+#
+# Model: ggml-small (TRANSCRIBE_MODEL). It matched medium and large-v3-turbo
+# on item recall at a third of turbo's latency. Turbo (TRANSCRIBE_RETRY_MODEL)
+# is used only for the language retry pass below, and only when the note is at
+# least TRANSCRIBE_RETRY_MIN_NOTE_S (6) long, at least
+# TRANSCRIBE_RETRY_MIN_BUDGET_S (25) of the time budget remain, and a second
+# flock slot is free right now. Turbo holds the CPU for 10-15 s, and in QA two
+# normal notes waited 13-15 s behind two turbo retries, so when every slot is
+# taken the retry is skipped: small's first pass is kept, or exit 3 if it was
+# rejected. On shorter notes, or when the budget is too short, the retry uses
+# the primary model. Set TRANSCRIBE_RETRY_MODEL= (empty) to disable turbo.
+#
+# Long notes: whisper writes its transcript only when a run ends, so a single
+# pass over a 4-minute note that hits the budget returns nothing. Notes longer
+# than TRANSCRIBE_LONG_S (60) are cut into chunks of at most TRANSCRIBE_CHUNK_S
+# (30) at quiet points (transcribe_audio_chunks.py) and transcribed in order
+# while the budget lasts. Up to TRANSCRIBE_BASE_OVER_S (120) the chunks use the
+# primary model (small); longer notes use TRANSCRIBE_LONG_MODEL (ggml-base).
+# Every chunk detects its own language; an unsure chunk is retried in the last
+# confident chunk's language. If the budget runs out, the finished chunks are
+# printed followed by "[transcript truncated after N s of M s]", with exit 0.
+#
+# CPU: OpenClaw transcribes up to two notes at once (tools.media concurrency 2,
+# and different members' turns run in parallel). At 12 threads each, two
+# concurrent notes ran out of the 50 s budget in QA; at 6 they finished in
+# 5-28 s. Threads default to min(6, nproc/2), and at most
+# TRANSCRIBE_MAX_CONCURRENT (2) transcriptions run at once: extra callers wait
+# for a flock slot in TRANSCRIBE_LOCK_DIR, and the wait counts against the
+# budget.
+#
+# Language: an explicit hint (arg 2 or TRANSCRIBE_LANG) is used as-is. With
+# "auto", whisper detects the language. The note is transcribed again with
+# TRANSCRIBE_FALLBACK_LANG when the detected language is not in
+# TRANSCRIBE_ALLOWED_LANGS or its probability is below TRANSCRIBE_MIN_LANG_P,
+# except that English detected at p >= TRANSCRIBE_EN_KEEP_P (0.5) is kept:
+# forcing pt on English translates it. No retry when VAD found less than
+# TRANSCRIBE_MIN_SPEECH_MS of speech.
+#
+# Short clips: under TRANSCRIBE_MIN_SPEECH_MS (1000) of VAD speech nothing is
+# trusted (exit 3, so the agent asks the member to repeat). A single content
+# word is kept only when the language detection was confident (p >=
+# TRANSCRIBE_MIN_LANG_P) or a language hint was given. On short PT clips
+# whisper returned "a grande" for granola, "E aí" for leite and "o preso" for
+# presunto with exit 0. Measurements: tools/media-transcription/benchmarks/audio/RESULTS.md.
+set -euo pipefail
+
+die() {
+  local code="$1"
+  shift
+  printf 'transcribe-audio-local: %s\n' "$*" >&2
+  exit "$code"
+}
+
+[[ $# -ge 1 && -n "${1-}" ]] || die 2 "usage: transcribe-audio-local <audio-path> [language-hint]"
+input_path="$1"
+hint="${2-}"
+[[ -f "$input_path" && -r "$input_path" ]] || die 2 "input not found or unreadable: $input_path"
+[[ -s "$input_path" ]] || die 3 "input is empty: $input_path"
+
+# Every value read from the environment is validated before it reaches bash
+# arithmetic, a regex or a command line: bash evaluates array subscripts in
+# arithmetic context, so an unchecked "x[$(cmd)]" would run cmd.
+readonly LANG_WHITELIST="pt en es"
+in_lang_whitelist() { [[ " $LANG_WHITELIST " == *" $1 "* ]]; }
+check_uint() { # name value: positive integer without leading zeros, at most 6 digits
+  [[ "$2" =~ ^[1-9][0-9]{0,5}$ ]] || die 2 "invalid $1: must be a positive integer"
+}
+check_prob() { # name value: decimal in [0, 1]
+  [[ "$2" =~ ^(0(\.[0-9]{1,6})?|1(\.0{1,6})?)$ ]] || die 2 "invalid $1: decimal between 0 and 1"
+}
+check_lang() { # name value allow-auto
+  if [[ "$2" == auto && "$3" == 1 ]]; then return 0; fi
+  in_lang_whitelist "$2" || die 2 "invalid $1: must be one of: $LANG_WHITELIST${3:+ auto}"
+}
+# prob_ge a b: a >= b for decimals already validated by check_prob or parsed
+# from whisper's log as [0-9.]+.
+prob_ge() { awk -v a="$1" -v b="$2" 'BEGIN { exit !(a + 0 >= b + 0) }'; }
+
+default_threads() {
+  local cpus
+  cpus="$(nproc 2>/dev/null || printf '2')"
+  [[ "$cpus" =~ ^[1-9][0-9]*$ ]] || cpus=2
+  cpus=$((cpus / 2))
+  ((cpus >= 1)) || cpus=1
+  ((cpus <= 6)) || cpus=6
+  printf '%d' "$cpus"
+}
+
+script_dir="$(dirname -- "$(readlink -f -- "${BASH_SOURCE[0]}")")"
+text_tool="$script_dir/transcribe_audio_text.py"
+chunk_tool="$script_dir/transcribe_audio_chunks.py"
+whisper_root="${WHISPER_ROOT:-/home/openclaw/.local/share/openclaw/whisper}"
+whisper_dir="$whisper_root/whisper-bin-ubuntu-x64"
+whisper_cli="${TRANSCRIBE_WHISPER_CLI:-$whisper_dir/whisper-cli}"
+model_path="${TRANSCRIBE_MODEL:-$whisper_root/models/ggml-small.bin}"
+retry_model="${TRANSCRIBE_RETRY_MODEL-$whisper_root/models/ggml-large-v3-turbo-q8_0.bin}"
+long_model="${TRANSCRIBE_LONG_MODEL-$whisper_root/ggml-base.bin}"
+vad_model="${TRANSCRIBE_VAD_MODEL:-$whisper_root/models/ggml-silero-v5.1.2.bin}"
+threads="${TRANSCRIBE_THREADS:-$(default_threads)}"
+vad="${TRANSCRIBE_VAD:-1}"
+language="${TRANSCRIBE_LANG:-auto}"
+fallback_lang="${TRANSCRIBE_FALLBACK_LANG:-pt}"
+allowed_langs="${TRANSCRIBE_ALLOWED_LANGS:-pt en}"
+min_lang_p="${TRANSCRIBE_MIN_LANG_P:-0.8}"
+en_keep_p="${TRANSCRIBE_EN_KEEP_P:-0.5}"
+min_speech_ms="${TRANSCRIBE_MIN_SPEECH_MS:-1000}"
+budget_s="${TRANSCRIBE_BUDGET_S:-50}"
+max_concurrent="${TRANSCRIBE_MAX_CONCURRENT:-2}"
+lock_dir="${TRANSCRIBE_LOCK_DIR:-${XDG_STATE_HOME:-${HOME:-/nonexistent}/.local/state}/openclaw/transcribe-audio}"
+long_s="${TRANSCRIBE_LONG_S:-60}"
+chunk_s="${TRANSCRIBE_CHUNK_S:-30}"
+retry_min_note_s="${TRANSCRIBE_RETRY_MIN_NOTE_S:-6}"
+retry_min_budget_s="${TRANSCRIBE_RETRY_MIN_BUDGET_S:-25}"
+base_over_s="${TRANSCRIBE_BASE_OVER_S:-120}"
+
+if [[ -n "$hint" ]]; then
+  check_lang "language hint" "$hint" 1
+  language="$hint"
+fi
+check_lang TRANSCRIBE_LANG "$language" 1
+check_lang TRANSCRIBE_FALLBACK_LANG "$fallback_lang" 1
+[[ "$allowed_langs" =~ ^[a-z]{2}( [a-z]{2})*$ ]] || die 2 "invalid TRANSCRIBE_ALLOWED_LANGS: space-separated codes"
+for code in $allowed_langs; do
+  check_lang TRANSCRIBE_ALLOWED_LANGS "$code" ""
+done
+check_uint TRANSCRIBE_THREADS "$threads"
+check_uint TRANSCRIBE_BUDGET_S "$budget_s"
+check_uint TRANSCRIBE_MAX_CONCURRENT "$max_concurrent"
+check_uint TRANSCRIBE_LONG_S "$long_s"
+check_uint TRANSCRIBE_CHUNK_S "$chunk_s"
+check_uint TRANSCRIBE_RETRY_MIN_NOTE_S "$retry_min_note_s"
+check_uint TRANSCRIBE_RETRY_MIN_BUDGET_S "$retry_min_budget_s"
+check_uint TRANSCRIBE_BASE_OVER_S "$base_over_s"
+check_uint TRANSCRIBE_MIN_SPEECH_MS "$min_speech_ms"
+# Clamp values that are well-formed but outside what this host and OpenClaw
+# allow. More threads than 16 or than the machine has only adds contention.
+# The primary entry's OpenClaw timeout is 55 s: a budget above 53 s would let
+# whisper still be running (plus timeout's 2 s kill-after) when OpenClaw kills
+# the script. The fallback entry passes its own lower budget (25 s under a
+# 30 s timeout); keep every entry's budget at least 2 s below its timeout.
+max_threads="$(nproc 2>/dev/null || printf '16')"
+[[ "$max_threads" =~ ^[1-9][0-9]*$ ]] || max_threads=16
+((max_threads <= 16)) || max_threads=16
+if ((threads > max_threads)); then
+  printf 'transcribe-audio-local: TRANSCRIBE_THREADS=%s clamped to %s\n' "$threads" "$max_threads" >&2
+  threads="$max_threads"
+fi
+readonly MAX_BUDGET_S=53
+if ((budget_s > MAX_BUDGET_S)); then
+  printf 'transcribe-audio-local: TRANSCRIBE_BUDGET_S=%s clamped to %s\n' "$budget_s" "$MAX_BUDGET_S" >&2
+  budget_s="$MAX_BUDGET_S"
+fi
+[[ "$vad" =~ ^[01]$ ]] || die 2 "invalid TRANSCRIBE_VAD: must be 0 or 1"
+check_prob TRANSCRIBE_MIN_LANG_P "$min_lang_p"
+check_prob TRANSCRIBE_EN_KEEP_P "$en_keep_p"
+[[ "$lock_dir" == /* ]] || die 2 "invalid TRANSCRIBE_LOCK_DIR: must be an absolute path"
+[[ -x "$whisper_cli" ]] || die 5 "whisper-cli not executable: $whisper_cli"
+[[ -f "$model_path" ]] || die 5 "model not found: $model_path"
+command -v python3 >/dev/null 2>&1 || die 5 "python3 not found (needed to clean the transcript)"
+[[ -f "$text_tool" ]] || die 5 "transcript cleaner not found: $text_tool"
+[[ -f "$chunk_tool" ]] || die 5 "chunk splitter not found: $chunk_tool"
+# The retry and long-note models are optional: fall back to the primary.
+if [[ -n "$retry_model" && ! -f "$retry_model" ]]; then
+  retry_model=""
+fi
+if [[ -z "$long_model" || ! -f "$long_model" ]]; then
+  long_model="$model_path"
+fi
+# Without VAD, whisper transcribes silence and faint noise as words ("E aí")
+# and exits 0, so a missing VAD model is a hard failure, not a quiet downgrade.
+# Set TRANSCRIBE_VAD=0 to run without it deliberately.
+if [[ "$vad" == 1 && ! -f "$vad_model" ]]; then
+  die 5 "VAD model not found (set TRANSCRIBE_VAD=0 to run without VAD): $vad_model"
+fi
+export LD_LIBRARY_PATH="$whisper_dir${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+
+tmp_base="${TMPDIR:-/tmp}"
+# A run killed with SIGKILL cannot clean up, and its work dir holds decoded
+# private audio. Remove our own leftovers older than 10 minutes (no run lives
+# that long). find -P never follows symlinks, -type d skips symlinked
+# lookalikes, and rm -rf does not follow links inside the directory.
+find "$tmp_base" -mindepth 1 -maxdepth 1 -type d -name 'transcribe-audio.*' \
+  -user "$(id -u)" -mmin +10 -exec rm -rf -- {} + 2>/dev/null || true
+work_dir="$(mktemp -d "$tmp_base/transcribe-audio.XXXXXX" 2>/dev/null)" ||
+  die 6 "cannot create a private work directory under $tmp_base"
+child_pid=""
+cleanup() {
+  if [[ -n "$child_pid" ]]; then
+    kill "$child_pid" 2>/dev/null || true
+  fi
+  rm -rf -- "$work_dir"
+}
+trap cleanup EXIT
+trap 'exit 143' TERM
+trap 'exit 130' INT
+
+# With setpriv available, the kernel sends SIGKILL to timeout when this script
+# dies, and to the command when timeout dies, so even SIGKILL on the script
+# leaves no orphaned whisper behind.
+deathsig=()
+if command -v setpriv >/dev/null 2>&1 && setpriv --pdeathsig KILL true 2>/dev/null; then
+  deathsig=(setpriv --pdeathsig KILL)
+fi
+
+# Run a command under a time limit in the background so TERM/INT from
+# OpenClaw's own timeout are handled immediately and the child is killed.
+# --foreground keeps timeout in our process group instead of calling setpgid,
+# so a signal to the group reaches it.
+run_bounded() {
+  local secs="$1"
+  shift
+  "${deathsig[@]}" timeout --foreground --kill-after=2 "$secs" "${deathsig[@]}" "$@" &
+  child_pid=$!
+  local rc=0
+  wait "$child_pid" || rc=$?
+  child_pid=""
+  return "$rc"
+}
+
+remaining() {
+  printf '%d' $((budget_s - SECONDS))
+}
+
+# Take one of max_concurrent flock slots and hold it until the script exits
+# (the kernel releases it when the descriptor closes, even on SIGKILL). The
+# wait is charged to the budget; give up while 5 s remain for whisper itself.
+acquire_slot() {
+  mkdir -p -m 700 -- "$lock_dir" 2>/dev/null || die 6 "cannot create lock directory $lock_dir"
+  local i fd waited=0
+  while :; do
+    for ((i = 0; i < max_concurrent; i++)); do
+      exec {fd}>>"$lock_dir/slot$i.lock" || die 6 "cannot open lock file in $lock_dir"
+      if flock -n "$fd"; then
+        slot_fd="$fd"
+        if ((waited)); then
+          printf 'transcribe-audio-local: waited %s s for a free slot\n' "$SECONDS" >&2
+        fi
+        return 0
+      fi
+      exec {fd}>&-
+    done
+    if (($(remaining) <= 5)); then
+      die 5 "busy: $max_concurrent transcriptions already running, no slot within the time budget"
+    fi
+    waited=1
+    sleep 0.2
+  done
+}
+slot_fd=""
+
+# gst-launch re-parses its argv as a pipeline description, so hand it a
+# symlink with a plain name instead of the caller's path (spaces, quotes, !).
+ln -s -- "$(readlink -f -- "$input_path")" "$work_dir/input"
+wav="$work_dir/input.wav"
+rc=0
+run_bounded 20 gst-launch-1.0 -q \
+  filesrc location="$work_dir/input" ! decodebin ! audioconvert ! audioresample ! \
+  audio/x-raw,format=S16LE,rate=16000,channels=1 ! wavenc ! \
+  filesink location="$wav" >"$work_dir/decode.log" 2>&1 || rc=$?
+if ((rc != 0)); then
+  die 4 "could not decode audio (exit $rc): $(tr '\n' ' ' <"$work_dir/decode.log" | cut -c1-300)"
+fi
+# 44-byte WAV header plus at least 0.1 s of 16 kHz mono S16LE.
+wav_bytes=0
+[[ -f "$wav" ]] && wav_bytes="$(stat -c %s -- "$wav")"
+if ((wav_bytes < 44 + 3200)); then
+  die 3 "no audio samples decoded"
+fi
+# 16 kHz mono S16LE is 32 bytes per millisecond.
+audio_ms=$(((wav_bytes - 44) / 32))
+
+acquire_slot
+
+# whisper_pass lang out-base [model]: transcribe $wav (dynamically scoped, so
+# the long-note loop can point it at a chunk).
+whisper_pass() {
+  local lang="$1" out="$2" model="${3:-$model_path}" left
+  left="$(remaining)"
+  if ((left < 5)); then
+    printf 'time budget exhausted\n' >"$out.log"
+    return 124
+  fi
+  local args=(-m "$model" -f "$wav" -l "$lang" -t "$threads" -nt -otxt -of "$out")
+  if [[ "$vad" == 1 ]]; then
+    args+=(--vad -vm "$vad_model")
+  fi
+  run_bounded "$left" "$whisper_cli" "${args[@]}" >"$out.log" 2>&1
+}
+
+# speech_ms_of <pass.log> <audio-ms>: milliseconds of speech VAD kept. Without
+# VAD, or if this whisper build does not log the total, use the audio length.
+speech_ms_of() {
+  local secs=""
+  if [[ "$vad" == 1 ]]; then
+    secs="$(sed -nE 's/.*total duration of speech segments: ([0-9]+(\.[0-9]+)?) seconds.*/\1/p' "$1" | sed -n '1p')"
+  fi
+  if [[ -z "$secs" ]]; then
+    printf '%d' "$2"
+    return 0
+  fi
+  awk -v s="$secs" 'BEGIN { printf "%d", s * 1000 }'
+}
+
+# detection_of <pass.log>: prints "<lang> <p>" from whisper's auto-detection.
+detection_of() {
+  sed -nE 's/.*auto-detected language: ([a-z]+) \(p = ([0-9]+(\.[0-9]+)?)\).*/\1 \2/p' "$1" | sed -n '1p'
+}
+
+# clean_pass <transcript.txt> <speech-ms> <language-probability>: sets
+# pass_text to the cleaned transcript and returns 0 when usable speech remains,
+# 3 when it does not. -I isolates the helper from PYTHON* variables and the
+# user site; -X utf8 makes its I/O UTF-8 whatever the locale.
+clean_pass() {
+  pass_text=""
+  [[ -f "$1" ]] || return 3
+  local rc=0
+  pass_text="$(python3 -I -X utf8 "$text_tool" "$1" --speech-ms "$2" \
+    --min-speech-ms "$min_speech_ms" --lang-p "$3" --min-p "$min_lang_p")" || rc=$?
+  ((rc == 0 || rc == 3)) || die 5 "transcript cleaner failed (exit $rc)"
+  return "$rc"
+}
+
+pass_failed() {
+  local code="$1" log="$2"
+  if ((code == 124)); then
+    die 5 "whisper timed out or time budget exhausted ($budget_s s)"
+  fi
+  die 5 "whisper failed (exit $code): $(tail -n 3 "$log" | tr '\n' ' ' | cut -c1-300)"
+}
+
+# transcribe_long: chunked transcription for notes over long_s; prints the
+# transcript and exits.
+transcribe_long() {
+  local list rc
+  # Base missed items on 61-120 s notes (QA), and small fits a 120 s note in
+  # the budget (tools/media-transcription/benchmarks/audio/RESULTS.md), so the primary model handles chunked
+  # notes up to TRANSCRIBE_BASE_OVER_S and base only takes longer ones.
+  local long_model="$long_model" # dynamically scoped for whisper_pass below
+  if ((audio_ms <= base_over_s * 1000)); then
+    long_model="$model_path"
+  fi
+  printf 'transcribe-audio-local: long note (%d s): %s in chunks of up to %d s\n' \
+    $((audio_ms / 1000)) "${long_model##*/}" "$chunk_s" >&2
+  rc=0
+  list="$(python3 -I -X utf8 "$chunk_tool" "$wav" "$work_dir/chunks" $((chunk_s * 1000)))" || rc=$?
+  ((rc == 0)) || die 5 "could not split the long note into chunks (exit $rc)"
+
+  local -a files=() ends=()
+  local f s e
+  while read -r f s e; do
+    files+=("$f")
+    ends+=("$e")
+  done <<<"$list"
+
+  # Every chunk detects its own language: a note can start in English and
+  # switch to Portuguese, or open with silence. Locking the language on chunk
+  # 1 translated the rest (QA: an EN-first 152 s note lost 7 of 22 Portuguese
+  # items; 40 s of silence then English was forced to pt). A confident chunk
+  # updates last_lang. A chunk with enough speech but an unsure detection is
+  # transcribed again in last_lang, or TRANSCRIBE_FALLBACK_LANG if no chunk
+  # was confident yet. A chunk with no detection or too little speech keeps
+  # its text and decides nothing for later chunks.
+  local last_lang="" any_confident=0 joined="$work_dir/long.txt" covered_ms=0
+  local speech_total=0 n chunk_speech detected detected_p truncated=0 base use retry_lang
+  local wav # scopes whisper_pass to the chunk
+  : >"$joined"
+  for ((n = 0; n < ${#files[@]}; n++)); do
+    wav="${files[n]}"
+    base="$work_dir/chunk$n"
+    rc=0
+    whisper_pass "$language" "$base" "$long_model" || rc=$?
+    if ((rc != 0)); then
+      ((n > 0)) || pass_failed "$rc" "$base.log"
+      printf 'transcribe-audio-local: stopped at chunk %d of %d (exit %s)\n' $((n + 1)) "${#files[@]}" "$rc" >&2
+      truncated=1
+      break
+    fi
+    use="$base"
+    chunk_speech="$(speech_ms_of "$base.log" $((ends[n] - covered_ms)))"
+    if [[ "$language" == auto ]]; then
+      detected=""
+      detected_p=0
+      read -r detected detected_p < <(detection_of "$base.log") || true
+      detected_p="${detected_p:-0}"
+      if [[ -n "$detected" && " $allowed_langs " == *" $detected "* ]] && prob_ge "$detected_p" "$min_lang_p"; then
+        last_lang="$detected"
+        any_confident=1
+      elif [[ "$detected" == en ]] && prob_ge "$detected_p" "$en_keep_p"; then
+        last_lang=en
+        any_confident=1
+      elif [[ -n "$detected" ]] && ((chunk_speech >= min_speech_ms)); then
+        retry_lang="${last_lang:-$fallback_lang}"
+        if [[ "$retry_lang" != auto ]]; then
+          printf 'transcribe-audio-local: chunk %d detected %s (p=%s), retrying with -l %s\n' \
+            $((n + 1)) "$detected" "$detected_p" "$retry_lang" >&2
+          rc=0
+          whisper_pass "$retry_lang" "$base.retry" "$long_model" || rc=$?
+          if ((rc == 0)); then
+            use="$base.retry"
+          else
+            printf 'transcribe-audio-local: chunk %d retry stopped (exit %s), keeping its first pass\n' \
+              $((n + 1)) "$rc" >&2
+            ((rc == 124)) && truncated=1
+          fi
+        fi
+      fi
+    else
+      any_confident=1 # an explicit hint
+    fi
+    [[ -f "$use.txt" ]] && { cat -- "$use.txt"; printf ' '; } >>"$joined"
+    speech_total=$((speech_total + chunk_speech))
+    covered_ms="${ends[n]}"
+    ((truncated == 0)) || break
+  done
+  local lang_p=0
+  ((any_confident)) && lang_p=1
+
+  clean_pass "$joined" "$speech_total" "$lang_p" || die 3 "no usable speech in transcript"
+  if ((truncated)); then
+    printf '%s [transcript truncated after %d s of %d s]\n' "$pass_text" $((covered_ms / 1000)) $((audio_ms / 1000))
+  else
+    printf '%s\n' "$pass_text"
+  fi
+  exit 0
+}
+
+if ((audio_ms > long_s * 1000)); then
+  transcribe_long
+fi
+
+rc=0
+whisper_pass "$language" "$work_dir/pass1" || rc=$?
+((rc == 0)) || pass_failed "$rc" "$work_dir/pass1.log"
+
+detected=""
+detected_p="0"
+if [[ "$language" == auto ]]; then
+  read -r detected detected_p < <(detection_of "$work_dir/pass1.log") || true
+  detected_p="${detected_p:-0}"
+  pass1_p="$detected_p"
+else
+  pass1_p=1 # an explicit hint counts as a confident language
+fi
+pass1_speech="$(speech_ms_of "$work_dir/pass1.log" "$audio_ms")"
+
+usable=0
+text=""
+if clean_pass "$work_dir/pass1.txt" "$pass1_speech" "$pass1_p"; then
+  usable=1
+  text="$pass_text"
+fi
+
+if [[ "$language" == auto && "$fallback_lang" != auto ]]; then
+  retry=0
+  if [[ -z "$detected" ]] && ((usable == 0)); then
+    retry=0 # VAD found no speech, so whisper never ran detection
+  elif ((pass1_speech < min_speech_ms)); then
+    retry=0 # too little speech for any pass to be trusted
+  elif [[ "$detected" == en ]] && prob_ge "$detected_p" "$en_keep_p"; then
+    retry=0 # forcing pt on English translates it ("Sesame" at p=0.86)
+  elif [[ -z "$detected" || " $allowed_langs " != *" $detected "* ]]; then
+    retry=1
+  elif ! prob_ge "$detected_p" "$min_lang_p"; then
+    retry=1
+  fi
+  # try_extra_slot: take a second flock slot only if one is free right now.
+  # Turbo holds the CPU for 10-15 s; taking a second slot means it runs only
+  # while nobody else is waiting, instead of delaying another member's note.
+  extra_fd=""
+  try_extra_slot() {
+    local i fd
+    for ((i = 0; i < max_concurrent; i++)); do
+      exec {fd}>>"$lock_dir/slot$i.lock" || return 1
+      if flock -n "$fd"; then
+        extra_fd="$fd"
+        return 0
+      fi
+      exec {fd}>&-
+    done
+    return 1
+  }
+  if ((retry)); then
+    # The larger model is worth its extra seconds only on a note long enough to
+    # carry real speech, only if it can still finish inside the budget, and
+    # only if a second slot is free immediately. When turbo would be used but
+    # every slot is taken, skip the retry and keep small's first pass.
+    retry_with="$model_path"
+    if [[ -n "$retry_model" ]] && ((audio_ms >= retry_min_note_s * 1000)) &&
+      (($(remaining) >= retry_min_budget_s)); then
+      if try_extra_slot; then
+        retry_with="$retry_model"
+      else
+        printf 'transcribe-audio-local: no free slot for the %s retry, keeping the first pass\n' \
+          "${retry_model##*/}" >&2
+        retry=0
+      fi
+    fi
+  fi
+  if ((retry)); then
+    printf 'transcribe-audio-local: detected %s (p=%s), retrying with -l %s using %s\n' \
+      "${detected:-none}" "$detected_p" "$fallback_lang" "${retry_with##*/}" >&2
+    # The forced language inherits pass 1's confidence, so a single word from a
+    # retry after an unsure or foreign detection is still not trusted.
+    pass2_p=0
+    if [[ -n "$detected" && " $allowed_langs " == *" $detected "* ]]; then
+      pass2_p="$detected_p"
+    fi
+    rc=0
+    whisper_pass "$fallback_lang" "$work_dir/pass2" "$retry_with" || rc=$?
+    if ((rc == 0)); then
+      if clean_pass "$work_dir/pass2.txt" "$(speech_ms_of "$work_dir/pass2.log" "$audio_ms")" "$pass2_p"; then
+        usable=1
+        text="$pass_text"
+      fi
+    else
+      printf 'transcribe-audio-local: fallback pass failed (exit %s), keeping first pass\n' "$rc" >&2
+    fi
+  fi
+fi
+
+if ((usable == 0)); then
+  die 3 "no usable speech in transcript"
+fi
+printf '%s\n' "$text"

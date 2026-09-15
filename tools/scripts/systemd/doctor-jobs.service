@@ -1,0 +1,9 @@
+[Unit]
+Description=Doctor search: run queued provider searches and message requesters
+
+[Service]
+Type=oneshot
+Environment=OPENCLAW_BIN=/home/openclaw/.openclaw/bin/openclaw
+ExecStart=/usr/bin/python3 /home/openclaw/.openclaw/workspace/tools/doctor-search/core/cli.py run-jobs
+Nice=10
+TimeoutStartSec=3h

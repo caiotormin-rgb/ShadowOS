@@ -1,0 +1,156 @@
+{
+  "id": "household-router",
+  "name": "Household modes",
+  "version": "0.1.0",
+  "description": "Explicit WhatsApp Grocery/Doctor mode commands and requester-bound domain policy.",
+  "activation": {
+    "onStartup": true
+  },
+  "contracts": {
+    "trustedToolPolicies": [
+      "household-mode"
+    ]
+  },
+  "configSchema": {
+    "type": "object",
+    "required": [
+      "statePath",
+      "agentIds",
+      "accountIds",
+      "allowedSenders",
+      "tools"
+    ],
+    "additionalProperties": false,
+    "properties": {
+      "statePath": {
+        "type": "string",
+        "minLength": 1
+      },
+      "agentIds": {
+        "type": "array",
+        "minItems": 1,
+        "uniqueItems": true,
+        "items": {
+          "enum": [
+            "shared-tools",
+            "shadow-shopper",
+            "shadow-care"
+          ]
+        }
+      },
+      "accountIds": {
+        "type": "array",
+        "minItems": 1,
+        "uniqueItems": true,
+        "items": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "allowedSenders": {
+        "type": "array",
+        "minItems": 1,
+        "uniqueItems": true,
+        "items": {
+          "type": "string",
+          "pattern": "^\\+[1-9][0-9]{6,14}$"
+        }
+      },
+      "defaultMode": {
+        "enum": [
+          "groceries",
+          "doctor"
+        ],
+        "default": "groceries"
+      },
+      "tools": {
+        "type": "object",
+        "required": [
+          "groceries",
+          "doctor"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "groceries": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "pattern": "^grocery_[a-z0-9_]+$"
+            }
+          },
+          "doctor": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "pattern": "^doctor_[a-z0-9_]+$"
+            }
+          }
+        }
+      },
+      "models": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "groceries": {
+            "type": "object",
+            "required": [
+              "provider",
+              "model"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "provider": {
+                "type": "string",
+                "minLength": 1
+              },
+              "model": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "doctor": {
+            "type": "object",
+            "required": [
+              "provider",
+              "model"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "provider": {
+                "type": "string",
+                "minLength": 1
+              },
+              "model": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        }
+      },
+      "instructionPaths": {
+        "type": "object",
+        "required": [
+          "groceries",
+          "doctor"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "groceries": {
+            "type": "string",
+            "minLength": 1
+          },
+          "doctor": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  }
+}

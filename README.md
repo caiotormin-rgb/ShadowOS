@@ -71,10 +71,9 @@ Three principles fell out of that:
 | **Morning brief and calendar guardrail** | A read-only digest of what needs attention, and a model-free scan that turns `.ics` attachments into calendar events without copying attendees or sending updates. | me | |
 | **Media capture** | Local transcription of voice notes and 15-second videos, language-aware, with a strict time and CPU budget so a long note cannot starve the others. | household | |
 
-The context layers are in this repo under `layers/`. The household tools
-are documented in [docs/HOUSEHOLD-TOOLS.md](docs/HOUSEHOLD-TOOLS.md); their
-source is being prepared for the same de-identification pass and is not
-here yet.
+The context layers are under `layers/` and the household tools under
+`tools/`, laid out so they can drop back into an OpenClaw workspace.
+[docs/HOUSEHOLD-TOOLS.md](docs/HOUSEHOLD-TOOLS.md) walks through them.
 
 ## In use
 
@@ -108,6 +107,8 @@ The first real conversations found the bugs the tests had not:
 ## In this repo
 
 ```
+tools/             grocery-list, doctor-search, access, household-router,
+                   household-config, media-transcription, automations, scripts
 layers/openclaw/   mail-context, ledger, life-index, mail-enrichment,
                    calendar-context, drive-context: code, schema, tests, units
 station/           operator scripts, boundary assertions, publish scanners
@@ -130,9 +131,10 @@ for L in ledger life-index mail-enrichment;          do (cd $L && PYTHONPATH=../
 
 This is a filtered export of two private repos. Implementation records, the
 agent's memory and persona files, superseded plans, and every credential,
-index and database stay private. Names, amounts, addresses and small
-vendors in fixtures were replaced with synthetic ones, and the per-sender
-ledger templates were pruned to household-name platforms. This is a proof
+index and database stay private. Names, amounts, addresses, a ZIP code, a plan name and small vendors in
+fixtures were replaced with synthetic ones; the household roster, the
+brief's private ledger and the voice-note benchmarks are not published;
+the per-sender ledger templates were pruned to household-name platforms. This is a proof
 of work, not a packaged product: it runs on one machine and the runbooks
 describe that machine.
 

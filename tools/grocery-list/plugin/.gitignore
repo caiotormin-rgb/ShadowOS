@@ -1,0 +1,4 @@
+# Build output and dependencies: rebuild with `npm run build`.
+# No trailing slash: worktree dependency symlinks must also stay untracked.
+node_modules
+dist/

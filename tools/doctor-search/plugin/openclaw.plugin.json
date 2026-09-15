@@ -1,0 +1,61 @@
+{
+  "id": "doctor-search-tool",
+  "name": "Doctor Search",
+  "description": "Find in-network providers for household members and email practices after the requester approves (/ok).",
+  "version": "0.1.0",
+  "configSchema": {
+    "type": "object",
+    "required": [
+      "pythonPath",
+      "scriptPath",
+      "dbPath",
+      "whatsappAccountId",
+      "allowedRequesters"
+    ],
+    "properties": {
+      "pythonPath": {
+        "type": "string",
+        "minLength": 1
+      },
+      "scriptPath": {
+        "type": "string",
+        "minLength": 1
+      },
+      "dbPath": {
+        "type": "string",
+        "minLength": 1
+      },
+      "whatsappAccountId": {
+        "type": "string",
+        "minLength": 1
+      },
+      "allowedRequesters": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "minLength": 1
+        },
+        "minItems": 1
+      },
+      "accessDbPath": {
+        "type": "string",
+        "minLength": 1,
+        "description": "Optional household access store; /ok rechecks an active doctor.request grant and fails closed."
+      }
+    },
+    "additionalProperties": false
+  },
+  "activation": {
+    "onStartup": true
+  },
+  "contracts": {
+    "tools": [
+      "doctor_search"
+    ]
+  },
+  "toolMetadata": {
+    "doctor_search": {
+      "optional": true
+    }
+  }
+}

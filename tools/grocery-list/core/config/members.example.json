@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "group": "Household",
+  "_comment": [
+    "Who may use the grocery list. Copy to members.json and edit; the real",
+    "file is gitignored because it holds personal phone numbers.",
+    "",
+    "phone: E.164, with the country code and a leading +. This is the identity",
+    "       used everywhere - membership, who added what, and language.",
+    "role:  owner or member. Owners are the people who may change the roster.",
+    "lang:  en or pt. The language replies come back in, which matters most",
+    "       when someone just pastes a list and there is no prose to read.",
+    "The numbers here are fictional: US 555-0100..0199, Brazil 90000-00xx.",
+    "",
+    "Apply with:  python3 grocery.py members sync",
+    "Revoke someone by deleting their entry and re-running with --prune."
+  ],
+  "members": [
+    { "name": "Example Owner",  "phone": "+12025550100", "role": "owner",  "lang": "en" },
+    { "name": "Example Member", "phone": "+5511900000001", "role": "member", "lang": "pt" }
+  ]
+}

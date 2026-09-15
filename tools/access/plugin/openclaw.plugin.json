@@ -1,0 +1,34 @@
+{
+  "id": "access",
+  "name": "Household Access",
+  "description": "People, identities and grants for household tools. P1: monitor-mode tool policy, /access who, /me.",
+  "version": "0.1.0",
+  "configSchema": {
+    "type": "object",
+    "properties": {
+      "dbPath": {
+        "type": "string",
+        "minLength": 1,
+        "description": "SQLite store. Default ~/.openclaw/access/access.sqlite3 (outside all workspaces)."
+      },
+      "enforceAgents": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "minLength": 1
+        },
+        "uniqueItems": true,
+        "description": "Agent IDs with enforced grants. Unlisted agents stay in monitor mode."
+      }
+    },
+    "additionalProperties": false
+  },
+  "activation": {
+    "onStartup": true
+  },
+  "contracts": {
+    "trustedToolPolicies": [
+      "access-monitor"
+    ]
+  }
+}
