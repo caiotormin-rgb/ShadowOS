@@ -108,7 +108,7 @@ and sampled frames, with explicit limits and failure reporting.
 Invited users now use voice notes extensively and have started consulting
 purchase history for “what's missing?” These are reported usage observations;
 recognition accuracy and end-to-end task success have not been measured in
-this portfolio. The [README walkthrough](../README.md#a-conversation-across-formats)
+this portfolio. The [grocery walkthrough](CHAT-EXAMPLES.md#groceries-a-video-becomes-a-shared-list)
 illustrates the behavior with synthetic inputs. [Portuguese and English chat examples](CHAT-EXAMPLES.md)
 show further grocery interactions and the Doctor workflow in early testing.
 

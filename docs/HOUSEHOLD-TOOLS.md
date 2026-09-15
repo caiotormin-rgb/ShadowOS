@@ -74,7 +74,7 @@ that runs the real engine against synthetic households.
 
 Easy input is a product requirement. The owner reports extensive work on
 media handling and conversational intelligence, and invited users use voice
-notes extensively. The [synthetic walkthrough](../README.md#a-conversation-across-formats)
+notes extensively. The [synthetic walkthrough](CHAT-EXAMPLES.md#groceries-a-video-becomes-a-shared-list)
 shows how these inputs can share one list and conversation. [More Portuguese and English
 chat examples](CHAT-EXAMPLES.md) include follow-ups and Doctor outreach.
 

@@ -15,7 +15,7 @@ not fully launched.** See [validation and limits](VALIDATION.md#portfolio-exampl
 
 ## Three illustrated conversations
 
-Each card opens as an editable SVG. The first two show household workflows;
+Each card opens as an SVG. The first two show household workflows;
 personal-record queries belong to the owner's agent. The support-email
 portion reconstructs a workflow the owner reports completing with personal
 Shadow; it is not a customer transcript.
