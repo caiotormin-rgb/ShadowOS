@@ -1,11 +1,13 @@
-# Building ShadowOS around recurring household work
+# Building a personal assistant around everyday needs
 
 *Caio Tormin · August–September 2026 · one workstation · built with coding agents*
 
-ShadowOS brings everyday household tasks and personal information into
-WhatsApp and Telegram. The first use case was retrieving a payment total;
-the project expanded into shared grocery workflows used by three invited
-people. Doctor finder is in early testing and is not fully launched.
+ShadowOS is an evolving personal assistant inside OpenClaw. I use it to
+organize information, work through ideas and build solutions around my own
+needs, with WhatsApp and Telegram as familiar ways in. The first use case
+was retrieving a payment total; the project expanded into shared grocery
+workflows used by three invited people. Doctor finder is in early testing.
+These are current applications of the assistant, which I continue to extend.
 
 [Project home](../README.md) · [Conversations](CHAT-EXAMPLES.md) · [Architecture](ARCHITECTURE.md)
 
@@ -33,10 +35,13 @@ Searching messages and reconstructing the context would break my flow, so
 I often procrastinated on the task instead. I wanted to reduce the attention
 it took to find the information and get started.
 
-That motivation shaped the project: make information and recurring workflows
-reachable from the chat apps I already used. The devices and services above
-describe where the information was scattered; they are not a list of
-integrations implemented by ShadowOS.
+That motivation shaped the project: make data and ideas easy to capture,
+organize them, and bring them back in the context where they are needed.
+I wanted less tool switching and less work reconstructing the background
+before I could act. A personal assistant I can customize lets me keep
+building solutions as different needs appear, using the chat apps I already
+use. The devices and services above describe where the information was
+scattered; they are not a list of integrations implemented by ShadowOS.
 
 ## The first concrete question
 

@@ -1,14 +1,16 @@
 # ShadowOS visual identity
 
 A small identity for a personal project shared as open source and a portfolio.
-Lead with what the tools do. Give the conversations room to explain the work.
+Lead with the personal assistant and why it exists: easier input, information
+that stays useful across contexts, and less friction between tools. Show
+current capabilities as examples of an assistant that keeps evolving.
 
 [Project home](../README.md) · [Documentation guide](README.md)
 
 ## Header direction
 
 The header contains the conversation mark, ShadowOS name and one sentence:
-“Chat tools for groceries, doctor search, and personal records.” The dark
+“A personal assistant, built around my needs.” The dark
 surface, restrained type and open spacing keep the introduction simple.
 Current stage, access boundaries and OpenClaw attribution stay in readable
 Markdown immediately below it.
@@ -29,7 +31,7 @@ These references informed the hierarchy. Their artwork is not included here.
 | Asset | Use |
 |---|---|
 | [Conversation mark](../assets/brand/shadowos-mark.svg) | A conversation shape with an offset shape behind it; use with the ShadowOS name |
-| [README banner](../assets/brand/readme-banner.svg) | Wordmark and a concrete description of the tools |
+| [README banner](../assets/brand/readme-banner.svg) | Wordmark and the personal assistant’s purpose |
 | [Grocery workflow](../assets/brand/workflow.svg) | Explain how media, instructions and list state fit together |
 | [Grocery conversation](../assets/brand/conversation-grocery.svg) | A Portuguese voice update and shared-list change |
 | [Doctor conversation](../assets/brand/conversation-doctor.svg) | Search preferences and confirmation, labeled early testing |
@@ -102,7 +104,10 @@ was removed. Copyright 2024 The Geist Project Authors.
 
 ## Voice
 
-- Lead with a recognizable task and show what happens next.
+- Describe the assistant as customizable and evolving; groceries, Doctor and
+  personal records are current examples, not the whole scope.
+- Connect its purpose to attention, easy capture and less tool switching.
+- Use recognizable tasks to show what happens next.
 - Use first person for the motivation and choices behind the project.
 - Name OpenClaw's contribution alongside the custom work.
 - Keep the current stage visible: grocery in use, Doctor in early testing,

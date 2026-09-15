@@ -1,6 +1,8 @@
 # Explore ShadowOS
 
-A guide to the project, the decisions behind it, and the code you can inspect.
+A guide to an evolving personal assistant: organizing information, working
+with ideas and building solutions around everyday needs. Explore the current
+capabilities, the decisions behind them and the code you can inspect.
 
 [Project home](../README.md) · [Conversations](CHAT-EXAMPLES.md) · [Source and tests](../tools/README.md)
 

@@ -1,7 +1,8 @@
 # Architecture
 
-ShadowOS combines an owner-only context service with household workflows in
-WhatsApp and Telegram. OpenClaw provides message delivery and the agent
+ShadowOS is a customizable personal assistant inside OpenClaw. Its current
+custom components combine owner-only context services with household
+workflows in WhatsApp and Telegram. OpenClaw provides message delivery and the agent
 runtime and plugin ecosystem. The owner uses a broad collection of OpenClaw
 plugins and tools daily. This export covers selected custom plugins and
 Python services that supply workflow state, retrieval and access checks;

@@ -1,16 +1,25 @@
-![ShadowOS — chat tools for groceries, doctor search, and personal records.](assets/brand/readme-banner.svg)
+![ShadowOS — a personal assistant, built around my needs.](assets/brand/readme-banner.svg)
 
 # ShadowOS
 
-**Household tools for the chat apps we already use.**
+**A personal assistant, built around my needs.**
 
-Send a voice note, show what's in the fridge, or ask about a document.
-ShadowOS brings shared grocery lists, personal information retrieval and
-an early doctor-search workflow into WhatsApp and Telegram, through
-[OpenClaw](https://github.com/openclaw/openclaw).
+ShadowOS is my evolving personal assistant inside
+[OpenClaw](https://github.com/openclaw/openclaw): a place to organize
+information, work through ideas and build practical solutions as new needs
+come up. I shape it around how I live and work, using the chat apps I already
+use.
+
+The aim is to make information and ideas easy to capture, then useful in
+other contexts—without repeatedly switching tools or reconstructing the
+background. A voice note, photo, short video, link or message can be the
+starting point for remembering something, planning or getting a task done.
 
 I'm **Caio Tormin**. I'm building this personal project with coding agents,
-using it in daily life and opening up the custom code and what I've learned.
+using it in daily life and sharing the custom code and what I've learned.
+I keep adding and adapting capabilities for myself, friends and family.
+Groceries, doctor search and personal records are examples of that work.
+
 **Grocery tools are used by three invited people. Doctor is in early testing.**
 This is a working project on one workstation, with a public code export;
 there is no public signup or general installation package yet.
@@ -19,7 +28,7 @@ there is no public signup or general installation package yet.
 [Read the case study](docs/CASE-STUDY.md) ·
 [Explore the code](#explore-the-code)
 
-## What it helps with
+## Some of what it helps with today
 
 | Everyday task | What Shadow does | Current stage |
 |---|---|---|
@@ -139,7 +148,7 @@ read-only; they do not implement the complete email workflow.
 
 **[More conversations in Portuguese and English →](docs/CHAT-EXAMPLES.md)**
 
-Shared shopping, ambiguous voice updates, purchase history, recipe links
+Shared shopping, ambiguous voice updates, purchase history, recipe links,
 the full Doctor approval flow, personal-record lookups and the personal agent’s
 photo-to-support-email workflow.
 
@@ -155,8 +164,12 @@ lived in a WhatsApp thread. Shopping with a child meant repeatedly pulling
 out my phone and working out what someone had already bought. Notes and
 dedicated apps added another place to maintain information.
 
-That shaped the project: **make input fit the moment, keep shared state
-behind the conversation, and ask the person when a decision needs them.**
+That shaped the project: **make input fit the moment and make information
+available when it becomes useful again.** I want to move from an idea or a
+piece of information to the next step without having to remember which tool
+holds it or re-enter the context. I extend the assistant as those needs
+change, keeping shared state behind the conversation and involving the
+person when a decision needs them.
 
 ## The work behind the conversation
 
