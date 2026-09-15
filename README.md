@@ -1,4 +1,4 @@
-![ShadowOS — Less to juggle. More room to think and get things done.](assets/brand/readme-banner.svg)
+![ShadowOS — Less to juggle. More room to think and get things done.](assets/brand/readme-banner.svg?v=b9477dd08188)
 
 # ShadowOS
 

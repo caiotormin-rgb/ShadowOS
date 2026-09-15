@@ -83,7 +83,15 @@ not a security guarantee or an operating system.
    The build reads the bundled fonts and writes the six SVG exports in
    `assets/brand/`. Its JSON output lists text positions and measured widths.
    These are optional graphics dependencies, separate from the runtime tools.
-3. Inspect exports at their native width and 343px wide. Check line lengths,
+3. When the banner changes, update the `v` query in the README image URL to
+   the first 12 characters of the exported SVG’s SHA-256 hash. This gives the
+   revised banner a distinct URL for image caches:
+
+   ```bash
+   sha256sum assets/brand/readme-banner.svg
+   ```
+
+4. Inspect exports at their native width and 343px wide. Check line lengths,
    bubble padding and accented characters. Commit sources and rebuilt exports.
 
 Keep important facts in Markdown as well as images, and give each image
