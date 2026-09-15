@@ -9,8 +9,8 @@ current capabilities as examples of an assistant that keeps evolving.
 
 ## Header direction
 
-The header contains the conversation mark, ShadowOS name and one sentence:
-“A personal assistant, built around my needs.” The dark
+The header contains the conversation mark, ShadowOS name and the tagline:
+“Less to juggle. More room to think and get things done.” The dark
 surface, restrained type and open spacing keep the introduction simple.
 Current stage, access boundaries and OpenClaw attribution stay in readable
 Markdown immediately below it.

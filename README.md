@@ -1,4 +1,4 @@
-![ShadowOS — a personal assistant, built around my needs.](assets/brand/readme-banner.svg)
+![ShadowOS — Less to juggle. More room to think and get things done.](assets/brand/readme-banner.svg)
 
 # ShadowOS
 
