@@ -132,34 +132,39 @@ stolen or discarded disk, not a stolen machine that can be powered on.
 
 ## 7. Sharing the agent with other people
 
-The gateway already serves my household, through a dedicated WhatsApp account
-set up to be the door into these tools. What they reach today is a shared
-grocery list and a doctor finder, neither of which touches the mail index,
-the ledger or the document catalog. Those three are reachable only by me.
-Calendar and a limited view of the ledger are planned for them, and the
-limits are the design problem, not the plumbing.
+Three invited people use the household tools through a second WhatsApp
+account. What keeps that safe is layered, and each layer is independent:
 
-The decision register defers third-party access to the personal data
-tools with the note that it is "an exfiltration primitive with a friendly
-face". What has to be true before a family member gets a ledger question
-answered:
+1. **Gateway allowlists.** Two WhatsApp accounts: mine, and a household
+   account with a four-number allowlist and groups disabled. A Telegram bot
+   with its own allowlist. The command owner is set for both channels, so
+   owner-only commands and dangerous-action approvals have a governor.
+2. **Grants.** A household access plugin holds people, identities and
+   grants (`grocery.use`, `doctor.request`) and registers a trusted tool
+   policy. It ran in monitor mode first and now enforces for the shared
+   agent. Missing sender, unknown person, inactive grant, unmapped tool or an
+   unreadable store all deny. Discovery through the gateway's tool broker is
+   allowed only to an authenticated grant holder and only for exact tool ids
+   owned by the household plugins.
+3. **Domain ceiling.** A mode router keeps one active domain per sender.
+   Doctor tools are blocked while Grocery is active and vice versa.
+   Switching modes never approves a pending confirmation, and escalation
+   cannot widen tools or grants. Model strength is configuration; a stronger
+   model never means access to owner files.
+4. **Mutation needs a typed command.** Removing a grocery item or emailing
+   a practice previews only. Execution requires `/remover CODE` or
+   `/ok CODE`, native commands the model cannot issue, with single-use,
+   expiring, requester-scoped confirmations that re-check the grant.
+5. **Requester isolation.** A doctor request is visible only to its
+   requester; intake stores the plan name and nothing medical. Private
+   grocery lists are bound to one actor by hash. Different senders are
+   isolated by the host's session scope and by backend ownership, though a
+   person's own Grocery and Doctor history share one session.
 
-1. **A verified command owner.** OpenClaw's `commands.ownerAllowFrom` governs
-   who can run owner-only commands and approve dangerous actions. DM pairing
-   does not make someone the owner; an unpaired-but-unowned bot is a bot
-   nobody can govern. The runbook makes verifying it a precondition of
-   pairing anyone.
-2. **A per-channel allowlist.** A channel with no allowlist will talk to
-   anyone who messages it.
-3. **Per-requester tool scope.** Today the tier policy is one environment
-   variable for every caller. A second user needs a policy keyed on who is
-   asking: a family member might get ledger totals for shared vendors and
-   nothing from the document catalog.
-4. **Consent for the people in the data.** The Drive layer was retired partly
-   because building a durable local social graph of every colleague, family
-   member and contractor the account had ever shared a file with would index
-   people who never consented, on a disk that is not encrypted.
-
-Until those exist, the family account gets the grocery list and the doctor
-finder, and the answer to "what did we pay the school" from that account is
-no.
+The mail index, the ledger and the document catalog are not reachable from
+the household account at all. A household view of the ledger is planned;
+the four items above are the preconditions it will be built on, plus
+consent for the people in the data. The Drive layer was retired partly
+because indexing every colleague and contractor the account had ever shared
+a file with would index people who never consented, on a disk that is not
+encrypted.

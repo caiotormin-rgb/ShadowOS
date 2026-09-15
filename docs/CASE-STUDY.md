@@ -39,9 +39,11 @@ from mailing someone your tax return.
   is a value and not a page number. Fed deliberately, so it stays small.
 - **Three MCP servers, twelve read-only tools.** Stdlib only in the query
   path, which is what buys a 32 ms cold start.
-- **A household surface.** A grocery list and a doctor finder for my family
-  through a dedicated WhatsApp account. The mail and ledger tools stay
-  owner-only until per-requester scope exists.
+- **A household surface.** A grocery list, a doctor finder, an access
+  plugin and a mode router, served to three invited people through a
+  dedicated WhatsApp account. 160 commits and 535 tests of their own, in the
+  agent's workspace repo. Mutation needs a typed command; the mail and
+  ledger tools stay owner-only. See [HOUSEHOLD-TOOLS.md](HOUSEHOLD-TOOLS.md).
 
 Some things were built and killed: metadata digest views (the envelope, not
 the letter), a custom Drive index (Google's connector already did search,
@@ -61,7 +63,7 @@ decision register as dead, with the reason.
 | Model calls for 80% coverage | about 154, one per sender |
 | MCP call, spawn to answer | 32 ms p50 |
 | Ledger query | 0.13 ms |
-| Tests | 719 across six layers |
+| Tests | 719 across the context layers, 535 across the household tools |
 
 The acceptance test was a phone. "What did I pay the contractor?" from
 Telegram returns every invoice and the total. Against raw rows it returns
@@ -84,6 +86,13 @@ paid. The deduplication is the product.
 - **A summary of the conventions dropped two of eight rules**, and the
   agent that trusted the summary broke exactly those two. The entry point
   now links the full text instead of summarising it.
+- **A refactor broke the household bot for its first real user.** `/lista`
+  succeeded, then the next request asked the person to switch modes again:
+  the router's denial text described an unavailable tool as a missing mode
+  and the model repeated the story. Underneath sat a second bug, the harness
+  reaching tools through a broker the policies had not modelled. Both were
+  reproduced in the real runtime, fixed with 29 access and 24 router tests,
+  and deployed with a backup and a written rollback.
 - **The encryption gate is still waived.** The disk is plain ext4. The check
   fails on its merits and passes only through a recorded waiver that every
   status response surfaces. The migration is one command; I have not run it.
@@ -111,7 +120,8 @@ part:
 
 1. Fetch message bodies. Amounts on 28% of ledger rows is a snippet limit,
    and bodies fix it with no template changes.
-2. Wire the document catalog's MCP server to the gateway.
-3. Design the household view of the ledger: verified command owner, channel
-   allowlist, per-requester scope.
+2. Bring the household tools' source into this repo after the same
+   de-identification pass.
+3. Design the household view of the ledger on the access and routing layers
+   that now exist.
 4. Run the encryption migration and retire the waiver.

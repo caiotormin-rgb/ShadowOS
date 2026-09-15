@@ -39,12 +39,16 @@ flowchart LR
 
 ## The pieces
 
+The household tools (grocery list, doctor finder, access, modes, media
+capture) sit beside these as gateway plugins in the agent's own workspace
+repo; they are described in [HOUSEHOLD-TOOLS.md](HOUSEHOLD-TOOLS.md).
+
 | Layer | What it holds | Lifecycle | Status |
 |---|---|---|---|
 | [`mail-context`](../layers/openclaw/mail-context/) | Gmail headers, subjects, snippets, labels. Never bodies. FTS5 index. | Disposable cache, synced twice daily, rebuilds in about 30 minutes | Live |
 | [`mail-enrichment`](../layers/openclaw/mail-enrichment/) | Sender classification, counterparty resolution, resumable attachment harvester, cross-model QC benchmark | Derived, rebuilt on demand | Live (tooling) |
 | [`ledger`](../layers/openclaw/ledger/) | One row per purchase, subscription, booking, appointment, payment, keyed on counterparty | Rebuilt from the index twice daily, atomic swap | Live |
-| [`life-index`](../layers/openclaw/life-index/) | Catalog of documents that matter: hash, extracted text, type, tier, structured fields | Deliberate act, a few times a year | Live, MCP wiring staged |
+| [`life-index`](../layers/openclaw/life-index/) | Catalog of documents that matter: hash, extracted text, type, tier, structured fields | Deliberate act, a few times a year | Live, MCP server registered |
 | [`calendar-context`](../layers/openclaw/calendar-context/) | Read model of Google Calendar with four independent no-write layers | Would sync every 30 minutes | Built and tested, connected to nothing |
 | [`drive-context`](../layers/openclaw/drive-context/) | Metadata-only Drive index, content unreachable by construction | Retired 2026-08-25 | Kept for its tests |
 

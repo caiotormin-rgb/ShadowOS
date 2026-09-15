@@ -7,8 +7,11 @@ the part of that history that is safe to show, and it is included because the
 commit discipline is part of the work: most `fix:` subjects state the defect
 that was found, not the change that was made.
 
-Fifty commits, 2026-08-22 to 2026-09-15, 419 file changes, about 41k lines
-added. Every non-trivial change also produced a dated record with the actual
+Fifty commits in the station repo, 2026-08-22 to 2026-09-15, 419 file
+changes, about 41k lines added. A second private repo, the agent's own
+workspace, holds another 160 commits (2026-08-24 to 2026-09-14) for the
+household tools; a selection of its subjects is in
+[HOUSEHOLD-TOOLS.md](HOUSEHOLD-TOOLS.md). Every non-trivial change also produced a dated record with the actual
 command output as evidence, which is where the private history lives.
 
 ```
