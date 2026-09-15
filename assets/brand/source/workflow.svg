@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="1044" viewBox="0 0 720 1044" role="img" aria-labelledby="title desc">
+  <title id="title">From a fridge video to a shared list</title>
+  <desc id="desc">Fictional grocery example. A fridge video with narration adds strawberry yogurt, with plain yogurt as a fallback note. OpenClaw and ShadowOS read the current task and instructions, then update the shared list. Text, voice, images and short video are supported inputs.</desc>
+  <rect width="720" height="1044" rx="22" fill="#181F25"/>
+  <rect x="0.5" y="0.5" width="719" height="1043" rx="21.5" fill="none" stroke="#35414B"/>
+  <g font-family="Geist" font-weight="400">
+    <text x="40" y="64" font-size="36" font-weight="500" fill="#E7ECEF">From a fridge video</text>
+    <text x="40" y="108" font-size="36" font-weight="500" fill="#E7ECEF">to a shared list</text>
+    <text x="40" y="153" font-size="28" font-weight="400" fill="#AAB6BF">Text · voice · images · short video</text>
+    <rect x="40" y="190" width="640" height="225" rx="18" fill="#222A31" stroke="#35414B"/>
+    <circle cx="77" cy="230" r="18" fill="#181F25" stroke="#35414B"/>
+    <text x="70" y="239" font-size="24" font-weight="400" fill="#A6CDBE">1</text>
+    <text x="112" y="241" font-size="32" font-weight="500" fill="#E7ECEF">Send an update</text>
+    <text x="72" y="290" font-size="28" font-weight="400" fill="#AAB6BF">Fridge video + narration</text>
+    <text x="72" y="330" font-size="28" font-weight="400" fill="#E7ECEF">“Add this strawberry yogurt.</text>
+    <text x="72" y="370" font-size="28" font-weight="400" fill="#E7ECEF">If unavailable, plain yogurt is fine.”</text>
+    <rect x="40" y="459" width="640" height="174" rx="18" fill="#222A31" stroke="#35414B"/>
+    <circle cx="77" cy="499" r="18" fill="#181F25" stroke="#35414B"/>
+    <text x="70" y="508" font-size="24" font-weight="400" fill="#A6CDBE">2</text>
+    <text x="112" y="510" font-size="32" font-weight="500" fill="#E7ECEF">Read it in context</text>
+    <text x="72" y="559" font-size="28" font-weight="400" fill="#AAB6BF">OpenClaw + ShadowOS</text>
+    <text x="72" y="599" font-size="28" font-weight="400" fill="#E7ECEF">The current task + your instructions</text>
+    <rect x="40" y="677" width="640" height="182" rx="18" fill="#253831" stroke="#35414B"/>
+    <circle cx="77" cy="717" r="18" fill="#181F25" stroke="#35414B"/>
+    <text x="70" y="726" font-size="24" font-weight="400" fill="#A6CDBE">3</text>
+    <text x="112" y="728" font-size="32" font-weight="500" fill="#E7ECEF">Update the shared list</text>
+    <text x="72" y="777" font-size="28" font-weight="400" fill="#E7ECEF">Strawberry yogurt</text>
+    <text x="72" y="817" font-size="28" font-weight="400" fill="#E7ECEF">Note: plain yogurt if unavailable</text>
+    <path d="M360 423v25m-6-6 6 6 6-6" fill="none" stroke="#A6CDBE" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M360 641v25m-6-6 6 6 6-6" fill="none" stroke="#A6CDBE" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="40" y="914" font-size="28" font-weight="400" fill="#AAB6BF">Keep chatting: mark bought, correct</text>
+    <text x="40" y="954" font-size="28" font-weight="400" fill="#AAB6BF">an item, or ask about history.</text>
+    <text x="40" y="1008" font-size="25" font-weight="400" fill="#AAB6BF">Illustrated workflow · shared groceries</text>
+  </g>
+</svg>

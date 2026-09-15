@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="320" viewBox="0 0 1200 320" role="img" aria-labelledby="title desc">
+  <title id="title">ShadowOS</title>
+  <desc id="desc">Chat tools for groceries, doctor search, and personal records. A personal open-source project built on OpenClaw.</desc>
+  <rect width="1200" height="320" rx="10" fill="#171D23"/>
+  <g transform="translate(60 67) scale(1.333333)">
+    <path d="M17 11h20a7 7 0 0 1 7 7v13a7 7 0 0 1-7 7H25l-8 6v-6a7 7 0 0 1-7-7V18a7 7 0 0 1 7-7Z" fill="#253831"/>
+    <path d="M11 4h20a7 7 0 0 1 7 7v13a7 7 0 0 1-7 7H19l-8 6v-6a7 7 0 0 1-7-7V11a7 7 0 0 1 7-7Z" fill="#171D23" stroke="#A6CDBE" stroke-width="1.6" stroke-linejoin="round"/>
+    <path d="M12 14h17M12 21h11" stroke="#A6CDBE" stroke-width="1.6" stroke-linecap="round"/>
+  </g>
+  <g font-family="Geist">
+    <text x="148" y="123" font-size="72" font-weight="500" letter-spacing="-2" fill="#EDF0F2">ShadowOS</text>
+    <text x="64" y="211" font-size="38" font-weight="400" fill="#BBC5CC">Chat tools for groceries,</text>
+    <text x="64" y="261" font-size="38" font-weight="400" fill="#BBC5CC">doctor search, and personal records.</text>
+  </g>
+</svg>

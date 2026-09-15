@@ -94,7 +94,7 @@ establish that a live model always follows those instructions.
 
 ### Visual presentation
 
-The banner, grocery workflow and three conversation SVGs are authored
+The grocery workflow and three conversation SVGs are authored
 illustrations. Grocery and Doctor cards follow the documented workflows;
 Doctor remains in early testing. Personal-record dates, amounts, businesses
 and source titles are fictional. The support-email segment reconstructs a completed workflow reported by the
@@ -108,3 +108,8 @@ No photo recognition, support drafting, email delivery or reply monitoring
 was exercised during this documentation review. The owner confirms those
 user-facing steps occurred in personal use; exact connector, approval and
 attachment details were not supplied.
+
+The header and conversation graphics use Geist lettering converted to SVG
+paths. All six assets were rendered locally at native size and 343px width,
+and the export build was checked for reproducibility. This checks the visual
+assets; a GitHub browser session was unavailable for a full-page visual check.

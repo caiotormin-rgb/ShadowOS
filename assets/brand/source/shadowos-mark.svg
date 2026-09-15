@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96" role="img" aria-labelledby="title desc">
+  <title id="title">ShadowOS conversation mark</title>
+  <desc id="desc">Two offset conversation shapes in muted mint on a dark graphite background.</desc>
+  <rect width="96" height="96" rx="22" fill="#181F25"/>
+  <rect x="0.5" y="0.5" width="95" height="95" rx="21.5" fill="none" stroke="#35414B"/>
+  <g font-family="Geist" font-weight="400">
+    <g transform="translate(4 4) scale(1.83)"><path d="M17 11h20a7 7 0 0 1 7 7v13a7 7 0 0 1-7 7H25l-8 6v-6a7 7 0 0 1-7-7V18a7 7 0 0 1 7-7Z" fill="#253831"/><path d="M11 4h20a7 7 0 0 1 7 7v13a7 7 0 0 1-7 7H19l-8 6v-6a7 7 0 0 1-7-7V11a7 7 0 0 1 7-7Z" fill="#181F25" stroke="#A6CDBE" stroke-width="1.6" stroke-linejoin="round"/><path d="M12 14h17M12 21h11" stroke="#A6CDBE" stroke-width="1.6" stroke-linecap="round"/></g>
+  </g>
+</svg>

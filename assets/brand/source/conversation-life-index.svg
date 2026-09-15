@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="1784" viewBox="0 0 720 1784" role="img" aria-labelledby="title desc">
+  <title id="title">Personal records — illustrated retrieval and owner-reported purchase support</title>
+  <desc id="desc">Illustrative conversations and fictional data. Owner-only records answer a landscaper start date and report an HVAC amount from a paid receipt. The purchase-support sequence reconstructs the owner's completed personal OpenClaw workflow: find purchase and support details, extract the serial number, describe the defect photo, send the inquiry and follow up when a response arrives. Life-index itself remains read-only.</desc>
+  <rect width="720" height="1784" rx="22" fill="#181F25"/>
+  <rect x="0.5" y="0.5" width="719" height="1783" rx="21.5" fill="none" stroke="#35414B"/>
+  <g font-family="Geist" font-weight="400">
+    <text x="40" y="62" font-size="34" font-weight="500" fill="#E7ECEF">Personal records</text>
+    <text x="680" y="60" text-anchor="end" font-size="24" fill="#A6CDBE">Owner only</text>
+    <text x="40" y="105" font-size="26" font-weight="400" fill="#AAB6BF">Illustrated conversations · example data</text>
+    <path d="M40 134H680" stroke="#35414B"/>
+    <rect x="104" y="166" width="576" height="105" rx="18" fill="#253331" stroke="#35414B"/>
+    <text x="128" y="199" font-size="22" font-weight="400" fill="#AAB6BF">You</text>
+    <text x="128" y="244" font-size="28" font-weight="400" fill="#E7ECEF">When did we switch landscapers?</text>
+    <rect x="40" y="295" width="576" height="145" rx="18" fill="#222A31" stroke="#35414B"/>
+    <text x="64" y="328" font-size="22" font-weight="400" fill="#A6CDBE">Shadow</text>
+    <text x="64" y="373" font-size="28" font-weight="400" fill="#E7ECEF">March 2025. The welcome email</text>
+    <text x="64" y="413" font-size="28" font-weight="400" fill="#E7ECEF">says service started March 10.</text>
+    <rect x="104" y="464" width="576" height="145" rx="18" fill="#253331" stroke="#35414B"/>
+    <text x="128" y="497" font-size="22" font-weight="400" fill="#AAB6BF">You</text>
+    <text x="128" y="542" font-size="28" font-weight="400" fill="#E7ECEF">What did I pay for the last</text>
+    <text x="128" y="582" font-size="28" font-weight="400" fill="#E7ECEF">HVAC repair?</text>
+    <rect x="40" y="633" width="576" height="145" rx="18" fill="#222A31" stroke="#35414B"/>
+    <text x="64" y="666" font-size="22" font-weight="400" fill="#A6CDBE">Shadow</text>
+    <text x="64" y="711" font-size="28" font-weight="400" fill="#E7ECEF">$480 on June 12, 2026.</text>
+    <text x="64" y="751" font-size="28" font-weight="400" fill="#E7ECEF">Source: receipt marked paid.</text>
+    <path d="M40 810H680" stroke="#35414B" stroke-dasharray="4 6"/>
+    <text x="40" y="859" font-size="29" font-weight="500" fill="#A6CDBE">Purchase support · completed</text>
+    <text x="40" y="899" font-size="26" font-weight="400" fill="#AAB6BF">Personal OpenClaw · owner-reported</text>
+    <rect x="104" y="928" width="576" height="287" rx="18" fill="#253331" stroke="#35414B"/>
+    <text x="128" y="961" font-size="22" font-weight="400" fill="#AAB6BF">You</text>
+    <text x="128" y="1006" font-size="28" font-weight="400" fill="#E7ECEF">Email support about the fan</text>
+    <text x="128" y="1046" font-size="28" font-weight="400" fill="#E7ECEF">I bought in April.</text>
+    <rect x="128" y="1073" width="528" height="120" rx="12" fill="#181F25" stroke="#35414B"/>
+    <g transform="translate(150 1094)" fill="none" stroke="#AAB6BF" stroke-width="1.8"><rect width="70" height="76" rx="8"/><circle cx="35" cy="32" r="21"/><path d="M35 11v42M14 32h42M35 53v12M21 65h28"/><path d="m57 4-8 15 11 9-9 12" stroke="#A6CDBE" stroke-width="2.5"/></g>
+    <text x="246" y="1119" font-size="24" font-weight="400" fill="#AAB6BF">Attached photo</text>
+    <text x="246" y="1156" font-size="26" font-weight="400" fill="#E7ECEF">Cracked housing</text>
+    <rect x="40" y="1239" width="576" height="265" rx="18" fill="#222A31" stroke="#35414B"/>
+    <text x="64" y="1272" font-size="22" font-weight="400" fill="#A6CDBE">Shadow</text>
+    <text x="64" y="1317" font-size="28" fill="#E7ECEF">I found the April purchase</text>
+    <text x="64" y="1357" font-size="28" fill="#E7ECEF">and customer support contact.</text>
+    <text x="64" y="1397" font-size="28" fill="#E7ECEF">Extracted the serial number and</text>
+    <text x="64" y="1437" font-size="28" fill="#E7ECEF">described the defect from your photo.</text>
+    <text x="64" y="1477" font-size="28" fill="#E7ECEF">Sent the details to support.</text>
+    <rect x="40" y="1528" width="576" height="145" rx="18" fill="#222A31" stroke="#35414B"/>
+    <text x="64" y="1561" font-size="22" fill="#A6CDBE">Shadow · later</text>
+    <text x="64" y="1606" font-size="28" fill="#E7ECEF">Support replied. Here’s their</text>
+    <text x="64" y="1646" font-size="28" fill="#E7ECEF">response and the next step.</text>
+    <path d="M40 1701H680" stroke="#35414B"/>
+    <text x="40" y="1745" font-size="26" fill="#AAB6BF">Illustrated · personal access only</text>
+  </g>
+</svg>

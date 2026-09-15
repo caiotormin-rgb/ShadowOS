@@ -1,4 +1,4 @@
-![ShadowOS — a little less life admin. Dark-theme identity for a personal project in conversational household tools.](assets/brand/readme-banner.svg)
+![ShadowOS — chat tools for groceries, doctor search, and personal records.](assets/brand/readme-banner.svg)
 
 # ShadowOS
 
@@ -62,7 +62,7 @@ A short correction updates the same list. Screenshots of notes, photos of
 conversations and voice replies offer other ways to capture information
 without retyping it into another app.
 
-*The conversations and banner are authored illustrations. The grocery list
+*The conversations are authored illustrations. The grocery list
 operations were checked locally; media recognition and conversational
 interpretation are illustrated. [Validation details](docs/VALIDATION.md#portfolio-example).*
 

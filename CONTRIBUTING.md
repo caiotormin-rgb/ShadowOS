@@ -24,8 +24,9 @@ Use temporary stores and fake services when testing; live household access
 is not needed for those suites.
 
 For documentation and graphics, check local links and the rendered result.
-SVG assets live in [assets/brand](assets/brand); their conventions are in
-[visual identity](docs/VISUAL-IDENTITY.md).
+Edit SVG text and layouts in [assets/brand/source](assets/brand/source), then
+rebuild the portable exports. Font licensing, build instructions and design
+conventions are in [visual identity](docs/VISUAL-IDENTITY.md).
 
 ## Keep examples safe to share
 
