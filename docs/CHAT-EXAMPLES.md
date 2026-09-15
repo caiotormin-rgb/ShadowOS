@@ -1,5 +1,7 @@
 # Shadow in conversation
 
+[Project home](../README.md) · [Case study](CASE-STUDY.md) · [How it works](HOUSEHOLD-TOOLS.md)
+
 Portuguese and English examples of the interactions Shadow is designed to
 support: capture something quickly, carry context across turns, and make the
 next action clear. Explanatory notes stay in English; each exchange follows

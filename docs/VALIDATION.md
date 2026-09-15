@@ -47,8 +47,8 @@ The export's [plugin setup limitations](../tools/README.md) are separate.
 
 ## Portfolio example
 
-The README's multimodal conversation uses synthetic products, media captions
-and interpreted requests. Separate temporary SQLite runs used two fictional
+The multimodal examples in the README and chat guide use synthetic products,
+media captions and interpreted requests. Separate temporary SQLite runs used two fictional
 members sharing a household, with Costco as the default store and either
 Portuguese or English as the preferred language. Direct calls to
 `agent_api.handle` verified the following:
@@ -90,3 +90,12 @@ No real provider search, recipe fetch, email delivery or appointment booking
 was performed. The Doctor dialogue follows the exported conversation
 instructions and outreach template; testing the underlying guards does not
 establish that a live model always follows those instructions.
+
+
+### Visual presentation
+
+The README banner and grocery workflow SVG are authored illustrations.
+The banner abbreviates the milk item to “Leite”; the conversation keeps
+“Leite sem lactose.” The workflow shows the same yogurt-fallback behavior
+as a note, with media interpretation illustrated. These graphics add no
+new claim of measured recognition accuracy or live end-to-end validation.

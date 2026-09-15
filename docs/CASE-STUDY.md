@@ -7,6 +7,19 @@ WhatsApp and Telegram. The first use case was retrieving a payment total;
 the project expanded into shared grocery workflows used by three invited
 people. Doctor finder is in early testing and is not fully launched.
 
+[Project home](../README.md) · [Conversations](CHAT-EXAMPLES.md) · [Architecture](ARCHITECTURE.md)
+
+## At a glance
+
+| | |
+|---|---|
+| **Problem** | Everyday information retrieval and household coordination repeatedly interrupted primary work |
+| **Approach** | Familiar chat apps, easy multimodal input, shared state and explicit review for selected actions |
+| **My role** | The problem framing and input requirements came from my experience; I built the project with coding agents |
+| **Custom scope** | Grocery and Doctor workflows, information retrieval, media processing and access checks inside OpenClaw |
+| **Current stage** | Personal use and three invited grocery users; Doctor in early testing |
+| **Evidence** | Observed household use and scoped technical validation; time saved and end-to-end task success remain unmeasured |
+
 ## The personal motivation
 
 I went through periods of high stress and workload when my attention became
