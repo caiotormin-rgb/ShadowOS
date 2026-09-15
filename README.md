@@ -1,12 +1,41 @@
 # ShadowOS
 
-A personal AI agent over eighteen years of email and the documents that
-matter, answering from a phone, unable to send, edit or delete anything.
+A personal agent that indexes my documents, responsibilities, history,
+contacts and context, and puts them at my fingertips from any device. It
+reads eighteen years of email and cannot send, edit or delete anything.
 Stdlib Python, SQLite, systemd, three MCP servers, 719 tests.
 
-My email had become my filing system by accident. This is what I built to
-stop searching it by hand, and it grew one tool at a time rather than from a
-plan. What's here is what survived.
+## Motivation
+
+I often postpone starting a task because of friction fatigue: fishing for
+scattered information across apps and devices, each with its own login,
+before the actual work can begin. The information was all there, in email,
+in Drive, in documents dumped wherever they landed. Getting to it was the
+problem. After a stretch of higher workload and stress, I decided to build
+a system that could make sense of my unstructured data instead of me doing
+it by hand every time.
+
+## Approach
+
+Index everything once, keep it current automatically, and make it reachable
+from wherever I already am. The agent runs on
+[OpenClaw](https://github.com/openclaw/openclaw), lives on one workstation,
+and is on every device through a Tailscale tailnet. New context is ingested
+natively as it arrives, so the system also organises intake going forward
+rather than only cleaning up the past. The point is to remove the
+disengaging, repetitive navigation between systems, and then to extend the
+same tools to family productivity.
+
+Three principles fell out of that:
+
+- **Gmail and Drive stay authoritative.** Every index is a rebuildable
+  cache. Delete it and it comes back in half an hour.
+- **Cheap layers first, and they must terminate.** A model sees only what
+  survives the free filters, and it sees each *sender* once, not each
+  message.
+- **The agent cannot write.** It is reachable from a chat app, so anything
+  it can do, anyone who can message it can do. Read-only is enforced by
+  tests, not policy.
 
 ## What it does
 
@@ -22,35 +51,33 @@ Ask from Telegram or WhatsApp:
 Three tools sit behind that, each a stdio MCP server with four read-only
 tools, answering in about 32 ms including process spawn:
 
-- **mail-context** — a disposable local index of Gmail metadata. Never
-  bodies. Delete it and it rebuilds in half an hour; Gmail stays the source
-  of truth.
+- **mail-context** — a local index of Gmail metadata. Never bodies.
+  Synced twice a day, disposable.
 - **ledger** — one row per purchase, subscription, booking or payment, keyed
-  on the counterparty rather than the sender address. Fast, structured
-  context for an agent doing lookups on my behalf.
-- **life-index** — a small catalog of the documents that actually matter,
-  with amounts and IDs extracted as fields. Fed deliberately, so it stays
-  small.
+  on the counterparty rather than the sender address. Structured context for
+  an agent doing lookups on my behalf.
+- **life-index** — a small catalog of the documents that matter, with
+  amounts and IDs extracted as fields so an answer is a value, not a page
+  number.
 
-The same gateway serves a shared grocery list and a doctor finder to my
-household through a dedicated WhatsApp account. Those are not in this repo
-yet; a limited household view of the ledger is the next step, and the limits
-are the design problem.
+The same gateway already serves a shared grocery list and a doctor finder
+to my household through a dedicated WhatsApp account. Those are not in this
+repo yet; a limited household view of the ledger is next, and the limits are
+the design problem.
 
 ## How it's built
 
 Plain Python and SQLite with nothing to install: there is no
 `requirements.txt` because there is nothing in it. Everything runs as
 systemd user timers under an isolated service account with no sudo, on one
-Ubuntu workstation, behind [OpenClaw](https://github.com/openclaw/openclaw)
-as the chat gateway. Cloud models do the talking; a local `llama.cpp` lane
+Ubuntu workstation. Cloud models do the talking; a local `llama.cpp` lane
 handles bounded private tasks with tool use disabled.
 
-The safety properties are tests, not promises. The Gmail grant is read-only,
-but the real boundary is a transport with one GET method and a path
-allowlist, plus tests that walk the package for anything else. Document text
-for the sensitive tiers never reaches the chat surface, because a bot on
-WhatsApp must not answer "what is my tax ID" for whoever holds the phone.
+The Gmail grant is read-only, but the real boundary is a transport with one
+GET method and a path allowlist, plus tests that walk the package for
+anything else. Document text for the sensitive tiers never reaches the chat
+surface, because a bot on WhatsApp must not answer "what is my tax ID" for
+whoever holds the phone.
 
 | Layer | State | Tests |
 |---|---|---|
