@@ -1,44 +1,31 @@
 # Explore ShadowOS
 
-A guide to an evolving personal assistant: organizing information, working
-with ideas and building solutions around everyday needs. Explore the current
-capabilities, the decisions behind them and the code you can inspect.
+An evolving personal assistant for organizing information, working with ideas
+and building solutions around everyday needs.
 
-[Project home](../README.md) · [Conversations](CHAT-EXAMPLES.md) · [Source and tests](../tools/README.md)
+[Project home](../README.md) · [Conversations](CHAT-EXAMPLES.md) · [Code & setup](../tools/README.md)
 
-## See what it does
+## Choose a reading path
 
-Start with the [Portuguese and English chat examples](CHAT-EXAMPLES.md).
-They show media capture, shared shopping, short corrections, the Doctor
-workflow in early testing, and personal-record lookups. Three illustrations
-and an owner-reported photo-to-support-email flow accompany the authored
-exchanges.
+| Your question | Start here |
+|:--|:--|
+| What does it do? | [Portuguese and English conversations](CHAT-EXAMPLES.md): multimodal input, shared lists, Doctor and personal records |
+| Why was it built, and what did Caio contribute? | [Case study](CASE-STUDY.md): motivation, decisions, lessons and evidence |
+| How does it work? | [Architecture](ARCHITECTURE.md): OpenClaw, custom services, access and workstation |
+| Can I run or contribute to it? | [Tools & setup](../tools/README.md), then [Contributing](../CONTRIBUTING.md) |
+| What was tested, and what remains unresolved? | [Validation](VALIDATION.md) and [Security](SECURITY.md) |
 
-## Understand the work
+## Reference shelf
 
-The [case study](CASE-STUDY.md) connects the personal problem to design and
-engineering decisions, custom contributions, observed use and limitations.
-The [architecture](ARCHITECTURE.md) explains OpenClaw's role, the custom
-workflows and the workstation configuration.
+| Topic | Reference |
+|:--|:--|
+| Workflow behavior | [Household tools](HOUSEHOLD-TOOLS.md) |
+| Technology versions | [Host, lockfile and review snapshot](ARCHITECTURE.md#technology-and-version-snapshot) |
+| Development milestones | [History](HISTORY.md) |
+| Public and private data boundaries | [Publishing](PUBLISHING.md) |
+| Graphics, typography and voice | [Visual identity](VISUAL-IDENTITY.md) |
 
-The [technology and version snapshot](ARCHITECTURE.md#technology-and-version-snapshot)
-records host versions, locked dependencies and the local review environment.
-
-## Read or contribute code
-
-- [Household tools](HOUSEHOLD-TOOLS.md): workflow behavior and implementation references.
-- [Tools and test commands](../tools/README.md): engines, adapters and setup limitations.
-- [Validation](VALIDATION.md): what was tested, what was skipped and known failures.
-- [Contributing](../CONTRIBUTING.md): focused changes and synthetic reproductions.
-- [Development history](HISTORY.md): selected milestones from the private source repositories.
-
-## Boundaries and maintenance
-
-- [Security](SECURITY.md): access, approvals, data handling and current limitations.
-- [Publishing](PUBLISHING.md): the boundary between this public export and private source data.
-- [Visual identity](VISUAL-IDENTITY.md): assets, palette and writing conventions.
-
-The plans, runbooks and procedures elsewhere in this directory are dated
-operational references from the source repositories. Some describe retired
-or unconnected components. They need review before reuse; the project home,
-case study and validation page provide the current portfolio overview.
+**Reading older material:** plans, runbooks and procedures are dated references
+from the private source repositories. Some describe retired or unconnected
+components. Use the project home, case study and validation page for the
+current portfolio overview.
