@@ -1,10 +1,20 @@
 # The household tools
 
-The tools that people other than me use. They live in the agent's own
-workspace repo (160 commits, 2026-08-24 to 2026-09-14, all committed under
-the agent's persona) and run inside the OpenClaw gateway as plugins. This
-page describes them from that source,
-their tests, and the commit trail. The source is under [`tools/`](../tools/).
+The grocery workflows are used by three invited household members through
+WhatsApp. Doctor finder is in early testing and is not fully launched. The
+workflows run as plugins inside OpenClaw; custom engines, adapters and
+behavior instructions are under [`tools/`](../tools/).
+
+Invited-user Shadow is deliberately restricted to Grocery and Doctor for
+security. The owner's personal Shadow on Telegram has broader configured
+OpenClaw capabilities, including Firecrawl, and can also use the same grocery
+functionality. This page primarily describes the restricted household tools;
+it is not a complete description of the owner's agent configuration.
+
+This is the implementation reference. Start with the [README](../README.md)
+for an interaction example or the [case study](CASE-STUDY.md) for decisions
+and results. Test counts below come from the original development records;
+see the [export review scope](VALIDATION.md) for what was rerun.
 
 ```
 tools/
@@ -24,6 +34,12 @@ imports its plugin. The model never supplies an actor, a database path or a
 confirmation; those come from the host and the operator's configuration.
 
 ## Grocery list
+
+The starting problem was a household list spread across an ongoing WhatsApp
+thread: repeated phone checks while shopping with a child, uncertainty about
+what had been bought, and missed or excess purchases. Notes and dedicated
+apps added another place to maintain information. Easy conversational input
+and a shared view of purchase status became the core requirements.
 
 One live list per store. Items arrive as text, a voice note, a photo or a
 short video; the agent interprets, the engine stores clean items with their
@@ -54,10 +70,58 @@ configured.
 8,500 lines of engine, 402 core tests, 31 plugin tests, a contract benchmark
 that runs the real engine against synthetic households.
 
+## Multimodal input and conversational behavior
+
+Easy input is a product requirement. The owner reports extensive work on
+media handling and conversational intelligence, and invited users use voice
+notes extensively. The [synthetic walkthrough](../README.md#a-conversation-across-formats)
+shows how these inputs can share one list and conversation. [More Portuguese and English
+chat examples](CHAT-EXAMPLES.md) include follow-ups and Doctor outreach.
+
+| Input or follow-up | Behavior the workflow is designed for |
+|---|---|
+| Short fridge video with narration | Combine visible products with the spoken request; preserve a stated substitute as a note on the primary item |
+| Product photo | Use a host-provided visual description to ground references such as “this one” |
+| Screenshot of a conversation or notes | Extract items at the sender's request, without requiring them to retype the source text |
+| Voice note and short correction | Keep the current product and store in context; update purchase status without adding a duplicate |
+| Unclear audio or image | Ask a brief clarification before adding uncertain items |
+| “The second one” after a choice | Submit the selected unresolved item; keep earlier successful changes |
+| “What's missing?” | Consult recorded purchase history and recurring-item suggestions |
+| Recipe link | Personal Telegram agent: fetch through Firecrawl, then use groceries. Invited-user agent: ask for ingredients or a screenshot unless trusted page contents are already supplied |
+
+The grocery tools themselves do not fetch URLs. The owner's Telegram agent
+can compose Firecrawl retrieval with the grocery functionality; this broader
+owner workflow was confirmed by the operator. Firecrawl is not exposed as a
+general tool to invited users. The exported grocery
+[behavior instructions](../tools/grocery-list/skill/SKILL.md) require trusted
+extracted content and prohibit inferring products from a bare URL. A fallback note records the person's preference; it does not
+perform a store-stock check or automatic substitution.
+
+Conversation and state have separate responsibilities. The model interprets
+intent and follow-ups. The engine resolves the household and store, applies
+changes, and returns item facts and unresolved choices. A partially successful
+batch must not be repeated in full after clarification. Reply language follows
+the person's preference while stored product wording remains intact.
+
+Screenshots, transcripts and pages are treated as data. The current sender's
+request determines the action; quoted messages do not grant someone else
+access or approve a removal. If video processing only produced audio, the
+assistant must say that rather than claiming visual recognition.
+
+Source references: [reply design and regressions](../tools/docs/shadow-0914/GROCERY-REPLIES.md),
+[conversation instructions](../tools/household-config/prompts/BASE.md), and
+[media handling](../tools/media-transcription/).
+
 ## Doctor finder
 
-Does the legwork of finding an in-network provider for a household member
-and, if asked, contacts the practice.
+**Status: early testing; not fully launched.** The following describes the
+implemented workflow and its intended behavior.
+
+The goal is to reduce the work of searching local providers, curating options
+and contacting practices one by one. The tool prepares a shortlist and,
+after the requester approves a draft, contacts the practice. The person
+retains provider choice and outreach approval. Insurance acceptance still
+needs confirmation with the practice; appointment booking is a future workflow.
 
 ```
 new -> intake ... -> confirm-intake      queues a background search
@@ -73,8 +137,10 @@ email: verify-email -> draft -> /ok CODE -> poll-notify (timer, 5 min)
   quote; anything under 2 is dropped; distance comes from public ZIP
   centroids; ratings from search snippets, never scraped review sites; top 8
   kept. Results are cached for seven days because the searches are slow.
-- **Isolation.** Only the requester can see their request. Intake keeps the
-  plan name only: no member ID, date of birth or diagnosis. The research
+- **Isolation.** Only the requester can see their request. Intake has fields
+  for patient, specialty, plan name and context. There are no dedicated
+  member-ID or date-of-birth fields, but free text can contain health
+  information and must be handled as sensitive data. The research
   model is pinned independently of the chat model, so changing how the
   household bot talks cannot change how research is done.
 - **Outreach.** Email goes from a dedicated agent mailbox. Before anything
@@ -139,6 +205,12 @@ and ensures the events exist on the primary calendar. Attendees are never
 copied, updates are never sent, ICS text is passed as argv values and never
 as shell, and cancellations or ambiguous recurrence are reported rather than
 guessed.
+
+The owner's broader OpenClaw setup also uses calendar tools to create events
+from email, WhatsApp conversations and medical appointment information.
+That reported daily workflow extends beyond the email-attachment script
+exported here. Broader conversational scheduling remains a product direction;
+see the [case study](CASE-STUDY.md#future-product-direction).
 
 ## Model evaluation
 

@@ -1,7 +1,9 @@
 # What may be published
 
-This repo has a GitHub remote. Git history is permanent, so the question is
-settled once per file, not per push.
+ShadowOS is a public export of two private repositories. Personal records,
+agent memory and credentials stay in the private sources. This document
+separates that publication boundary from the operational conventions retained
+elsewhere in the export.
 
 ## The boundary
 
@@ -10,6 +12,7 @@ settled once per file, not per push.
 | `layers/` | **yes** | code and tests; identifiers in fixtures are synthetic |
 | `docs/` | **yes** | plans and procedures describe shape, not personal detail |
 | `station/` | **yes** | operational scripts |
+| `tools/` | **yes, after filtering** | custom tools and synthetic fixtures; private configuration, databases and recordings excluded |
 | `records/**/README.md` | **no** | findings name real properties, prices, people |
 | `records/**/outputs/`, `records/**/work/` | **no** | gitignored: correspondents, message snippets, document inventories |
 | `memory/` | **no** | a snapshot of agent memory about the operator |
@@ -35,6 +38,12 @@ station/scripts/scan-secrets.sh     # credentials
 station/scripts/publish-check.sh    # personal data
 ```
 
-If publication ever happens, the practical route is a filtered export of
-`layers/`, `docs/`, `station/` and the top-level README — not a push of this
-repo, whose history already contains record READMEs.
+The exported `publish-check.sh` currently omits `tools/`, and `publish.sh`
+only invokes the credential scanner. A successful exit from those scripts is
+not a complete publication review. Inspect all intended changes, including
+new paths, and keep private records outside this public repository.
+
+The private source repos contain personal implementation records in their
+history. Continue exporting selected content from them; do not push their
+history to ShadowOS. The runbooks and machine conventions retained here are
+operational references, not permission to publish private source material.

@@ -1,6 +1,7 @@
 # tools/
 
-The household tools, as they run inside the OpenClaw gateway. This directory
+The household tools run inside the OpenClaw gateway. Grocery is in active
+use; Doctor is in early testing and is not fully launched. This directory
 mirrors the agent workspace repo so it can be dropped back into
 `~/.openclaw/workspace/` on a production machine:
 
@@ -37,9 +38,13 @@ python3 household-config/test_prepare.py
 python3 automations/calendar-ics-guardrail/test_calendar_ics_guardrail.py
 ```
 
-The TypeScript plugins need the OpenClaw SDK from npm (`npm install` in each
-`plugin/`, then `npm run build && npm test`); their counts above come from
-the validation log in `docs/shadow-0914/VALIDATION.md`.
+The TypeScript plugins require the OpenClaw SDK and a TypeScript/Vitest
+build environment. Access and Grocery declare development dependencies;
+Doctor's exported manifest does not yet declare its build/test dependencies,
+so `npm install && npm run build && npm test` is not a verified setup recipe
+for every plugin. The counts above are historical; see the
+[deployment validation](docs/shadow-0914/VALIDATION.md) and the
+[September 15 export review](../docs/VALIDATION.md).
 
 ## Configuration that is deliberately not here
 

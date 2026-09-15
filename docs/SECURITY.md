@@ -1,12 +1,27 @@
 # Security
 
-The threat model in one sentence: **the gateway is reachable from a chat app,
-so anything it can read, anyone who can message it can read.** Every boundary
-below follows from that.
+The gateway accepts chat messages and reads untrusted external content.
+A sender must only reach the tools and records authorized for that person;
+content from mail, documents or websites must not grant new authority.
 
-## 1. The agent cannot write to your accounts
+This document describes the September 2026 export's controls and deployment
+assumptions. It is not a fresh audit of the live gateway.
 
-Sending is absent by construction, not by policy.
+| Surface | Read/write boundary |
+|---|---|
+| Personal Shadow on Telegram | Broader configured owner tools, including Firecrawl and grocery functionality; permissions depend on the selected tool |
+| Invited-user Shadow on WhatsApp | Grocery and Doctor tools only; broader OpenClaw capabilities deliberately withheld |
+| Mail, ledger and document MCP services | Read-only queries for the owner |
+| Household grocery tools | Conversational adds and purchase updates; typed confirmation for removal |
+| Doctor outreach (early testing) | Draft preview and requester `/ok CODE` before sending |
+| Calendar ICS guardrail | Scheduled event creation and updates, without per-event confirmation; no attendees copied or update notifications requested |
+
+## 1. Context services have no account-write path
+
+Sending is absent from the Gmail context layer by construction. The
+unconnected Calendar read-model layer and retired Drive metadata layer have
+similarly restricted transports. These guarantees do not cover the separate
+doctor mailbox or calendar automation.
 
 - **OAuth grant.** Gmail is `gmail.readonly` only. Calendar would be
   `calendar.calendarlist.readonly` plus `calendar.events.readonly`, which is
@@ -54,7 +69,7 @@ authorization.
   is read-only, needs no sudo, and fails if the gateway process is not uid
   1001, not on loopback, or could be started from the operator's home by any
   loadable unit in the repo. It runs before every commit.
-- **Systemd hardening on every timer unit.** `NoNewPrivileges`, `PrivateTmp`,
+- **Systemd hardening on context-layer timer units.** `NoNewPrivileges`, `PrivateTmp`,
   `ProtectSystem=strict` with explicit `ReadWritePaths`, `RestrictNamespaces`,
   `MemoryDenyWriteExecute`, `SystemCallFilter=@system-service`. The ledger
   rebuild also gets `PrivateNetwork=true` because it never needs the network.
@@ -104,11 +119,13 @@ mapped to a class and a status, never a response body.
 - Token and client-secret objects override `__repr__` and `__str__` to hide
   their values, and there is a test for it. Saving a token leaves no readable
   temp file, tested.
-- **Two scanners gate every push.** `scan-secrets.sh` matches twelve
-  credential shapes and has been negative-tested against planted decoys.
-  `publish-check.sh` exists because the first one will happily pass a file
-  full of home addresses: it matches tax-ID formats and third-party personal
-  email addresses. `publish.sh` refuses to push if either fails.
+- **Publication checks have limited coverage.** `scan-secrets.sh` checks
+  tracked files for credential shapes. `publish-check.sh` checks selected
+  paths for tax-ID formats and personal email addresses; its current path
+  list omits `tools/`. The exported `publish.sh` invokes only the credential
+  scanner. Both checks and an explicit review of exported content are needed;
+  neither establishes that a tree contains no personal data. See
+  [publication procedure](PUBLISHING.md).
 - **Proton Pass, item-scoped.** Coding agents on the machine get their own
   Proton Pass identities with viewer access to individual items, never a whole
   vault. A secret is injected only into the child process that needs it, from
@@ -132,8 +149,15 @@ stolen or discarded disk, not a stolen machine that can be powered on.
 
 ## 7. Sharing the agent with other people
 
-Three invited people use the household tools through a second WhatsApp
-account. What keeps that safe is layered, and each layer is independent:
+Three invited people use the grocery tools through a second WhatsApp
+account. Doctor finder is in early testing, not fully launched. The owner
+has deliberately limited this agent to grocery and doctor-finder tools for
+security. Personal Shadow on Telegram retains broader configured tools,
+including Firecrawl, alongside the same grocery functionality. General web
+scraping is not a capability granted to invited users; the Doctor workflow's
+bounded provider research does not expose the owner's general tools.
+
+The access controls below apply to the implemented household workflows:
 
 1. **Gateway allowlists.** Two WhatsApp accounts: mine, and a household
    account with a four-number allowlist and groups disabled. A Telegram bot
@@ -151,19 +175,24 @@ account. What keeps that safe is layered, and each layer is independent:
    Switching modes never approves a pending confirmation, and escalation
    cannot widen tools or grants. Model strength is configuration; a stronger
    model never means access to owner files.
-4. **Mutation needs a typed command.** Removing a grocery item or emailing
-   a practice previews only. Execution requires `/remover CODE` or
-   `/ok CODE`, native commands the model cannot issue, with single-use,
-   expiring, requester-scoped confirmations that re-check the grant.
+4. **Removal and outreach need typed commands.** The model-facing tools
+   preview grocery removal and prepare email drafts. Native `/remover CODE`
+   and `/ok CODE` handlers perform the approval step for the requester and
+   re-check grants when the access store is configured. Grocery confirmation
+   codes expire; doctor draft approval codes currently have no expiry check.
+   A reproduced concurrency issue can duplicate an approved doctor send, so
+   the export does not establish exactly-once delivery.
 5. **Requester isolation.** A doctor request is visible only to its
-   requester; intake stores the plan name and nothing medical. Private
+   requester. Intake has no dedicated member-ID or date-of-birth field, but
+   patient, specialty and free-text context can contain health information.
+   It must be treated as sensitive data. Private
    grocery lists are bound to one actor by hash. Different senders are
    isolated by the host's session scope and by backend ownership, though a
    person's own Grocery and Doctor history share one session.
 
 The mail index, the ledger and the document catalog are not reachable from
 the household account at all. A household view of the ledger is planned;
-the four items above are the preconditions it will be built on, plus
+the controls above are the preconditions it will be built on, plus
 consent for the people in the data. The Drive layer was retired partly
 because indexing every colleague and contractor the account had ever shared
 a file with would index people who never consented, on a disk that is not
