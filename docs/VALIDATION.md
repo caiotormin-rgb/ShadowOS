@@ -113,3 +113,9 @@ The header and conversation graphics use Geist lettering converted to SVG
 paths. All six assets were rendered locally at native size and 343px width,
 and the export build was checked for reproducibility. This checks the visual
 assets; a GitHub browser session was unavailable for a full-page visual check.
+
+The expanded conversation guide adds private/shared grocery scope, Doctor
+reply interpretation and incomplete payment evidence. These exchanges and
+the additional follow-up turns were reviewed against the exported tool
+instructions and access boundaries. They were not executed as new model or
+integration tests; their wording and example data remain illustrative.
