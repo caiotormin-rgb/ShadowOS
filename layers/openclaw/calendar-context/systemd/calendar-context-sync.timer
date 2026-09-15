@@ -1,0 +1,35 @@
+# calendar-context: refresh the read model every 30 minutes.
+#
+# TRACKED DESIRED STATE -- NOT INSTALLED. See the .service file for the operator
+# install commands.
+#
+# The timer makes no model call. It is a plain data refresh, independent of the
+# OpenClaw Gateway and of any conversation lifecycle, so a chat session ending
+# never leaves the index stale and a sync never costs a token.
+
+[Unit]
+Description=calendar-context: refresh the Google Calendar read model every 30 minutes
+Documentation=file:///home/openclaw/calendar-context/README.md
+
+[Timer]
+Unit=calendar-context-sync.service
+
+# Five minutes after login/boot, then every 30 minutes.
+OnStartupSec=5min
+OnUnitActiveSec=30min
+
+# Catch up on runs missed while the machine was asleep or the service was
+# stopped, rather than waiting for the next tick with a stale index.
+Persistent=true
+
+# Spread the load off the exact half hour. Sync freshness is measured in tens of
+# minutes, so two minutes of jitter costs nothing.
+RandomizedDelaySec=120
+AccuracySec=1min
+
+# Overlap prevention is systemd's, not ours: the unit is Type=oneshot, and a
+# timer never starts a service that is still active. A long initial load
+# therefore delays the next tick instead of racing itself for the SQLite lock.
+
+[Install]
+WantedBy=timers.target

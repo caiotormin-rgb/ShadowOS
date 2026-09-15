@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# Run the production OpenClaw CLI as the isolated service account.
+set -euo pipefail
+
+if [ "$#" -eq 0 ]; then
+  printf 'usage: %s <openclaw arguments...>\n' "$0" >&2
+  exit 2
+fi
+
+runtime_uid=$(id -u openclaw)
+sudo_args=(-u openclaw -H)
+
+# Agents and other non-interactive callers must fail instead of waiting for a
+# password. A human can use an interactive terminal (or ssh -t) to authenticate.
+if [ ! -t 0 ]; then
+  sudo_args=(-n "${sudo_args[@]}")
+fi
+
+exec sudo "${sudo_args[@]}" env \
+  XDG_RUNTIME_DIR="/run/user/${runtime_uid}" \
+  /home/openclaw/.openclaw/bin/openclaw "$@"

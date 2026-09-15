@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# Create an UNENCRYPTED life-index store. Deliberate, not a fallback.
+set -euo pipefail
+STORE="${LIFE_INDEX_STORE:-$HOME/life-index}"
+MARKER="$STORE/PLAINTEXT-UNENCRYPTED"
+
+if [ -e "$STORE/cipher/gocryptfs.conf" ]; then
+  echo "An encrypted store already exists at $STORE/cipher. Use bin/li-mount." >&2
+  exit 1
+fi
+if [ -e "$MARKER" ]; then echo "Plaintext store already set up at $STORE/plain"; exit 0; fi
+
+cat <<'MSG'
+This creates an UNENCRYPTED document store.
+
+  Documents — including anything you file as tier 1 (identity, tax, contracts)
+  — will be readable by anyone with access to this disk: offline access, a
+  stolen or discarded drive, or a backup that leaves the machine.
+
+  This matches torm's existing posture (the mail index is unencrypted by
+  waiver), and it is reversible: bin/li-encrypt migrates an existing
+  plaintext store into an encrypted one without re-cataloging.
+
+MSG
+read -r -p "Type 'plaintext' to confirm: " answer
+[ "$answer" = "plaintext" ] || { echo "Aborted."; exit 1; }
+
+mkdir -p "$STORE/plain/consume" "$STORE/plain/blobs"
+chmod 700 "$STORE" "$STORE/plain"
+printf 'Unencrypted store acknowledged by the operator on %s.\nMigrate with bin/li-encrypt.\n' \
+  "$(date -Iseconds)" > "$MARKER"
+echo "Plaintext store ready: $STORE/plain — drop documents in $STORE/plain/consume"

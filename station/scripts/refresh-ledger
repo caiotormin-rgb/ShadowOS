@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+# refresh-ledger — rebuild the ledger now, instead of waiting for the timer.
+#
+# The build itself is layers/openclaw/ledger/refresh.sh, run as `openclaw` by
+# ledger-refresh.service (twice daily via ledger-refresh.timer). This starts
+# that same unit, so a manual refresh and a scheduled one cannot drift apart.
+# Install: records/2026-09-13-ledger-refresh/outputs/needs-sudo-install-ledger-timer.md
+#
+#   refresh-ledger          start a rebuild and show its log
+#   refresh-ledger status   last run and next scheduled run
+set -euo pipefail
+
+uctl() { sudo -u openclaw "XDG_RUNTIME_DIR=/run/user/$(id -u openclaw)" systemctl --user "$@"; }
+logs() { sudo journalctl "_UID=$(id -u openclaw)" _SYSTEMD_USER_UNIT=ledger-refresh.service \
+           -n "${1:-20}" --no-pager -o short-iso | grep -vE '^\S+ \S+ \S+\[[0-9]+\]:\s+("|\{|\})'; }
+
+case "${1:-run}" in
+  status)
+    uctl list-timers ledger-refresh.timer --no-pager
+    uctl status ledger-refresh.service --no-pager 2>/dev/null | sed -n 1,4p || true
+    logs 8 ;;
+  run)
+    uctl cat ledger-refresh.service >/dev/null 2>&1 || {
+      echo "ledger-refresh.service is not installed for openclaw — see the install handoff in" >&2
+      echo "  records/2026-09-13-ledger-refresh/outputs/needs-sudo-install-ledger-timer.md" >&2
+      exit 1; }
+    uctl start ledger-refresh.service && echo "ok" || echo "FAILED — log follows" >&2
+    logs 20 ;;
+  *) sed -n 2,10p "$0"; exit 2 ;;
+esac

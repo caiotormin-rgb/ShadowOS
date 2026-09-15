@@ -1,0 +1,18 @@
+# Tracked desired state. NOT installed. Deploys with no path rewrite --
+# see the .service beside it. No `Documentation=`: a /home/caio path is
+# unreadable from the `openclaw` account this is deployed to.
+[Unit]
+Description=Twice-daily Gmail context sync
+
+[Timer]
+# Twice daily, per the plan. Not on the hour: a randomized offset avoids
+# synchronizing with every other cron job on the machine.
+OnCalendar=*-*-* 07,19:00:00
+RandomizedDelaySec=1800
+
+# The index is a cache of an authoritative remote. If the machine was off,
+# catch up once on boot rather than waiting for the next window.
+Persistent=true
+
+[Install]
+WantedBy=timers.target

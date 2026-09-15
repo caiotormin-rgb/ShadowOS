@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+# Migrate an existing PLAINTEXT store into an encrypted one. The catalog and
+# blobs move as files, so nothing is re-extracted or re-cataloged.
+set -euo pipefail
+STORE="${LIFE_INDEX_STORE:-$HOME/life-index}"
+GC="${GOCRYPTFS:-$HOME/.local/bin/gocryptfs}"
+MARKER="$STORE/PLAINTEXT-UNENCRYPTED"
+STAGE="$STORE/.migrate"
+
+[ -e "$MARKER" ] || { echo "No plaintext store to migrate." >&2; exit 1; }
+mountpoint -q "$STORE/plain" && { echo "Already a mount; nothing to migrate." >&2; exit 1; }
+
+echo "Staging existing documents..."
+rm -rf "$STAGE"; mv "$STORE/plain" "$STAGE"
+mkdir -p "$STORE/cipher" "$STORE/plain"; chmod 700 "$STORE/cipher" "$STORE/plain"
+
+"$GC" -init "$STORE/cipher"
+"$GC" "$STORE/cipher" "$STORE/plain"
+
+echo "Copying documents into the encrypted store..."
+cp -a "$STAGE/." "$STORE/plain/"
+
+# Only destroy the plaintext copy once the encrypted one is verified present.
+if [ -e "$STORE/plain/catalog.sqlite" ] || [ -d "$STORE/plain/blobs" ]; then
+  find "$STAGE" -type f -exec shred -u {} + 2>/dev/null || true
+  rm -rf "$STAGE" "$MARKER"
+  echo "Migrated. Plaintext copies shredded. Mount with bin/li-mount."
+else
+  echo "Migration incomplete; plaintext copy preserved at $STAGE" >&2; exit 1
+fi

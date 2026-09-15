@@ -1,0 +1,15 @@
+# Tracked desired state. NOT installed. Deploys with no path rewrite --
+# see the .service beside it.
+[Unit]
+Description=Twice-daily ledger rebuild
+
+[Timer]
+# Follows mail-context-sync.timer (07,19:00 + up to 30 min delay, 30 min
+# timeout) so each rebuild sees that window's mail. Not chained with OnSuccess=:
+# a failed sync should not stop the ledger reflecting what the index does hold.
+OnCalendar=*-*-* 08,20:15:00
+RandomizedDelaySec=900
+Persistent=true
+
+[Install]
+WantedBy=timers.target

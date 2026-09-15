@@ -1,0 +1,175 @@
+#!/usr/bin/env python3
+"""mailq — search the mail index from the shell.
+
+Reads the snapshot (`mailctl snapshot`), not the live index: no sudo, and a
+long query cannot disturb the twice-daily sync.
+
+  mailq escritura exemplo          # full-text
+  mailq --from acme               # by sender
+  mailq --from apple --kind receipt  # combine
+  mailq --since 2015 --sent          # what did I write in 2015
+  mailq --attachments --since 2020   # messages carrying files
+  mailq --senders                    # who mails me most
+  mailq --years                      # volume by year
+  mailq --sql "SELECT ..."           # anything else
+"""
+import argparse, os, re, sqlite3, sys, datetime as dt
+
+SNAP = os.environ.get("SNAP", "/tmp/mc-lifetime.sqlite")
+
+# The attachment-state rule lives in the mail-context layer and is imported, not
+# copied. `mailq --attachments` used to filter on `has_attachments = 1`, a column
+# the sync never populated, so it returned "nothing found" for a mailbox with 18
+# years of attachments in it. A second copy of the rule here is how that comes
+# back.
+MAILCTX = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                       "..", "layers", "openclaw", "mail-context")
+sys.path.insert(0, os.path.normpath(MAILCTX))
+
+def die(m):
+    print(m, file=sys.stderr); sys.exit(1)
+
+try:
+    from mailctx import attachments as att
+except ImportError as exc:                                     # pragma: no cover
+    die(f"cannot import mailctx.attachments from {os.path.normpath(MAILCTX)}: {exc}\n"
+        "  attachment state cannot be derived without it, and guessing is the bug")
+
+def db():
+    if not os.path.exists(SNAP):
+        die(f"no snapshot at {SNAP}\n  make one:  mailctl snapshot")
+    c = sqlite3.connect(f"file:{SNAP}?mode=ro", uri=True)
+    c.row_factory = sqlite3.Row
+    # Snapshots predate schema v3 and are read-only; the derived views are
+    # overlaid as TEMP objects so the same SQL works on any vintage.
+    att.ensure_views(c)
+    return c
+
+def when(ts):
+    return dt.datetime.fromtimestamp(ts, dt.UTC).strftime("%Y-%m-%d")
+
+def show(rows, n):
+    if not rows:
+        print("  nothing found"); return
+    for r in rows:
+        frm = re.sub(r"\s*<[^>]*>", "", r["from_addr"] or "")[:26] or (r["from_addr"] or "")[:26]
+        print(f"  {when(r['internal_ts'])}  {frm:26}  {(r['subject'] or '(no subject)')[:62]}")
+    print(f"\n  {len(rows)} shown" + (f" (limit {n}; use --limit for more)" if len(rows) == n else ""))
+
+def main():
+    p = argparse.ArgumentParser(prog="mailq", description=__doc__,
+                                formatter_class=argparse.RawDescriptionHelpFormatter)
+    p.add_argument("terms", nargs="*", help="full-text search words")
+    p.add_argument("--from", dest="frm", help="sender contains")
+    p.add_argument("--since", help="year or YYYY-MM-DD")
+    p.add_argument("--until", help="year or YYYY-MM-DD")
+    p.add_argument("--sent", action="store_true", help="only mail you sent")
+    p.add_argument("--attachments", action="store_true", help="only messages with files")
+    p.add_argument("--attachment-status", action="store_true", dest="attachment_status",
+                   help="what is known about attachments, and what is not")
+    p.add_argument("--limit", type=int, default=25)
+    p.add_argument("--senders", action="store_true", help="top senders instead of messages")
+    p.add_argument("--years", action="store_true", help="volume by year")
+    p.add_argument("--sql", help="run raw SQL and print rows")
+    a = p.parse_args()
+    c = db()
+
+    if a.sql:
+        # The column is gone from schema v3, but every snapshot taken before the
+        # migration still carries it, all-zero, and a query against one would
+        # come back confidently empty. Refuse rather than answer.
+        if re.search(r"\bhas_attachments\b", a.sql):
+            die("has_attachments is not a usable column: the sync fetches\n"
+                "  format=metadata, so it was never populated and reads 0 for every\n"
+                "  message. Query mail_message_attachments.attachment_state instead\n"
+                "  ('yes' | 'no' | 'unknown'), or use mailq --attachments.")
+        for row in c.execute(a.sql):
+            print("  " + " | ".join(str(v)[:40] for v in row))
+        return
+
+    if a.attachment_status:
+        cov = att.coverage(c)
+        print(f"  {cov.describe()}")
+        n = dict(c.execute("SELECT attachment_state, count(*) FROM mail_message_attachments"
+                           " WHERE deleted_at IS NULL GROUP BY 1").fetchall())
+        for state in ("yes", "no", "unknown"):
+            print(f"  {state:<8} {n.get(state, 0):>8,}")
+        if not cov.ever_ran:
+            print("\n  run targeting to populate this:  mailctl target")
+        return
+
+    if a.years:
+        for r in c.execute("""SELECT strftime('%Y',internal_ts,'unixepoch') y, count(*) n
+                              FROM mail_messages GROUP BY y ORDER BY y"""):
+            if r[0] and r[0] > "2000":
+                print(f"  {r[0]}  {r[1]:>7,}  {'#' * (r[1] // 500)}")
+        return
+
+    where, args = ["m.deleted_at IS NULL"], []
+    if a.frm:
+        where.append("lower(m.from_addr) LIKE ?"); args.append(f"%{a.frm.lower()}%")
+    for opt, op in ((a.since, ">="), (a.until, "<=")):
+        if opt:
+            d = opt if "-" in opt else f"{opt}-01-01"
+            ts = int(dt.datetime.strptime(d, "%Y-%m-%d").replace(tzinfo=dt.UTC).timestamp())
+            where.append(f"m.internal_ts {op} ?"); args.append(ts)
+    if a.sent:
+        where.append("EXISTS (SELECT 1 FROM mail_labels l WHERE l.message_id=m.message_id AND l.label='SENT')")
+    caveat = None
+    if a.attachments:
+        cov = att.coverage(c)
+        if not cov.ever_ran:
+            # An empty result here would be a lie, so there is no result. The
+            # index stores no MIME parts (the sync fetches format=metadata) and
+            # attachment targeting -- which asks Gmail's own search index -- has
+            # never been run against this database.
+            die("attachment targeting has never run against this snapshot, so\n"
+                "  attachment presence is UNKNOWN for every message -- not 'none'.\n"
+                "  Filtering would return an empty list that looks like an answer.\n"
+                "\n"
+                "  To make it answerable (needs the openclaw OAuth token):\n"
+                "      mailctl target\n"
+                "  Then re-snapshot:  mailctl snapshot\n"
+                "\n"
+                "  See what is known:  mailq --attachment-status")
+        where.append("EXISTS (SELECT 1 FROM mail_message_attachments s"
+                     " WHERE s.message_id = m.message_id AND s.attachment_state = 'yes')")
+        unknown = c.execute(
+            "SELECT count(*) FROM mail_message_attachments"
+            " WHERE deleted_at IS NULL AND attachment_state = 'unknown'").fetchone()[0]
+        if unknown:
+            caveat = (f"targeting has not covered {unknown:,} messages; "
+                      "their attachment state is unknown and they are not listed here")
+
+    if a.senders:
+        sql = f"""SELECT m.from_addr, count(*) n FROM mail_messages m
+                  WHERE {' AND '.join(where)} GROUP BY lower(m.from_addr)
+                  ORDER BY n DESC LIMIT ?"""
+        for r in c.execute(sql, (*args, a.limit)):
+            print(f"  {r['n']:>6,}  {(r['from_addr'] or '')[:64]}")
+        return
+
+    if a.terms:
+        # Terms are quoted so a stray * or OR is matched as a word, never
+        # honoured as FTS5 syntax. Falls back to prefix, then to OR.
+        exact  = " ".join(f'"{t}"'  for t in a.terms)
+        prefix = " ".join(f'"{t}"*' for t in a.terms)
+        wide   = " OR ".join(f'"{t}"*' for t in a.terms)
+        for expr in (exact, prefix, wide):
+            sql = f"""SELECT m.* FROM mail_search s
+                      JOIN mail_messages m ON m.rowid = s.rowid
+                      WHERE mail_search MATCH ? AND {' AND '.join(where)}
+                      ORDER BY m.internal_ts DESC LIMIT ?"""
+            rows = c.execute(sql, (expr, *args, a.limit)).fetchall()
+            if rows:
+                break
+    else:
+        sql = f"""SELECT m.* FROM mail_messages m WHERE {' AND '.join(where)}
+                  ORDER BY m.internal_ts DESC LIMIT ?"""
+        rows = c.execute(sql, (*args, a.limit)).fetchall()
+    show(rows, a.limit)
+    if caveat:
+        print(f"\n  note: {caveat}")
+
+if __name__ == "__main__":
+    main()

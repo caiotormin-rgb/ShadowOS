@@ -1,0 +1,54 @@
+# NOT THE PRODUCTION GATEWAY UNIT. DO NOT INSTALL THIS FILE.
+#
+# This is a snapshot of Caio's *bootstrap* gateway unit — the rollback instance
+# under uid 1000, disabled and inactive since 2026-08-23. It is kept as
+# reference only. Production is a different unit, owned by a different account,
+# and lives at /home/openclaw/.config/systemd/user/openclaw-gateway.service
+# (mode 0700, not readable from this repo — see the runbook).
+#
+# Why the filename ends in `.disabled`: systemd rejects it as a unit name
+# ("is not a valid unit name"), and `cp station/systemd/user/*.service` does not
+# match it. Installing this by accident is not merely discouraged, it fails.
+#
+# Why that matters. Production runs as uid 1001 `openclaw` out of
+# /home/openclaw. `openclaw` shares no group with `caio`, and /home/caio is
+# drwxr-x--- caio:caio, so the gateway cannot traverse Caio's home at all.
+# OpenClaw is reachable from WhatsApp and Telegram: anything the gateway can
+# read, anyone who can message it can read. Deploying the unit below would put
+# the gateway back under HOME=/home/caio and delete that boundary silently —
+# including for the plaintext personal mail archive in ~/archive, which was
+# placed there *because* the gateway cannot reach it.
+#
+# Assertions: station/scripts/check-gateway-isolation.sh
+# Rationale:  records/2026-08-25-gateway-unit-drift/README.md
+#
+[Unit]
+Description=OpenClaw Gateway (v2026.7.1-2)
+After=network-online.target
+Wants=network-online.target
+StartLimitBurst=5
+StartLimitIntervalSec=60
+
+[Service]
+ExecStart=/home/caio/.openclaw/tools/node-v24.15.0/bin/node /home/caio/.openclaw/tools/node-v24.15.0/lib/node_modules/openclaw/dist/index.js gateway --port 18789
+Restart=always
+RestartSec=5
+RestartPreventExitStatus=78
+TimeoutStopSec=30
+TimeoutStartSec=30
+SuccessExitStatus=0 143
+OOMPolicy=continue
+KillMode=control-group
+Environment=HOME=/home/caio
+Environment=TMPDIR=/tmp
+Environment=PATH=/home/caio/.openclaw/tools/node-v24.15.0/bin:/usr/local/bin:/usr/bin:/bin:/home/caio/.local/bin:/home/caio/.npm-global/bin:/home/caio/bin:/home/caio/.nix-profile/bin
+Environment=OPENCLAW_GATEWAY_PORT=18789
+Environment=OPENCLAW_SYSTEMD_UNIT=openclaw-gateway.service
+Environment="OPENCLAW_WINDOWS_TASK_NAME=OpenClaw Gateway"
+Environment=OPENCLAW_WINDOWS_TASK_HIDDEN_LAUNCHER=1
+Environment=OPENCLAW_SERVICE_MARKER=openclaw
+Environment=OPENCLAW_SERVICE_KIND=gateway
+Environment=OPENCLAW_SERVICE_VERSION=2026.7.1-2
+
+[Install]
+WantedBy=default.target

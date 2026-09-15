@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+set -euo pipefail
+STORE="${LIFE_INDEX_STORE:-$HOME/life-index}"
+fusermount -u "$STORE/plain" && echo "Unmounted. Documents are encrypted at rest."

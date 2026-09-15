@@ -1,0 +1,38 @@
+# Tracked desired state. NOT installed -- copy to the `openclaw` account's
+# ~/.config/systemd/user/ and `systemctl --user daemon-reload` to activate.
+# Deploys with no path rewrite: every path is %h, like mail-context/systemd/.
+#
+# Rebuilds the ledger from the local mail index. No network, no Gmail calls,
+# no sudo. A failed run leaves the previous ledger in place.
+
+[Unit]
+Description=Rebuild the ledger from the mail index
+
+[Service]
+Type=oneshot
+WorkingDirectory=%h/ledger
+ExecStart=/bin/bash %h/ledger/refresh.sh
+Nice=10
+TimeoutStartSec=900
+
+# No Restart=: the timer is the retry mechanism (see mail-context-sync.service).
+
+# Hardening, same set as mail-context-sync.service, which is measured on torm.
+# ProtectHome= is not effective in an unprivileged --user manager; it is kept
+# for a system manager. ProtectKernelModules is deliberately absent -- it fails
+# an unprivileged --user unit with 218/CAPABILITIES.
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateNetwork=true
+ProtectSystem=strict
+ProtectHome=read-only
+# mail-context: a read-only reader of a WAL database still maps its -shm file.
+ReadWritePaths=%h/.local/state/ledger %h/.local/state/mail-enrichment %h/.local/state/mail-context
+ProtectKernelTunables=true
+ProtectControlGroups=true
+RestrictNamespaces=true
+RestrictRealtime=true
+LockPersonality=true
+MemoryDenyWriteExecute=true
+SystemCallFilter=@system-service
+SystemCallErrorNumber=EPERM

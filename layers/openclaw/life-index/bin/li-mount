@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# Mount the encrypted store. Prompts for the passphrase.
+set -euo pipefail
+STORE="${LIFE_INDEX_STORE:-$HOME/life-index}"
+GC="${GOCRYPTFS:-$HOME/.local/bin/gocryptfs}"
+
+[ -e "$STORE/cipher/gocryptfs.conf" ] || { echo "Not initialised; run li-init first." >&2; exit 1; }
+if mountpoint -q "$STORE/plain" 2>/dev/null; then
+  echo "Already mounted at $STORE/plain"; exit 0
+fi
+"$GC" "$STORE/cipher" "$STORE/plain"
+mkdir -p "$STORE/plain/consume" "$STORE/plain/blobs"
+echo "Mounted at $STORE/plain — drop documents in $STORE/plain/consume"

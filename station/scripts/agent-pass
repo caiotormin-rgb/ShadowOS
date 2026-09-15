@@ -1,0 +1,94 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+case "$(basename "$0")" in
+  codex-pass)  agent_name="codex-utorm" ;;
+  claude-pass) agent_name="claude-utorm" ;;
+  *)
+    echo "Run this through codex-pass or claude-pass." >&2
+    exit 2
+    ;;
+esac
+
+pass_cli="$HOME/.local/bin/pass-cli"
+session_dir="$HOME/.local/state/proton-pass-agents/$agent_name"
+canary_file="$HOME/.config/torm/pass-refs/${agent_name%-utorm}-canary.env"
+export PROTON_PASS_SESSION_DIR="$session_dir"
+
+usage() {
+  cat >&2 <<EOF
+usage:
+  $(basename "$0") doctor
+  $(basename "$0") canary
+  $(basename "$0") items [pass-cli item-list options]
+  $(basename "$0") run REASON --env-file FILE -- COMMAND [ARGS...]
+  $(basename "$0") audit [--limit N] [--output human|json]
+EOF
+  exit 2
+}
+
+[ -x "$pass_cli" ] || {
+  echo "pass-cli is not installed at $pass_cli" >&2
+  exit 127
+}
+
+command_name="${1:-}"
+[ -n "$command_name" ] || usage
+shift
+
+case "$command_name" in
+  doctor)
+    [ "$#" -eq 0 ] || usage
+    "$pass_cli" info
+    "$pass_cli" vault list
+    "$pass_cli" share list
+    ;;
+  items)
+    if [ "$#" -eq 0 ]; then
+      exec "$pass_cli" share list --output json
+    fi
+    for argument in "$@"; do
+      [ "$argument" != "--show-secrets" ] || {
+        echo "--show-secrets is not available through this wrapper." >&2
+        exit 2
+      }
+    done
+    exec "$pass_cli" item list --output json "$@"
+    ;;
+  canary)
+    [ "$#" -eq 0 ] || usage
+    [ -f "$canary_file" ] || {
+      echo "canary reference file not found: $canary_file" >&2
+      exit 2
+    }
+    export PROTON_PASS_AGENT_REASON="Verify $agent_name credential injection"
+    exec "$pass_cli" run --env-file "$canary_file" -- \
+      sh -c 'test -n "$CANARY" && printf "credential injection: ok\n"'
+    ;;
+  run)
+    reason="${1:-}"
+    [ -n "$reason" ] || usage
+    shift
+    [ "${1:-}" = "--env-file" ] || usage
+    env_file="${2:-}"
+    [ -n "$env_file" ] || usage
+    shift 2
+    [ "${1:-}" = "--" ] || usage
+    shift
+    [ "$#" -gt 0 ] || usage
+    [ -f "$env_file" ] || {
+      echo "env reference file not found: $env_file" >&2
+      exit 2
+    }
+    if grep -Eq '^[[:space:]]*[A-Za-z_][A-Za-z0-9_]*=.*(pst_|sk-|ghp_|github_pat_)' "$env_file"; then
+      echo "Refusing an env file that appears to contain a raw token. Use pass:// references." >&2
+      exit 2
+    fi
+    export PROTON_PASS_AGENT_REASON="$reason"
+    exec "$pass_cli" run --env-file "$env_file" -- "$@"
+    ;;
+  audit)
+    exec "$pass_cli" agent monitor "$@"
+    ;;
+  *) usage ;;
+esac

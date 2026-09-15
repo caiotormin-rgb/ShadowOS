@@ -1,0 +1,68 @@
+# ── Secrets: never commit. See docs/procedures/00-conventions.md §6 ──
+# Live credential files that exist on torm. Listed by name as defence in depth,
+# in case one is ever copied into this repo by mistake.
+.claude.json
+.credentials.json
+openclaw.json
+credentials/
+
+# Generic secret shapes
+*.key
+*.pem
+*.p12
+*.pfx
+*.token
+*_rsa
+*_ed25519
+id_*
+.env
+.env.*
+*.secret
+*secrets*
+!station/scripts/scan-secrets.sh
+
+# ── Google OAuth + mail/calendar/drive context state ──
+# `client_secret_*.json` is singular and slips past the *secrets* glob above.
+client_secret*.json
+client_id*.json
+*credentials*.json
+token.json
+*.oauth.json
+authorized_user.json
+# The context index is rebuildable private data, never repo content.
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+
+# Redacted snapshots ARE allowed — they are the whole point of records/outputs
+!*.redacted
+
+# ── Noise ──
+__pycache__/
+*.pyc
+.pytest_cache/
+*.swp
+*~
+.DS_Store
+node_modules/
+
+# Extraction outputs contain real personal data — correspondents, message
+# subjects and snippets, document inventories with government and policy IDs.
+# The repo has a GitHub remote; this material must not enter git history.
+# Records keep their README/findings (the analysis); the raw rows stay local.
+records/**/outputs/*.csv
+records/**/outputs/*.jsonl
+records/**/outputs/*.tsv
+records/**/outputs/entities-preview.json
+records/**/outputs/review-queue.md
+records/**/outputs/*.sqlite
+records/**/work/*.csv
+records/**/work/*.jsonl
+records/**/work/*.json
+records/**/work/*.txt
+records/**/work/*.md
+records/**/outputs/*.txt
+records/**/outputs/*.html
+# Evidence stays on disk under work/ as the conventions require; it simply does
+# not enter git, because it quotes real message snippets and correspondents.
+# The record README states what the evidence showed, which is the durable part.

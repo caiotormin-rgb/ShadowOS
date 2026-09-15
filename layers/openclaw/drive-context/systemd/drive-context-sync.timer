@@ -1,0 +1,27 @@
+[Unit]
+# Tracked desired state. NOT INSTALLED.
+Description=drive-context: four-times-daily Drive metadata refresh
+# No Documentation=: a file:// URI into /home/caio is unreadable from the
+# `openclaw` account these units deploy to. The plan is archived at
+# docs/plans/archive/openclaw-google-drive-context.md (layer retired 2026-08-25).
+
+[Timer]
+# Four times daily, as the plan specifies. The query surface calls the index
+# stale after three missed cycles (drivectx.query.DriveContext.STALE_AFTER), so
+# these two numbers are related and must move together.
+OnCalendar=*-*-* 06,12,18,23:10:00
+
+# Spread the load off the hour and away from mail-context's own timer.
+RandomizedDelaySec=600
+
+# A laptop that was asleep at 06:10 must still refresh when it wakes, or the
+# index silently ages a full cycle.
+Persistent=true
+
+# AccuracySec relaxes the wakeup so systemd can batch it. This is a metadata
+# index, not a pager.
+AccuracySec=1min
+Unit=drive-context-sync.service
+
+[Install]
+WantedBy=timers.target

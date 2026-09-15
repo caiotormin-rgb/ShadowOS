@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# Initialise the encrypted life-index store. Interactive: gocryptfs prompts
+# for the passphrase, twice. Nothing is written anywhere else.
+set -euo pipefail
+STORE="${LIFE_INDEX_STORE:-$HOME/life-index}"
+GC="${GOCRYPTFS:-$HOME/.local/bin/gocryptfs}"
+
+[ -x "$GC" ] || { echo "gocryptfs not found at $GC" >&2; exit 1; }
+if [ -e "$STORE/cipher/gocryptfs.conf" ]; then
+  echo "Store already initialised at $STORE/cipher" >&2; exit 0
+fi
+mkdir -p "$STORE/cipher" "$STORE/plain"
+chmod 700 "$STORE" "$STORE/cipher" "$STORE/plain"
+
+cat <<'MSG'
+Choose a passphrase for the document store.
+
+  - It is asked for again at every mount (after each reboot).
+  - It is not recoverable. gocryptfs cannot reset it, and neither can anyone
+    else; losing it loses the documents.
+  - Store it in your password manager now, before continuing.
+
+MSG
+"$GC" -init "$STORE/cipher"
+echo
+echo "Initialised. Mount with: $(dirname "$0")/li-mount"

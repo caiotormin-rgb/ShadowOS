@@ -1,0 +1,267 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [[ ! -t 0 ]]; then
+  printf 'Run this script from an interactive terminal; production access requires sudo authentication.\n' >&2
+  exit 2
+fi
+
+workspace=/home/caio/workspace
+prod="$workspace/station/scripts/openclaw-prod"
+record="$workspace/records/2026-08-24-openclaw-local-models"
+templates="$record/templates"
+log="$record/work/operator-run.txt"
+
+provider_id=local-llamacpp
+migrating_legacy_e4b=false
+provider_definition_safe=false
+legacy_gemma_alias=false
+runtime_build=b10604
+runtime_root=/home/openclaw/.openclaw/tools/llama.cpp
+runtime_dir="$runtime_root/$runtime_build"
+runtime_archive_url=https://github.com/ggml-org/llama.cpp/releases/download/b10604/llama-b10604-bin-ubuntu-x64.tar.gz
+runtime_archive_sha=e5b419bf1d8fc718b472fe3f89b3454b602aa54f3603be4e3c7705efa5b981f9
+model_dir=/home/openclaw/.openclaw/models/llama.cpp/chat
+preset_dir=/home/openclaw/.openclaw/config/llama.cpp
+preset_path="$preset_dir/models.ini"
+runtime_archive=
+
+mkdir -p "$record/work"
+exec > >(tee -a "$log") 2>&1
+
+cleanup() {
+  if [[ -n "$runtime_archive" && -f "$runtime_archive" ]]; then
+    rm -f -- "$runtime_archive"
+  fi
+}
+trap cleanup EXIT
+
+printf '\nOpenClaw local-model configuration - %s\n' "$(date --iso-8601=seconds)"
+printf 'Cloud primary/default and fallback configuration will not be changed.\n'
+
+for required in "$prod" "$templates/models.ini" "$templates/provider.json" "$templates/BUILD"; do
+  if [[ ! -e "$required" ]]; then
+    printf 'BLOCKED: required file is missing: %s\n' "$required" >&2
+    exit 3
+  fi
+done
+
+sudo -v
+$prod config validate
+
+desired_provider=$(jq -c . "$templates/provider.json")
+if current_provider=$($prod config get "models.providers.$provider_id" --json 2>/dev/null); then
+  current_normalized=$(jq -S -c 'del(.apiKey)' <<<"$current_provider")
+  desired_normalized=$(jq -S -c 'del(.apiKey)' <<<"$desired_provider")
+  if [[ "$current_normalized" == "$desired_normalized" ]]; then
+    provider_definition_safe=true
+    printf 'Provider definition already matches: %s\n' "$provider_id"
+  elif jq -e '
+    .baseUrl == "http://127.0.0.1:18080/v1" and
+    .api == "openai-completions" and
+    .localService.command == "/home/openclaw/.openclaw/tools/llama.cpp/b10604/llama-server" and
+    ([.models[].id] | sort) == (["gemma4-e4b", "qwen3-14b-br", "qwen3.5-9b"] | sort)
+  ' <<<"$current_provider" >/dev/null; then
+    migrating_legacy_e4b=true
+    provider_definition_safe=true
+    printf 'Recognized the previously applied E4B provider; migration to Gemma 4 26B A4B is allowed.\n'
+  else
+    printf 'BLOCKED: provider %s already exists with a different definition.\n' "$provider_id" >&2
+    exit 4
+  fi
+fi
+
+aliases_before=$($prod models aliases list --json)
+ensure_alias_available() {
+  local alias=$1
+  local model=$2
+  local existing
+  existing=$(jq -r --arg alias "$alias" '.aliases[$alias] // empty' <<<"$aliases_before")
+  if [[ "$alias" == local-gemma && "$provider_definition_safe" == true && "$existing" == "$provider_id/gemma4-e4b" ]]; then
+    legacy_gemma_alias=true
+    printf 'Recognized legacy alias for migration: %s -> %s\n' "$alias" "$existing"
+    return
+  fi
+  if [[ -n "$existing" && "$existing" != "$model" ]]; then
+    printf 'BLOCKED: alias %s already points to %s, not %s\n' "$alias" "$existing" "$model" >&2
+    exit 5
+  fi
+}
+
+ensure_alias_available local-qwen "$provider_id/qwen3.5-9b"
+ensure_alias_available local-gemma "$provider_id/gemma4-26b-a4b"
+ensure_alias_available local-br "$provider_id/qwen3-14b-br"
+
+fallbacks_before=$($prod models fallbacks list --json)
+if jq -e '[.. | strings | select(startswith("local-llamacpp/"))] | length > 0' <<<"$fallbacks_before" >/dev/null; then
+  printf 'BLOCKED: a local model is already present in the fallback chain.\n' >&2
+  exit 6
+fi
+
+install_runtime() {
+  local marker="$runtime_dir/BUILD"
+  local staging="$runtime_dir.installing"
+  if sudo -u openclaw -H test -x "$runtime_dir/llama-server"; then
+    if sudo cmp -s "$templates/BUILD" "$marker"; then
+      printf 'Runtime already verified: llama.cpp %s\n' "$runtime_build"
+      return
+    fi
+    printf 'BLOCKED: runtime directory exists without the expected build marker: %s\n' "$runtime_dir" >&2
+    exit 7
+  fi
+  if sudo -u openclaw -H test -e "$runtime_dir"; then
+    printf 'BLOCKED: partial or conflicting runtime directory exists: %s\n' "$runtime_dir" >&2
+    exit 8
+  fi
+  if sudo -u openclaw -H test -e "$staging"; then
+    printf 'BLOCKED: an incomplete runtime staging directory exists: %s\n' "$staging" >&2
+    exit 8
+  fi
+
+  runtime_archive=$(mktemp /tmp/llama-b10604.XXXXXX.tar.gz)
+  printf 'Downloading pinned llama.cpp runtime (%s)...\n' "$runtime_build"
+  curl --fail --location --silent --show-error --retry 5 --retry-all-errors \
+    --output "$runtime_archive" "$runtime_archive_url"
+  printf '%s  %s\n' "$runtime_archive_sha" "$runtime_archive" | sha256sum --check --status
+  chmod 0644 "$runtime_archive"
+
+  sudo -u openclaw -H mkdir -p "$runtime_root" "$staging"
+  sudo -u openclaw -H tar -xzf "$runtime_archive" -C "$staging" --strip-components=1
+  sudo install -o openclaw -g openclaw -m 0644 "$templates/BUILD" "$staging/BUILD"
+  sudo -u openclaw -H mv "$staging" "$runtime_dir"
+  sudo -u openclaw -H test -x "$runtime_dir/llama-server"
+  printf 'Installed and verified llama.cpp %s.\n' "$runtime_build"
+}
+
+download_model() {
+  local label=$1
+  local url=$2
+  local expected_sha=$3
+  local destination=$4
+  local partial="$destination.part"
+  local actual_sha
+
+  if sudo -u openclaw -H test -f "$destination"; then
+    actual_sha=$(sudo -u openclaw -H sha256sum "$destination" | awk '{print $1}')
+    if [[ "$actual_sha" == "$expected_sha" ]]; then
+      printf 'Model already verified: %s\n' "$label"
+      return
+    fi
+    printf 'BLOCKED: existing model has the wrong checksum: %s\n' "$destination" >&2
+    exit 9
+  fi
+
+  printf 'Downloading %s (resumable)...\n' "$label"
+  sudo -u openclaw -H curl --fail --location --silent --show-error \
+    --retry 8 --retry-all-errors --continue-at - --output "$partial" "$url"
+  actual_sha=$(sudo -u openclaw -H sha256sum "$partial" | awk '{print $1}')
+  if [[ "$actual_sha" != "$expected_sha" ]]; then
+    sudo -u openclaw -H mv "$partial" "$partial.bad-$(date +%Y%m%d%H%M%S)"
+    printf 'BLOCKED: checksum failed for %s; the bad download was preserved.\n' "$label" >&2
+    exit 10
+  fi
+  sudo -u openclaw -H mv "$partial" "$destination"
+  printf 'Downloaded and verified: %s\n' "$label"
+}
+
+install_runtime
+sudo -u openclaw -H mkdir -p "$model_dir" "$preset_dir"
+
+download_model \
+  'Qwen3.5 9B Q4_K_M' \
+  'https://huggingface.co/unsloth/Qwen3.5-9B-GGUF/resolve/main/Qwen3.5-9B-Q4_K_M.gguf' \
+  '03b74727a860a56338e042c4420bb3f04b2fec5734175f4cb9fa853daf52b7e8' \
+  "$model_dir/qwen3.5-9b-q4_k_m.gguf"
+
+download_model \
+  'Gemma 4 26B A4B Q4_0' \
+  'https://huggingface.co/ggml-org/gemma-4-26B-A4B-it-GGUF/resolve/main/gemma-4-26B-A4B-it-Q4_0.gguf' \
+  'd208665ab1cd3a69f7a9a4bc59430e8448c8093d9b06334f566ac59d6d504a03' \
+  "$model_dir/gemma4-26b-a4b-q4_0.gguf"
+
+download_model \
+  'Qwen3 14B Q4_K_M (PT-BR)' \
+  'https://huggingface.co/Qwen/Qwen3-14B-GGUF/resolve/main/Qwen3-14B-Q4_K_M.gguf' \
+  '500a8806e85ee9c83f3ae08420295592451379b4f8cf2d0f41c15dffeb6b81f0' \
+  "$model_dir/qwen3-14b-q4_k_m.gguf"
+
+sudo install -o openclaw -g openclaw -m 0600 "$templates/models.ini" "$preset_path"
+
+$prod config set "models.providers.$provider_id" "$desired_provider" --strict-json --dry-run
+$prod config set "models.providers.$provider_id" "$desired_provider" --strict-json
+
+if [[ "$legacy_gemma_alias" == true ]]; then
+  $prod models aliases remove local-gemma
+  printf 'Removed the legacy E4B alias before repointing it.\n'
+fi
+
+add_alias() {
+  local alias=$1
+  local model=$2
+  local existing
+  existing=$(jq -r --arg alias "$alias" '.aliases[$alias] // empty' <<<"$aliases_before")
+  if [[ "$existing" == "$model" ]]; then
+    printf 'Alias already correct: %s -> %s\n' "$alias" "$model"
+  else
+    $prod models aliases add "$alias" "$model"
+  fi
+}
+
+add_alias local-qwen "$provider_id/qwen3.5-9b"
+add_alias local-gemma "$provider_id/gemma4-26b-a4b"
+add_alias local-br "$provider_id/qwen3-14b-br"
+
+$prod config validate
+fallbacks_after=$($prod models fallbacks list --json)
+if jq -e '[.. | strings | select(startswith("local-llamacpp/"))] | length > 0' <<<"$fallbacks_after" >/dev/null; then
+  printf 'BLOCKED: validation found a local model in the fallback chain.\n' >&2
+  exit 11
+fi
+
+printf '\nConfigured aliases\n'
+aliases_after=$($prod models aliases list --json)
+jq -e --arg provider "$provider_id" '
+  .aliases["local-qwen"] == ($provider + "/qwen3.5-9b") and
+  .aliases["local-gemma"] == ($provider + "/gemma4-26b-a4b") and
+  .aliases["local-br"] == ($provider + "/qwen3-14b-br")
+' <<<"$aliases_after" >/dev/null
+jq -r '.aliases | to_entries[] | select(.key | startswith("local-")) | "\(.key) -> \(.value)"' <<<"$aliases_after"
+printf '\nCloud fallback chain remains local-free\n'
+$prod models fallbacks list --plain
+
+printf '\nLocal integration smoke tests (cold starts can take several minutes)\n'
+$prod infer model run --local --model "$provider_id/qwen3.5-9b" \
+  --thinking off --prompt 'Responda exatamente: QWEN_LOCAL_OK' --json
+$prod infer model run --local --model "$provider_id/gemma4-26b-a4b" \
+  --thinking off --prompt 'Reply exactly: GEMMA_LOCAL_OK' --json
+$prod infer model run --local --model "$provider_id/qwen3-14b-br" \
+  --thinking low --prompt 'Responda em português brasileiro exatamente: BR_LOCAL_OK' --json
+
+legacy_model_entry='agents.defaults.models.local-llamacpp/gemma4-e4b'
+legacy_model_file="$model_dir/gemma4-e4b-q4_0.gguf"
+legacy_model_sha='a555b900214b477d8880e7832e0b8925e139b0159640036b09fe472b6f2097f2'
+
+if $prod config get "$legacy_model_entry" --json >/dev/null 2>&1; then
+  $prod config unset "$legacy_model_entry" --dry-run
+  $prod config unset "$legacy_model_entry"
+  printf 'Removed the unused E4B model-policy entry.\n'
+fi
+
+if sudo -u openclaw -H test -f "$legacy_model_file"; then
+  actual_legacy_sha=$(sudo -u openclaw -H sha256sum "$legacy_model_file" | awk '{print $1}')
+  if [[ "$actual_legacy_sha" != "$legacy_model_sha" ]]; then
+    printf 'BLOCKED: refusing to remove an unexpected file at the legacy E4B path.\n' >&2
+    exit 12
+  fi
+  legacy_model_bytes=$(sudo -u openclaw -H stat -c '%s' "$legacy_model_file")
+  sudo -u openclaw -H rm -f -- "$legacy_model_file"
+  printf 'Removed unused Gemma 4 E4B GGUF (%s bytes).\n' "$legacy_model_bytes"
+fi
+
+$prod config validate
+
+printf '\nLocal layer configured. It is explicit-only and separate from cloud failover.\n'
+printf '/local-qwen -s   quick local extraction and email parsing\n'
+printf '/local-gemma -s  higher-quality private analysis and drafting\n'
+printf '/local-br -s     strongest local PT-BR lane\n'
+printf '/model default -s   return to cloud defaults and fallbacks\n'

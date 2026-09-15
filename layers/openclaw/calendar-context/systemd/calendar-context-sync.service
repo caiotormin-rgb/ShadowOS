@@ -1,0 +1,85 @@
+# calendar-context: one incremental synchronization run.
+#
+# TRACKED DESIRED STATE -- NOT INSTALLED.
+# Production runs as the isolated `openclaw` account, whose home is 0700 and
+# unreachable without sudo, so installing this is an operator step:
+#
+#   install -D -m 0644 calendar-context-sync.service \
+#       /home/openclaw/.config/systemd/user/calendar-context-sync.service
+#   install -D -m 0644 calendar-context-sync.timer \
+#       /home/openclaw/.config/systemd/user/calendar-context-sync.timer
+#   systemctl --user daemon-reload
+#   systemctl --user enable --now calendar-context-sync.timer
+#
+# This is a systemd *user* unit. torm has no passwordless sudo and no
+# system-wide service is wanted here.
+
+[Unit]
+Description=calendar-context: synchronize the Google Calendar read model
+Documentation=file:///home/openclaw/calendar-context/README.md
+# The gateway is unrelated to this timer; nothing here talks to it, and this
+# unit must not delay or depend on chat availability.
+After=network-online.target
+Wants=network-online.target
+
+# Backoff, not hammering: a failing grant or a Google outage must not turn into
+# 48 identical journal entries a day. systemd counts *every* start here, not
+# only failures, so the burst is set well above the two starts an hour the timer
+# produces -- enough headroom for an operator to also run it by hand.
+StartLimitIntervalSec=3600
+StartLimitBurst=10
+
+[Service]
+Type=oneshot
+
+# torm's ~/.bashrc returns early for non-interactive shells, so nothing added to
+# PATH by a profile exists here. Everything is absolute on purpose.
+WorkingDirectory=/home/openclaw/calendar-context
+ExecStart=/usr/bin/python3 -m calctx.syncrun --once --quiet
+
+# A sync that has not finished in ten minutes is wedged, not slow. Killing it is
+# safe: every write is idempotent and the syncToken is only advanced after its
+# data transaction commits, so the next run replays rather than skips.
+TimeoutStartSec=600
+Restart=no
+
+# Logs carry ids, counts, durations, and error classes only -- never event
+# titles, locations, or attendees. See calctx/logs.py, which is the single
+# module in the package permitted to import `logging`.
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=calendar-context
+
+# Hardening. The process needs its own config (the OAuth token), its own state
+# directory (the SQLite index), and outbound HTTPS. Nothing else.
+NoNewPrivileges=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/home/openclaw/.local/state/calendar-context
+ReadOnlyPaths=/home/openclaw/.config/calendar-context /home/openclaw/.config/mail-context
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+ProtectClock=true
+RestrictNamespaces=true
+RestrictRealtime=true
+RestrictSUIDSGID=true
+LockPersonality=true
+MemoryDenyWriteExecute=true
+SystemCallArchitectures=native
+SystemCallFilter=@system-service
+SystemCallErrorNumber=EPERM
+# AF_NETLINK is required: glibc's resolver enumerates interfaces through it, so
+# omitting it turns every DNS lookup into an unexplained failure.
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX AF_NETLINK
+# No IPAddressAllow allowlist: Google's API front ends are a large, changing set
+# of addresses, so an allowlist here would be a maintenance trap that fails
+# closed at an unpredictable moment. The transport ceiling in calctx/gcal.py
+# constrains *what* can be requested, which is the property that actually
+# matters; egress filtering by address would not add to it.
+UMask=0077
+
+[Install]
+WantedBy=default.target

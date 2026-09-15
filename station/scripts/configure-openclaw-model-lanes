@@ -1,0 +1,129 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [[ ! -t 0 ]]; then
+  printf 'Run this script from an interactive terminal; production access requires sudo authentication.\n' >&2
+  exit 2
+fi
+
+workspace=/home/caio/workspace
+prod="$workspace/station/scripts/openclaw-prod"
+record="$workspace/records/2026-08-24-openclaw-model-lanes"
+log="$record/work/operator-run.txt"
+
+quick_model=${QUICK_MODEL:-openai/gpt-5.6-luna}
+work_model=${WORK_MODEL:-anthropic/claude-sonnet-5}
+deep_model=${DEEP_MODEL:-openai/gpt-5.6-sol}
+
+mkdir -p "$record/work"
+exec > >(tee "$log") 2>&1
+
+printf 'OpenClaw model-lane configuration - 2026-08-24\n'
+printf 'Primary/default and fallback configuration will not be changed.\n'
+
+$prod config validate
+openai_models=$($prod models list --provider openai --plain)
+anthropic_models=$($prod models list --provider anthropic --plain)
+aliases_before=$($prod models aliases list --json)
+status_before=$($prod models status --json)
+fallbacks_before=$($prod models fallbacks list --json)
+primary_model=$(jq -r '.resolvedDefault // .defaultModel // empty' <<<"$status_before")
+
+require_model() {
+  local catalog=$1
+  local model=$2
+  local lane=$3
+  if ! grep -Fq "$model" <<<"$catalog"; then
+    printf 'BLOCKED: %s model is not exposed by the production catalog: %s\n' "$lane" "$model" >&2
+    exit 3
+  fi
+}
+
+require_model "$openai_models" "$quick_model" quick
+require_model "$anthropic_models" "$work_model" work
+require_model "$openai_models" "$deep_model" deep
+
+if [[ -z "$primary_model" ]]; then
+  printf 'BLOCKED: production did not report a resolved default model.\n' >&2
+  exit 4
+fi
+
+ensure_alias_available() {
+  local alias=$1
+  local model=$2
+  local existing
+  existing=$(jq -r --arg alias "$alias" '.aliases[$alias] // empty' <<<"$aliases_before")
+
+  if [[ -n "$existing" && "$existing" != "$model" ]]; then
+    printf 'BLOCKED: alias %s already points to %s, not %s\n' "$alias" "$existing" "$model" >&2
+    exit 5
+  fi
+}
+
+ensure_alias_available quick "$quick_model"
+ensure_alias_available work "$work_model"
+ensure_alias_available deep "$deep_model"
+
+add_alias() {
+  local alias=$1
+  local model=$2
+  local existing
+  existing=$(jq -r --arg alias "$alias" '.aliases[$alias] // empty' <<<"$aliases_before")
+
+  if [[ "$existing" == "$model" ]]; then
+    printf 'Alias already correct: %s -> %s\n' "$alias" "$model"
+    return
+  fi
+  $prod models aliases add "$alias" "$model"
+}
+
+add_alias quick "$quick_model"
+add_alias work "$work_model"
+add_alias deep "$deep_model"
+
+case "$primary_model" in
+  anthropic/*)
+    fallback_candidates=("$deep_model" "$work_model" "$quick_model")
+    ;;
+  openai/*)
+    fallback_candidates=("$work_model" "$deep_model" "$quick_model")
+    ;;
+  *)
+    fallback_candidates=("$work_model" "$deep_model" "$quick_model")
+    ;;
+esac
+
+add_fallback() {
+  local model=$1
+
+  if [[ "$model" == "$primary_model" ]]; then
+    printf 'Fallback skipped because it is the current primary: %s\n' "$model"
+    return
+  fi
+  if jq -e --arg model "$model" '.fallbacks | index($model) != null' <<<"$fallbacks_before" >/dev/null; then
+    printf 'Fallback already present: %s\n' "$model"
+    return
+  fi
+  $prod models fallbacks add "$model"
+}
+
+for fallback_model in "${fallback_candidates[@]}"; do
+  add_fallback "$fallback_model"
+done
+
+$prod config validate
+$prod models aliases list --plain
+$prod models fallbacks list --plain
+
+printf '\nSmoke tests\n'
+smoke_id=$(date +%Y%m%d%H%M%S)
+$prod agent --session-key "agent:main:model-lane-quick-smoke-$smoke_id" --model "$quick_model" --thinking low --message 'Reply exactly: QUICK_OK' --json --timeout 120
+$prod agent --session-key "agent:main:model-lane-work-smoke-$smoke_id" --model "$work_model" --thinking adaptive --message 'Reply exactly: WORK_OK' --json --timeout 120
+$prod agent --session-key "agent:main:model-lane-deep-smoke-$smoke_id" --model "$deep_model" --thinking high --message 'Reply exactly: DEEP_OK' --json --timeout 120
+
+printf '\nInteractive use\n'
+printf '/quick -s   cloud quick lane\n'
+printf '/work -s    Claude work lane\n'
+printf '/deep -s    deep lane\n'
+printf '/think low|default|high   set thinking separately for quick|work|deep\n'
+printf '/model default -s   return to the configured default and automatic fallbacks\n'

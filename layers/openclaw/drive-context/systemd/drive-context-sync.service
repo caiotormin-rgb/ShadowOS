@@ -1,0 +1,50 @@
+[Unit]
+# Tracked desired state. NOT INSTALLED.
+# Installing this before the OAuth grant exists and the preflight decision is
+# recorded would start a timer against an index that must not yet exist.
+Description=drive-context: refresh the Google Drive metadata index
+# No Documentation=: a file:// URI into /home/caio is unreadable from the
+# `openclaw` account these units deploy to. The plan is archived at
+# docs/plans/archive/openclaw-google-drive-context.md (layer retired 2026-08-25).
+After=network-online.target
+Wants=network-online.target
+StartLimitBurst=3
+StartLimitIntervalSec=3600
+
+[Service]
+Type=oneshot
+# PYTHONPATH carries BOTH layers on purpose: drive-context imports
+# mailctx.preflight and mailctx.auth rather than reimplementing them, so
+# mail-context is a hard runtime dependency. Discovering that at 03:00 from a
+# traceback would be a worse way to learn it than reading it here.
+Environment=PYTHONPATH=/home/openclaw/lib/drive-context:/home/openclaw/lib/mail-context
+Environment=HOME=/home/openclaw
+WorkingDirectory=/home/openclaw
+ExecStart=/usr/bin/python3 -m drivectx.syncrun --quiet
+
+# Bounded: a run that hangs must not still be holding the database when the
+# next timer fires.
+TimeoutStartSec=1800
+Restart=no
+
+# The index is rebuildable state, not a secret store, but it is private.
+UMask=0077
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/home/openclaw/.local/state/drive-context
+ReadOnlyPaths=/home/openclaw/.config/mail-context
+NoNewPrivileges=true
+PrivateDevices=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictAddressFamilies=AF_INET AF_INET6
+RestrictNamespaces=true
+LockPersonality=true
+MemoryDenyWriteExecute=true
+SystemCallFilter=@system-service
+SystemCallErrorNumber=EPERM
+
+[Install]
+WantedBy=default.target

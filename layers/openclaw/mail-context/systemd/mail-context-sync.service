@@ -1,0 +1,63 @@
+# Tracked desired state. NOT installed -- copy to the target account's
+# ~/.config/systemd/user/ and `systemctl --user daemon-reload` to activate.
+# See docs/runbooks/mail-context.md.
+#
+# Deploys with NO path rewrite. Every path below is `%h`, which systemd expands
+# to the home of whichever account's user manager loads the unit, and mailctx
+# itself resolves its config and state from Path.home() (mailctx/auth.py,
+# mailctx/sync.py). Until 2026-08-25 this file hardcoded /home/caio and the
+# runbook told the operator to `sed` it on deploy; that is how the copy in
+# Caio's ~/.config/systemd/user/ drifted two releases behind and kept the two
+# directives below that are known to break this unit.
+#
+# Runs as the account that owns the token. Since 2026-08-23 that is the
+# isolated `openclaw` account, with the code deployed at %h/mail-context.
+# There is deliberately no `Documentation=`: it can only name one account's
+# copy of the runbook, and under `openclaw` a /home/caio path is unreadable.
+
+[Unit]
+Description=Sync the Gmail context index
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=%h/mail-context
+Environment=PYTHONPATH=%h/mail-context
+ExecStart=/usr/bin/python3 -m mailctx.syncrun --quiet
+
+# A sync that cannot finish in 30 minutes has a problem the next run will not
+# fix by running longer. The load is resumable, so being killed is safe.
+TimeoutStartSec=1800
+
+# Deliberately NO Restart=. The timer IS the retry mechanism: a twice-daily
+# unit that also restarts on failure retries every RestartSec regardless of the
+# schedule, which is not what "twice daily" means. Worse, a unit sitting in
+# auto-restart backoff makes `systemctl start` block until the cycle completes,
+# so a failed unit silently hangs the next person who tries to start it by
+# hand. Failures wait for the next timer window.
+
+# Hardening. Measured on torm 2026-08-25, not assumed -- see
+# records/2026-08-25-mail-context-unit-paths/work/protecthome-isolation.log:
+# ProtectSystem=strict is effective here (a write to /usr is blocked), but
+# ProtectHome= is NOT effective in this unprivileged --user manager -- the unit
+# can still write anywhere under $HOME. It is kept because it costs nothing and
+# does take effect for a system manager, but do not read this block as saying
+# the sync is confined to two paths. It is not.
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=%h/.local/state/mail-context
+ProtectKernelTunables=true
+# ProtectKernelModules is deliberately absent: it requires dropping
+# CAP_SYS_MODULE, which an unprivileged --user manager cannot do, and the unit
+# fails with 218/CAPABILITIES. It is also meaningless here -- an unprivileged
+# process cannot load a kernel module in the first place.
+ProtectControlGroups=true
+RestrictNamespaces=true
+RestrictRealtime=true
+LockPersonality=true
+MemoryDenyWriteExecute=true
+SystemCallFilter=@system-service
+SystemCallErrorNumber=EPERM

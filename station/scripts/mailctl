@@ -1,0 +1,128 @@
+#!/usr/bin/env bash
+# mailctl — the mail-index routines, five commands.
+#
+# Each one encodes a mistake that was actually made by hand: a forgotten
+# --full (silent no-op), a glob or redirect expanded as caio before sudo ran,
+# a stale destination openclaw could no longer write, and a timer that would
+# prune a lifetime index down to 730 days.
+set -euo pipefail
+
+OC=/home/openclaw
+CODE=$OC/mail-context
+DB=$OC/.local/state/mail-context/mail-context.sqlite
+SRC=/home/caio/workspace/layers/openclaw/mail-context
+UNIT=$OC/.config/systemd/user/mail-context-sync.service
+SNAP=${SNAP:-/tmp/mc-lifetime.sqlite}
+
+oc()   { sudo -u openclaw env "HOME=$OC" "PYTHONPATH=$CODE" python3 "$@"; }
+uctl() { sudo -u openclaw "XDG_RUNTIME_DIR=/run/user/$(id -u openclaw)" systemctl --user "$@"; }
+say()  { printf '\n\033[1m== %s\033[0m\n' "$*"; }
+
+deploy() {
+  sudo cp -r "$SRC/mailctx" "$SRC/schema.sql" "$CODE/"
+  sudo chown -R openclaw:openclaw "$CODE"
+}
+
+prune_check() {
+  sudo grep -q -- '--window 0' "$UNIT" 2>/dev/null && { echo "  prune: safe (--window 0)"; return; }
+  printf '  \033[31mprune: DANGER\033[0m — timer would delete everything older than 730 days\n'
+  echo "         sudo sed -i 's|syncrun --quiet\$|syncrun --quiet --window 0|' $UNIT"
+}
+
+case "${1:-help}" in
+
+status)
+  say "index";  oc -m mailctx.syncrun --status 2>/dev/null || echo "  unreadable — run: mailctl sync"
+  say "system"
+  pgrep -f mailctx.syncrun >/dev/null && echo "  sync: RUNNING" || echo "  sync: idle"
+  uctl list-timers mail-context-sync.timer --no-pager 2>/dev/null | sed -n 2p | sed 's/^/  timer: /' || true
+  prune_check
+  ;;
+
+snapshot)
+  # sqlite .backup, not cp — the index is WAL-mode and a plain copy is torn.
+  # Delete any previous snapshot first: once chowned to caio, openclaw cannot
+  # overwrite it and sqlite reports "attempt to write a readonly database".
+  say "snapshot -> $SNAP"
+  [ -e "$SNAP" ] && rm -f "$SNAP"
+  sudo -u openclaw env "HOME=$OC" python3 - "$DB" "$SNAP" <<'PY'
+import sqlite3, sys
+src = sqlite3.connect(f"file:{sys.argv[1]}?mode=ro", uri=True)
+dst = sqlite3.connect(sys.argv[2]); src.backup(dst); dst.close(); src.close()
+PY
+  sudo chown "$(id -un):$(id -gn)" "$SNAP"; chmod 600 "$SNAP"
+  ls -lh "$SNAP" | awk '{print "  "$5"  "$9"   (mailctl shred when done)"}'
+  ;;
+
+sync)
+  deploy
+  case "${2:-incremental}" in
+    sent)     say "lifetime sent mail"
+              oc -m mailctx.syncrun --window 0 --query 'in:sent' --full ;;
+    lifetime) prune_check
+              say "lifetime, promos and social excluded (background)"
+              # Log to /tmp: a redirect into /home/openclaw is performed by the
+              # calling shell as caio and fails before sudo runs.
+              nohup sudo -u openclaw env "HOME=$OC" "PYTHONPATH=$CODE" python3 \
+                -m mailctx.syncrun --window 0 \
+                --query '-category:promotions -category:social' --full \
+                > /tmp/lifetime-sync.log 2>&1 &
+              echo "  watch:  tail -f /tmp/lifetime-sync.log" ;;
+    *)        say "incremental"; oc -m mailctx.syncrun ;;
+  esac
+  ;;
+
+timer)
+  case "${2:-show}" in
+    on)  uctl start mail-context-sync.timer; echo "  on" ;;
+    off) uctl stop  mail-context-sync.timer; echo "  off" ;;
+    *)   uctl list-timers mail-context-sync.timer --no-pager ;;
+  esac
+  ;;
+
+target)
+  # Attachment PRESENCE, from Gmail's own search index -- ids only, no bytes,
+  # no filenames, ~a dozen API calls. Until this runs, attachment state is
+  # 'unknown' for every message and `mailq --attachments` refuses to answer
+  # rather than return an empty list that looks like "no attachments".
+  deploy
+  case "${2:-run}" in
+    report) say "targeting: what is already stored"; oc -m mailctx.targetrun --report-only ;;
+    *)      say "targeting: refresh attachment hints"; oc -m mailctx.targetrun
+            echo "  now re-snapshot so mailq sees it:  mailctl snapshot" ;;
+  esac
+  ;;
+
+classify)
+  # Derived, not archived. Rebuild whenever the corpus grows, or the cascade
+  # runs on rules extrapolated from an older, smaller mailbox.
+  say "sender classification from $SNAP"
+  [ -f "$SNAP" ] || { echo "  no snapshot — run: mailctl snapshot" >&2; exit 1; }
+  python3 /home/caio/workspace/layers/openclaw/mail-enrichment/senders.py "$SNAP"
+  ;;
+
+shred)
+  say "destroying local plaintext"
+  for f in /tmp/mc-snap.sqlite /tmp/mc-lifetime.sqlite "$SNAP"; do
+    [ -f "$f" ] && shred -u "$f" && echo "  $f"
+  done
+  [ -d /tmp/mailpilot ] && { find /tmp/mailpilot -type f -exec shred -u {} +; rm -rf /tmp/mailpilot; echo "  /tmp/mailpilot"; }
+  true
+  ;;
+
+*)
+  cat <<'USAGE'
+mailctl <command>
+
+  status                      index, timer, and whether the prune is safe
+  snapshot                    caio-readable copy of the index
+  sync [sent|lifetime]        deploys first; adds --full; default incremental
+  timer [on|off]              the twice-daily sync
+  target [report]             attachment presence from Gmail's search index
+  classify                    rebuild sender classification from the snapshot
+  shred                       destroy local snapshots and fetched plaintext
+
+Anything touching the openclaw account prompts for your sudo password.
+USAGE
+  ;;
+esac
