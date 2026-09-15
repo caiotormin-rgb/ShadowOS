@@ -17,11 +17,12 @@ not fully launched.** See [validation and limits](VALIDATION.md#portfolio-exampl
 
 Each card opens as an editable SVG. The first two show household workflows;
 personal-record queries belong to the owner's agent. The support-email
-portion of the third card is explicitly proposed.
+portion reconstructs a workflow the owner reports completing with personal
+Shadow; it is not a customer transcript.
 
 - [Groceries: a short voice update](../assets/brand/conversation-grocery.svg)
 - [Doctor: preferences and confirmation](../assets/brand/conversation-doctor.svg)
-- [Personal records: dates, receipts and proposed support preparation](../assets/brand/conversation-life-index.svg)
+- [Personal records: dates, receipts and completed support workflow](../assets/brand/conversation-life-index.svg)
 
 ## Groceries: a video becomes a shared list
 
@@ -293,36 +294,48 @@ quote or extracted amount alone is not proof of payment.
 
 ### An April purchase, a defect photo and a support email
 
-**Proposed composed workflow.** The example below expresses the intended
-experience; it does not claim the export implements a general support-email
-sender or an attachment workflow.
+**Completed with personal Shadow, as reported by the owner.** Shadow found
+the purchase details and customer support contact, described the problem
+from the supplied photo, extracted details such as the serial number, sent
+the inquiry and followed up with the owner when support responded.
+
+The exchange below reconstructs that sequence with a fictional product,
+dates, identifiers and wording. It is not a transcript or an independent
+replay of the completed workflow.
 
 > **Owner · photo of cracked fan housing:** Email technical support about
 > the defective fan I bought in April. Here's a picture of the defect.
 >
-> **Shadow:** I found the April 18 order for the Example Air desk fan.
-> I'll assemble the purchase details and this photo into a support email
-> for your review.
->
-> **Shadow · proposed draft:**> **To:** support@example.com> **Subject:** Defective desk fan — order EXAMPLE-0418
+> **Shadow:** I found the April 18 order for the Example Air desk fan and
+> the customer support contact. I extracted the serial number and described
+> the cracked housing from your photo. I sent those details to support.
+
+The reconstructed inquiry illustrates the information the agent assembled:
+
+> **To:** support@example.com\
+> **Subject:** Defective desk fan — order EXAMPLE-0418
 >
 > Hello,
 >
 > I purchased an Example Air desk fan on April 18, 2026. Its housing has
-> cracked; the attached photo shows the damage. Could you help with repair
-> or replacement options?
+> cracked. Could you help with repair or replacement options?
 >
-> Order: EXAMPLE-0418> Proposed attachments: purchase receipt and defect photo
+> Order: EXAMPLE-0418\
+> Serial number: EXAMPLE-SN-0042
 >
-> Thank you,> Sam
+> Thank you,\
+> Sam
 >
-> **Shadow:** Please review the recipient, message and proposed attachments
-> before authorizing a send through the connected email tool.
+> **Shadow · later:** Support has replied. Here's their response and the
+> next step they're asking for.
 
-The product, order, recipient and attachment descriptions are fictional.
-An image can support a description of visible damage; it does not establish
-the cause or warranty coverage. The person reviews what will be disclosed.
-No email was sent and no real photo or receipt was processed for this example.
+The fan, defect description, recipient, order and serial number above are
+invented to illustrate the interaction. The actual workflow was reported by
+the owner; no new email was sent and no real photo or receipt was processed
+for this documentation update. This account does not establish the exact
+email connector, attachment handling, approval mechanism or reply-monitoring
+implementation used by the personal agent. It shows the user-facing
+sequence without inventing those implementation details.
 
 ### What the read-only commands contribute
 
@@ -338,7 +351,7 @@ records to inspect.
 | Retrieve amounts across documents | `artifact_fields({"key":"amount_usd","limit":25})` | Extracted values with document identifiers; each must be matched to the relevant record |
 | Inspect the known repair counterparty | `ledger_entity({"name":"Example HVAC","limit":10})` | Grouped events and evidence from the indexed ledger |
 | Find April purchase candidates | `ledger_search({"kind":"purchase","since":"2026-04-01","until":"2026-04-30"})` | Candidate purchases; confirm the date and product against the returned records |
-| Find the receipt in the catalog | `artifact_search({"query":"Example Air receipt"})` | Matching documents for the proposed support message |
+| Find the receipt in the catalog | `artifact_search({"query":"Example Air receipt"})` | Matching documents that could supply purchase context for support |
 
 The [life-index server](../layers/openclaw/life-index/lifeindex/mcp.py) opens
 its store read-only. By default, tier 1 and 2 documents withhold their text;
@@ -346,8 +359,11 @@ metadata and permitted fields may not be enough to answer every question.
 The [ledger server](../layers/openclaw/ledger/mcp.py) and
 [mail-context server](../layers/openclaw/mail-context/mailctx/mcp.py) are also
 read-only. Their tools do not send emails, attach photos, or authorize actions.
-The proposed support flow needs separate media and email capabilities on the
-owner's personal agent; the Doctor `/ok` command belongs to Doctor outreach.
+The completed support workflow used the owner's broader personal OpenClaw
+environment, which includes capabilities beyond these retrieval services.
+Its full implementation is not exported here. The Doctor `/ok` command
+belongs to Doctor outreach; this account does not imply it governed the
+personal support inquiry.
 
 ## Design and implementation references
 

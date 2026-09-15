@@ -9,7 +9,8 @@ A guide to the project, the decisions behind it, and the code you can inspect.
 Start with the [Portuguese and English chat examples](CHAT-EXAMPLES.md).
 They show media capture, shared shopping, short corrections, the Doctor
 workflow in early testing, and personal-record lookups. Three illustrations
-and a proposed photo-to-support-email flow accompany the authored exchanges.
+and an owner-reported photo-to-support-email flow accompany the authored
+exchanges.
 
 ## Understand the work
 

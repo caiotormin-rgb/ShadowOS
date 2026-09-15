@@ -15,7 +15,7 @@ The project is still developing; presentation should reflect its actual stage.
 | [Grocery workflow](../assets/brand/workflow.svg) | Explain how media, instructions and list state fit together |
 | [Grocery conversation](../assets/brand/conversation-grocery.svg) | A Portuguese voice update and shared-list change |
 | [Doctor conversation](../assets/brand/conversation-doctor.svg) | Search preferences and confirmation, labeled early testing |
-| [Personal-record conversation](../assets/brand/conversation-life-index.svg) | Source-backed retrieval and a separately labeled proposed support flow |
+| [Personal-record conversation](../assets/brand/conversation-life-index.svg) | Source-backed retrieval and a reconstructed, owner-reported support workflow |
 
 All assets are editable SVGs under the repository's MIT license. They contain
 no external fonts, images, scripts or tracking. Each has a title and text
@@ -50,7 +50,8 @@ the name; it does not stand for a security guarantee or an operating system.
 - Use first person for the motivation and choices behind the project.
 - Name OpenClaw's contribution alongside the custom work.
 - Keep the current stage visible: grocery in use, Doctor in early testing,
-  personal records owner-only, and proposed support composition labeled separately.
+  personal records owner-only, and completed personal workflows distinguished
+  from exported implementation and independent validation.
 - Distinguish illustrated conversations, observed use and measured results.
 - Preserve Portuguese and English naturally in examples. Keep navigation
   and explanations in English so new readers can follow the story.

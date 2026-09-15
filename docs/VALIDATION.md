@@ -97,10 +97,14 @@ establish that a live model always follows those instructions.
 The banner, grocery workflow and three conversation SVGs are authored
 illustrations. Grocery and Doctor cards follow the documented workflows;
 Doctor remains in early testing. Personal-record dates, amounts, businesses
-and source titles are fictional. The support-email segment is a proposed
-composed workflow, not an implemented life-index send capability.
+and source titles are fictional. The support-email segment reconstructs a completed workflow reported by the
+owner, using the broader personal OpenClaw agent. It is not a life-index
+send capability or an independently replayed integration test.
 
 The earlier grocery example validates interpreted list operations. The new
 personal-record dialogues and tool-call examples were checked against tool
 schemas and access boundaries, but were not run against a personal catalog.
-No photo recognition, support drafting or email delivery was exercised.
+No photo recognition, support drafting, email delivery or reply monitoring
+was exercised during this documentation review. The owner confirms those
+user-facing steps occurred in personal use; exact connector, approval and
+attachment details were not supplied.

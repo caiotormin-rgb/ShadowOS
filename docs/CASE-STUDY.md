@@ -126,6 +126,14 @@ capture. It can combine retrieved web content with the same grocery
 functionality available to invited users. Calendar tools turn information from email, WhatsApp
 conversations and medical appointments into calendar events.
 
+One completed personal workflow brought several capabilities together:
+I sent a photo of a defective purchase, and Shadow found the purchase details,
+identified customer support, described the problem from the photo, extracted
+details such as the serial number, and sent the inquiry. It followed up with
+me when a response arrived. This is my reported experience with the broader
+personal agent; the full sending and reply-handling integration is outside
+this export. [Illustrated support conversation](CHAT-EXAMPLES.md#an-april-purchase-a-defect-photo-and-a-support-email).
+
 This public tree includes selected custom work from that daily setup. Its
 calendar guardrail processes email `.ics` attachments; the car-lease research
 and other calendar-capture implementations are outside the export.

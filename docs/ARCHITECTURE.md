@@ -64,6 +64,14 @@ appointment information. These uses extend beyond the custom code exported
 here. A complete plugin inventory and the implementations of all calendar
 capture paths are not included in this repository.
 
+The owner also reports a completed purchase-support workflow: retrieve the
+purchase details, find customer support, describe a defect from the supplied
+photo, extract identifiers such as the serial number, send the inquiry and
+follow up when a response arrives. This combines capabilities in the personal
+OpenClaw environment. The exact email connector, attachment handling and
+reply-monitoring mechanism are not specified by this export; life-index,
+mail-context and ledger remain read-only retrieval services.
+
 The diagram's scheduled ICS path is the specific email-attachment automation
 present in the export. It does not establish how the broader calendar tools
 parse conversations or authorize writes. The context-service read-only

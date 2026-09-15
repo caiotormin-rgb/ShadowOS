@@ -99,7 +99,7 @@ Appointment booking stays with the person.
 <details>
 <summary>View the illustrated personal-records conversation</summary>
 
-<img src="assets/brand/conversation-life-index.svg" width="600" alt="Fictional personal-records chat: find the landscaper's start date and a paid HVAC receipt. A separately labeled proposed support workflow combines an April purchase record and defect photo into an email for review." />
+<img src="assets/brand/conversation-life-index.svg" width="600" alt="Fictional personal-records chat: find the landscaper's start date and a paid HVAC receipt. An owner-reported personal OpenClaw workflow finds purchase and support details, describes a defect photo, sends the inquiry and follows up on the response." />
 
 </details>
 
@@ -117,24 +117,30 @@ Appointment booking stays with the person.
 is to retrieve an answer with supporting evidence. An invoice alone does not
 establish payment, and the latest indexed match may not be the latest event.
 
-A related illustration shows how purchase support could work:
+My personal Shadow has also handled a defective-product support request:
 
 > **Owner · photo of a cracked fan housing:** Email technical support about
 > this defect. It's the fan I bought in April.
 >
-> **Shadow · proposed workflow:** I found the April order and receipt.
-> I'll use those details and this photo to prepare the support email,
-> then show you the recipient, message and attachments for review.
+> **Shadow:** I found the purchase details and customer support contact,
+> extracted the serial number, and described the defect from your photo.
+> I sent the details to support.
+>
+> **Shadow · later:** Support replied. Here's their response and the next
+> step they're asking for.
 
-**The support sequence is a proposed composed workflow.** Life-index can
-retrieve documents; it does not send email or inspect defect photos by
-itself. Completing this flow needs the personal agent's media handling and a
-separately authorized email tool. [Example commands and boundaries](docs/CHAT-EXAMPLES.md#personal-records-find-the-source-behind-the-answer).
+**This workflow was completed by my personal OpenClaw agent.** The dialogue
+and fan are illustrative; the sequence reflects my reported experience.
+It combines purchase retrieval, support-contact discovery, image
+interpretation, detail extraction, outbound email and a follow-up when a
+reply arrives. Life-index and the other exported context services remain
+read-only; they do not implement the complete email workflow.
+[More detail and tool boundaries](docs/CHAT-EXAMPLES.md#personal-records-find-the-source-behind-the-answer).
 
 **[More conversations in Portuguese and English →](docs/CHAT-EXAMPLES.md)**
 
 Shared shopping, ambiguous voice updates, purchase history, recipe links
-the full Doctor approval flow, personal-record lookups and a proposed
+the full Doctor approval flow, personal-record lookups and the personal agent’s
 photo-to-support-email workflow.
 
 ## Why I built it
